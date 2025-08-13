@@ -1,0 +1,39 @@
+class AssetConstants {
+  static const images = 'assets/images/';
+  static const icons = 'assets/icons/';
+  static const animations = 'assets/animations/';
+
+  ///__________________________________ images __________________________________///
+
+  static const gradientTop = '${images}gradient_top.png';
+  static const gradientBottom = '${images}gradient_bottom.png';
+  static const gradientTop2 = '${images}gradient_top2.png';
+  static const gradientBottom2 = '${images}gradient_bottom2.png';
+
+  ///__________________________________ icons __________________________________///
+
+  static const user = '${icons}user.svg';
+  static const backward = '${icons}backward.svg';
+  static const closeIcon = '${icons}close.svg';
+  static const voiceCircleIcon = '${icons}voice-circle.svg';
+  static const history = '${icons}history.svg';
+  static const sparkle = '${icons}sparkle.svg';
+  static const magicpen = '${icons}magicpen.svg';
+  static const previous = '${icons}previous.svg';
+  static const shuffle = '${icons}shuffle.svg';
+  static const heart = '${icons}heart.svg';
+  static const addToCart = '${icons}add-to-cart.svg';
+  static const menu = '${icons}menu.svg';
+  static const edit = '${icons}edit.svg';
+  static const colorfilter = '${icons}colorfilter.svg';
+  static const rotateLeft = '${icons}rotate-left.svg';
+  static const add = '${icons}add.svg';
+  static const arrowRight = '${icons}arrow-right.svg';
+  static const search = '${icons}search.svg';
+  static const closeCircleIcon = '${icons}close-circle.svg';
+  static const arrowUp = '${icons}arrow-up.svg';
+
+  ///__________________________________ gif __________________________________///
+
+  static const star = '${animations}star.gif';
+}

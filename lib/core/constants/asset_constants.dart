@@ -16,6 +16,7 @@ class AssetConstants {
   ///__________________________________ icons __________________________________///
 
   static const user = '${icons}user.svg';
+  static const user2 = '${icons}user2.svg';
   static const backward = '${icons}backward.svg';
   static const closeIcon = '${icons}close.svg';
   static const voiceCircleIcon = '${icons}voice-circle.svg';
@@ -47,6 +48,10 @@ class AssetConstants {
   static const truck = '${icons}truck.svg';
   static const remove = '${icons}remove.svg';
   static const tickCircle = '${icons}tick-circle.svg';
+  static const aiChat = '${icons}ai-chat.svg';
+  static const invoice = '${icons}invoice.svg';
+  static const scissor = '${icons}scissor.svg';
+  static const boxTick = '${icons}box-tick.svg';
 
   ///__________________________________ gif __________________________________///
 

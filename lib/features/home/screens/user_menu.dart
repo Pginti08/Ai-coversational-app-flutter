@@ -122,7 +122,12 @@ class _UserMenuState extends State<UserMenu> {
                     },
                   ),
                   menuTiles(
-                      name: "Body Profile", icon: AssetConstants.rulerPen),
+                    name: "Body Profile",
+                    icon: AssetConstants.rulerPen,
+                    onTap: () {
+                      Get.toNamed(Routes.bodyProfile);
+                    },
+                  ),
                   menuTiles(
                     name: "Liked Designs",
                     icon: AssetConstants.heart2,
@@ -138,8 +143,12 @@ class _UserMenuState extends State<UserMenu> {
                     },
                   ),
                   menuTiles(
-                      name: "Saved Addresses",
-                      icon: AssetConstants.personalCard),
+                    name: "Saved Addresses",
+                    icon: AssetConstants.personalCard,
+                    onTap: () {
+                      Get.toNamed(Routes.savedAddress);
+                    },
+                  ),
                   menuTiles(name: "Invite Friends", icon: AssetConstants.share),
                 ],
               )),

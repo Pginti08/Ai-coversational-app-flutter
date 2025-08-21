@@ -214,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen>
                               child: RepaintBoundary(
                                 child: BackdropFilter(
                                   filter:
-                                      ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                      ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                                   child: Container(
                                       color: Colors.black.withAlpha(100)),
                                 ),

@@ -7,6 +7,7 @@ import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/orders/controller/orders_controller.dart';
+import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -54,7 +55,9 @@ class OrdersScreen extends StatelessWidget {
                   },
                   itemBuilder: (context, index) {
                     return GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed(Routes.orderDetail);
+                      },
                       child: Container(
                         color: Colors.transparent,
                         child: Row(

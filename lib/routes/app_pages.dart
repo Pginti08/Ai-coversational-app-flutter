@@ -1,3 +1,4 @@
+import 'package:ai_fashion/features/body-profile/screens/body_profile_screen.dart';
 import 'package:ai_fashion/features/cart/screens/cart_screen.dart';
 import 'package:ai_fashion/features/cart/screens/checkout_screen.dart';
 import 'package:ai_fashion/features/chat/screens/chat_screen.dart';
@@ -7,10 +8,12 @@ import 'package:ai_fashion/features/home/screens/home_screen.dart';
 import 'package:ai_fashion/features/liked/screens/liked_screen.dart';
 import 'package:ai_fashion/features/login/screens/login_screen.dart';
 import 'package:ai_fashion/features/my-designs/screens/my_designs_screen.dart';
+import 'package:ai_fashion/features/orders-detail/screens/order_detail_screen.dart';
 import 'package:ai_fashion/features/orders/screens/orders_screen.dart';
 import 'package:ai_fashion/features/otp-verify/screens/otp_verify_screen.dart';
 import 'package:ai_fashion/features/outfit-detail/outfit_detail_screen.dart';
 import 'package:ai_fashion/features/quotations/screens/quotations_screen.dart';
+import 'package:ai_fashion/features/saved-address/screens/saved_address_screen.dart';
 import 'package:ai_fashion/features/signup/screens/signup_screen.dart';
 import 'package:ai_fashion/features/skipped/screens/skipped_screen.dart';
 import 'package:ai_fashion/features/splash/screens/splash_screen.dart';
@@ -132,6 +135,13 @@ class AppPages {
       opaque: false,
       transition: Transition.fadeIn,
       fullscreenDialog: true,
+      name: Routes.orderDetail,
+      page: () => OrderDetailScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
       name: Routes.cart,
       page: () => CartScreen(),
     ),
@@ -141,6 +151,20 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.checkout,
       page: () => CheckoutScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.savedAddress,
+      page: () => SavedAddressScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.bodyProfile,
+      page: () => BodyProfileScreen(),
     ),
   ];
 }

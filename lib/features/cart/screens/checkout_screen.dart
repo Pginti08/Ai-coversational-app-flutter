@@ -8,7 +8,7 @@ import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/custom_radio.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/cart/controller/cart_controller.dart';
-import 'package:ai_fashion/features/cart/screens/add_address_bottom_sheet.dart';
+import 'package:ai_fashion/features/saved-address/screens/add_address_bottom_sheet.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -76,8 +76,11 @@ class CheckoutScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SvgPicture.asset(AssetConstants.add),
-                          wSizedBox10,
+                          SvgPicture.asset(
+                            AssetConstants.add,
+                            width: 20,
+                          ),
+                          wSizedBox8,
                           Text(
                             "Add New Address",
                             style:
@@ -307,17 +310,9 @@ class CheckoutScreen extends StatelessWidget {
                 children: [
                   Text(
                     "Total",
-                    style: style700S16.copyWith(
-                        letterSpacing: 0.32, color: Color(0xFF666666)),
+                    style: style700S16.copyWith(letterSpacing: 0.32),
                   ),
-                  wSizedBox10,
-                  Expanded(
-                      child: DottedLine(
-                    dashLength: 3,
-                    dashGapLength: 2,
-                    dashColor: Colors.white.withAlpha(40),
-                  )),
-                  wSizedBox10,
+                  Spacer(),
                   Text(
                     "₹11,200",
                     style: style700S16.copyWith(

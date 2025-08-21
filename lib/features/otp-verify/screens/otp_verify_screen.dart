@@ -2,7 +2,6 @@ import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/core/widgets/app_button.dart';
 import 'package:ai_fashion/core/widgets/app_pin_put_field.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/otp-verify/controller/otp_verify_controller.dart';
@@ -83,6 +82,9 @@ class _OtpVerifyState extends State<OtpVerify> {
                                 keyboardType: TextInputType.number,
                                 autofocus: true,
                                 onChanged: (value) {},
+                                onCompleted: (val) {
+                                  controller.verifyOtp();
+                                },
                               ),
                               hSizedBox30,
                               Obx(
@@ -132,14 +134,6 @@ class _OtpVerifyState extends State<OtpVerify> {
                                           ],
                                         ),
                                       ),
-                              ),
-                              Spacer(),
-                              AppButton(
-                                onTap: () {
-                                  controller
-                                      .verifyOtp(); // 🔥 switch to success
-                                },
-                                text: "Verify OTP",
                               ),
                             ],
                           ),

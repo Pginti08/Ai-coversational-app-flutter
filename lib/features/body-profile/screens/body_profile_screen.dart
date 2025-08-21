@@ -1,0 +1,179 @@
+import 'package:ai_fashion/core/constants/asset_constants.dart';
+import 'package:ai_fashion/core/theme/app_colors.dart';
+import 'package:ai_fashion/core/theme/app_styles.dart';
+import 'package:ai_fashion/core/utils/sizedbox.dart';
+import 'package:ai_fashion/core/widgets/app_button.dart';
+import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
+import 'package:ai_fashion/core/widgets/common_container.dart';
+import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
+import 'package:ai_fashion/features/body-profile/controller/body_profile_controller.dart';
+import 'package:ai_fashion/features/saved-address/screens/add_address_bottom_sheet.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+
+class BodyProfileScreen extends StatelessWidget {
+  BodyProfileScreen({super.key});
+  final BodyProfileController controller = Get.put(BodyProfileController());
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScaffold(
+      isBottomEffect: false,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Column(
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Body Profiles'.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: style700S12.copyWith(
+                            letterSpacing: 0.96, color: Color(0xFFCCCCCC))),
+                  ],
+                ),
+                Positioned(
+                  left: 0,
+                  child: IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: SvgPicture.asset(AssetConstants.backward),
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: Column(
+                  children: [
+                    hSizedBox18,
+                    AppButton(
+                      isOutlined: true,
+                      isGradientBorder: true,
+                      onTap: () {
+                        // BlurBottomSheet().show<void>(
+                        //   height: MediaQuery.sizeOf(context).height * 0.9,
+                        //   context: context,
+                        //   borderColor: AppColors.whiteColor.withAlpha(
+                        //     40,
+                        //   ),
+                        //   backgroundColor: AppColors.scaffoldColor,
+                        //   barrierColor: AppColors.blackColor.withAlpha(100),
+                        //   blurStrength: 30,
+                        //   isCloseButton: true,
+                        //   child: AddAddressBottomSheet(),
+                        // );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            AssetConstants.add,
+                            width: 20,
+                          ),
+                          wSizedBox8,
+                          Text(
+                            "Add New",
+                            style:
+                                style700S16.copyWith(color: Color(0xFFCCCCCC)),
+                          )
+                        ],
+                      ),
+                    ),
+                    hSizedBox40,
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: 2,
+                        separatorBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            child: Divider(
+                              color: AppColors.grey2Color,
+                            ),
+                          );
+                        },
+                        itemBuilder: (context, index) {
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        SvgPicture.asset(AssetConstants.user2),
+                                        wSizedBox10,
+                                        Expanded(
+                                          child: Text(
+                                            "Body_profile_name",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: style500S18.copyWith(
+                                              letterSpacing: 0.36,
+                                              color: const Color(0xFFEFEFEF),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    hSizedBox10,
+                                    CommonContainer(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 8),
+                                      borderRadius: 100,
+                                      borderGradientColors:
+                                          AppColors.glassBorderGradient,
+                                      child: Text(
+                                        "172 cm  •  32” | 24” | 36”"
+                                            .toUpperCase(),
+                                        overflow: TextOverflow.ellipsis,
+                                        style: style700S12.copyWith(
+                                            letterSpacing: 0.96,
+                                            color: Color(0xFFCCCCCC)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    BlurBottomSheet().show<void>(
+                                      height:
+                                          MediaQuery.sizeOf(context).height *
+                                              0.9,
+                                      context: context,
+                                      borderColor:
+                                          AppColors.whiteColor.withAlpha(
+                                        40,
+                                      ),
+                                      backgroundColor: AppColors.scaffoldColor,
+                                      barrierColor:
+                                          AppColors.blackColor.withAlpha(100),
+                                      blurStrength: 30,
+                                      isCloseButton: true,
+                                      child: AddAddressBottomSheet(),
+                                    );
+                                  },
+                                  icon: SvgPicture.asset(AssetConstants.edit))
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    hSizedBox10,
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -18,6 +18,9 @@ abstract class Routes {
   static const String brandSearch = '/brand-search';
   static const String quotations = '/quotations';
   static const String orders = '/orders';
+  static const String orderDetail = '/order-detail';
   static const String cart = '/cart';
   static const String checkout = '/checkout';
+  static const String savedAddress = '/saved-address';
+  static const String bodyProfile = '/body-profile';
 }

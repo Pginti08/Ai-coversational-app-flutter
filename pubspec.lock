@@ -121,6 +121,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.6"
+  device_info_plus:
+    dependency: transitive
+    description:
+      name: device_info_plus
+      sha256: "72d146c6d7098689ff5c5f66bcf593ac11efc530095385356e131070333e64da"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.3.0"
+  device_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: device_info_plus_platform_interface
+      sha256: e1ea89119e34903dca74b883d0dd78eb762814f97fb6c76f35e9ff74d261a18f
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.3"
   dio:
     dependency: "direct main"
     description:
@@ -145,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  dotted_line:
+    dependency: "direct main"
+    description:
+      name: dotted_line
+      sha256: "41e3d655939559815daa1370fc1e07673a205fa628cf40ce3af45d90029a77b6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.3"
   dropdown_button2:
     dependency: "direct main"
     description:
@@ -685,6 +709,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.2"
+  pinput:
+    dependency: "direct main"
+    description:
+      name: pinput
+      sha256: "8a73be426a91fefec90a7f130763ca39772d547e92f19a827cf4aa02e323d35a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.1"
   platform:
     dependency: transitive
     description:
@@ -802,6 +834,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  slider_button:
+    dependency: "direct main"
+    description:
+      name: slider_button
+      sha256: dd0cb7e6658c817932767a063b98ec56b71d72bb12eb377e265e6a3727b070e7
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   source_span:
     dependency: transitive
     description:
@@ -930,6 +970,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  universal_platform:
+    dependency: transitive
+    description:
+      name: universal_platform
+      sha256: "64e16458a0ea9b99260ceb5467a214c1f298d647c659af1bff6d3bf82536b1ec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   url_launcher:
     dependency: "direct main"
     description:
@@ -1034,6 +1082,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  vibration:
+    dependency: transitive
+    description:
+      name: vibration
+      sha256: "06588a845a4ebc73ab7ff7da555c2b3dbcd9676164b5856a38bf0b2287f1045d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.9.0"
+  vibration_platform_interface:
+    dependency: transitive
+    description:
+      name: vibration_platform_interface
+      sha256: "6ffeee63547562a6fef53c05a41d4fdcae2c0595b83ef59a4813b0612cd2bc36"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   vm_service:
     dependency: transitive
     description:
@@ -1050,6 +1114,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  win32:
+    dependency: transitive
+    description:
+      name: win32
+      sha256: "329edf97fdd893e0f1e3b9e88d6a0e627128cc17cc316a8d67fda8f1451178ba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.13.0"
+  win32_registry:
+    dependency: transitive
+    description:
+      name: win32_registry
+      sha256: "21ec76dfc731550fd3e2ce7a33a9ea90b828fdf19a5c3bcf556fa992cfa99852"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.5"
   xdg_directories:
     dependency: transitive
     description:

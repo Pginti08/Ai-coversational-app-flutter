@@ -9,6 +9,9 @@ class AssetConstants {
   static const gradientBottom = '${images}gradient_bottom.png';
   static const gradientTop2 = '${images}gradient_top2.png';
   static const gradientBottom2 = '${images}gradient_bottom2.png';
+  static const gradientBottom3 = '${images}gradient_bottom3.png';
+  static const welcome1 = '${images}welcome1.png';
+  static const welcome2 = '${images}welcome2.png';
 
   ///__________________________________ icons __________________________________///
 
@@ -32,6 +35,18 @@ class AssetConstants {
   static const search = '${icons}search.svg';
   static const closeCircleIcon = '${icons}close-circle.svg';
   static const arrowUp = '${icons}arrow-up.svg';
+  static const success = '${icons}success.svg';
+  static const cart = '${icons}cart.svg';
+  static const document = '${icons}document.svg';
+  static const rulerPen = '${icons}ruler-pen.svg';
+  static const box = '${icons}box.svg';
+  static const heart2 = '${icons}heart2.svg';
+  static const previous2 = '${icons}previous2.svg';
+  static const share = '${icons}share.svg';
+  static const personalCard = '${icons}personalcard.svg';
+  static const truck = '${icons}truck.svg';
+  static const remove = '${icons}remove.svg';
+  static const tickCircle = '${icons}tick-circle.svg';
 
   ///__________________________________ gif __________________________________///
 

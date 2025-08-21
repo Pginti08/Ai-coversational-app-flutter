@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
@@ -21,7 +23,8 @@ class SkippedScreen extends StatelessWidget {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(12)
+                  .copyWith(top: Platform.isAndroid ? 6 : 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

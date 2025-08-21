@@ -18,7 +18,7 @@ class AppButton extends StatefulWidget {
     this.gradientBorderColors,
     this.height,
     this.backgroundColor,
-    this.gradientColors = AppColors.colorGradient,
+    this.gradientColors,
     this.textColor,
     this.borderColor,
     this.borderRadius = 100.0,
@@ -36,7 +36,7 @@ class AppButton extends StatefulWidget {
   final double? width;
   final double? height;
   final Color? backgroundColor;
-  final List<Color> gradientColors;
+  final List<Color>? gradientColors;
   final List<Color>? gradientBorderColors;
   final Color? textColor;
   final Color? borderColor;
@@ -92,8 +92,6 @@ class _AppButtonState extends State<AppButton>
 
   @override
   Widget build(BuildContext context) {
-    final textColor = widget.textColor ?? AppColors.whiteTextColor;
-
     return ScaleTransition(
       scale: _scaleAnimation,
       child: InkWell(
@@ -117,27 +115,30 @@ class _AppButtonState extends State<AppButton>
               height: widget.height ?? 46,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(widget.borderRadius),
-                border: widget.isOutlined && widget.isGradientBorder == true
-                    ? GradientBoxBorder(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: widget.gradientBorderColors ??
-                              AppColors.glassBorderGradient,
-                        ),
-                        width: 1,
-                      )
-                    : widget.borderColor != null
-                        ? Border.all(color: widget.borderColor!, width: 1)
-                        : null,
-                gradient: !widget.isOutlined
+                border:
+                    (widget.isOutlined && widget.isGradientBorder == true) ||
+                            widget.gradientBorderColors != null
+                        ? GradientBoxBorder(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: widget.gradientBorderColors ??
+                                  AppColors.glassBorderGradient,
+                            ),
+                            width: 1,
+                          )
+                        : widget.borderColor != null
+                            ? Border.all(color: widget.borderColor!, width: 1)
+                            : null,
+                gradient: !widget.isOutlined && widget.backgroundColor == null
                     ? LinearGradient(
-                        colors: widget.gradientColors,
+                        colors:
+                            widget.gradientColors ?? AppColors.colorGradient,
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       )
                     : null,
-                color: widget.backgroundColor != null && !widget.isOutlined
+                color: widget.backgroundColor != null
                     ? (widget.isDisabled
                         ? widget.backgroundColor?.withOpacity(0.5)
                         : widget.backgroundColor)
@@ -168,7 +169,8 @@ class _AppButtonState extends State<AppButton>
                                       widget.text!,
                                       overflow: TextOverflow.ellipsis,
                                       style: style700S16.copyWith(
-                                        color: textColor,
+                                        color: widget.textColor ??
+                                            AppColors.blackColor,
                                         fontSize: widget.fontSize,
                                       ),
                                     ),

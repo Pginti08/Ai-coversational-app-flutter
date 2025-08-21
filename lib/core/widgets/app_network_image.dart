@@ -59,91 +59,94 @@ class AppNetworkImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        height: height,
-        width: width,
-        clipBehavior: Clip.antiAlias,
-        margin: padding,
-        decoration: BoxDecoration(color: backgroundColor, shape: shape),
-        child: isUrl(imageUrl)
-            ? CachedNetworkImage(
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: fit,
-                    ),
-                  ),
-                ),
-                imageUrl: imageUrl,
-                fit: fit,
-                height: height,
-                width: width,
-                colorBlendMode: BlendMode.saturation,
-                color: imageColor,
-                // maxHeightDiskCache: 999,
-                // maxWidthDiskCache: 999,
-                // memCacheHeight: 999,
-                // memCacheWidth: 999,
-                filterQuality: filterQuality,
-                // fadeOutDuration:
-                //     fadeOutDuration ?? const Duration(microseconds: 1),
-                // placeholderFadeInDuration: placeholderFadeInDuration ??
-                //     const Duration(microseconds: 1),
-                // fadeInDuration:
-                //     fadeInDuration ?? const Duration(milliseconds: 500),
-                // progressIndicatorBuilder: (showProgressIndicator ?? false
-                //     ? (context, url, progress) => Center(
-                //           child: SizedBox(
-                //             height: indicatorSize,
-                //             width: indicatorSize,
-                //             child: Center(
-                //               child: CircularProgressIndicator(
-                //                   strokeWidth: indicatorStrokeWidth ?? 2.0,
-                //                   value: progress.progress),
-                //             ),
-                //           ),
-                //         )
-                //     : null),
-                placeholder: (context, url) => shimmer(
-                  child: shimmerContainer(
-                    width: width,
-                    height: height,
-                    borderRadius: 0,
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  height: height,
-                  width: width,
-                  color: AppColors.greyColor,
-                  child: errorWidget ??
-                      Center(
-                        child: Icon(
-                          Icons.error,
-                          color: AppColors.greyTextColor,
-                        ),
+      child: ClipRRect(
+        borderRadius: borderRadius ?? BorderRadius.zero,
+        child: Container(
+          height: height,
+          width: width,
+          clipBehavior: Clip.antiAlias,
+          margin: padding,
+          decoration: BoxDecoration(color: backgroundColor, shape: shape),
+          child: isUrl(imageUrl)
+              ? CachedNetworkImage(
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: fit,
                       ),
-                ),
-                errorListener: (e) {
-                  if (e is SocketException) {
-                    print('Error with ${e.address} and message ${e.message}');
-                  } else {
-                    print('Image Exception is: ${e.runtimeType}');
-                  }
-                },
-              )
-            : errorWidget ??
-                Container(
-                  height: height,
-                  width: width,
-                  color: AppColors.greyColor,
-                  child: Center(
-                    child: Icon(
-                      Icons.error,
-                      color: AppColors.greyTextColor,
                     ),
                   ),
-                ),
+                  imageUrl: imageUrl,
+                  fit: fit,
+                  height: height,
+                  width: width,
+                  colorBlendMode: BlendMode.saturation,
+                  color: imageColor,
+                  // maxHeightDiskCache: 999,
+                  // maxWidthDiskCache: 999,
+                  // memCacheHeight: 999,
+                  // memCacheWidth: 999,
+                  filterQuality: filterQuality,
+                  // fadeOutDuration:
+                  //     fadeOutDuration ?? const Duration(microseconds: 1),
+                  // placeholderFadeInDuration: placeholderFadeInDuration ??
+                  //     const Duration(microseconds: 1),
+                  // fadeInDuration:
+                  //     fadeInDuration ?? const Duration(milliseconds: 500),
+                  // progressIndicatorBuilder: (showProgressIndicator ?? false
+                  //     ? (context, url, progress) => Center(
+                  //           child: SizedBox(
+                  //             height: indicatorSize,
+                  //             width: indicatorSize,
+                  //             child: Center(
+                  //               child: CircularProgressIndicator(
+                  //                   strokeWidth: indicatorStrokeWidth ?? 2.0,
+                  //                   value: progress.progress),
+                  //             ),
+                  //           ),
+                  //         )
+                  //     : null),
+                  placeholder: (context, url) => shimmer(
+                    child: shimmerContainer(
+                      width: width,
+                      height: height,
+                      borderRadius: 0,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    height: height,
+                    width: width,
+                    color: AppColors.greyColor,
+                    child: errorWidget ??
+                        Center(
+                          child: Icon(
+                            Icons.error,
+                            color: AppColors.greyTextColor,
+                          ),
+                        ),
+                  ),
+                  errorListener: (e) {
+                    if (e is SocketException) {
+                      print('Error with ${e.address} and message ${e.message}');
+                    } else {
+                      print('Image Exception is: ${e.runtimeType}');
+                    }
+                  },
+                )
+              : errorWidget ??
+                  Container(
+                    height: height,
+                    width: width,
+                    color: AppColors.greyColor,
+                    child: Center(
+                      child: Icon(
+                        Icons.error,
+                        color: AppColors.greyTextColor,
+                      ),
+                    ),
+                  ),
+        ),
       ),
     );
   }

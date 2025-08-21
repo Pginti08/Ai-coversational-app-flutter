@@ -4,6 +4,10 @@ part of 'app_pages.dart';
 abstract class Routes {
   Routes._();
   static const String splash = '/splash';
+  static const String welcome = '/welcome';
+  static const String login = '/login';
+  static const String signup = '/signup';
+  static const String otpVerify = '/otp-verify';
   static const String home = '/home';
   static const String chat = '/chat';
   static const String cardDeck = '/card-deck';
@@ -12,4 +16,8 @@ abstract class Routes {
   static const String skipped = '/skipped';
   static const String myDesigns = '/my-designs';
   static const String brandSearch = '/brand-search';
+  static const String quotations = '/quotations';
+  static const String orders = '/orders';
+  static const String cart = '/cart';
+  static const String checkout = '/checkout';
 }

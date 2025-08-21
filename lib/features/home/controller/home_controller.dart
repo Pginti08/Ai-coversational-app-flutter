@@ -2,6 +2,8 @@ import 'package:ai_fashion/features/home/models/outfit_card_model.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
+  final RxBool isDrawerOpen = false.obs;
+
   RxInt currentCardIndex = 0.obs;
   final RxList<OutfitCardModel> favoriteList = <OutfitCardModel>[].obs;
   final RxList<OutfitCardModel> dislikeList = <OutfitCardModel>[].obs;
@@ -36,5 +38,9 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+  }
+
+  void toggleDrawer() {
+    isDrawerOpen.value = !isDrawerOpen.value;
   }
 }

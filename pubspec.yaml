@@ -38,6 +38,9 @@ dependencies:
   flutter_card_swiper: ^7.0.2
   carousel_slider: ^5.1.1
   google_fonts: ^6.3.0
+  slider_button: ^2.1.0
+  pinput: ^5.0.1
+  dotted_line: ^3.2.3
 
 
 

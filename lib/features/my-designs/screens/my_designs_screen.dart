@@ -8,7 +8,7 @@ import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
-import 'package:ai_fashion/features/my_designs/controller/my_designs_controller.dart';
+import 'package:ai_fashion/features/my-designs/controller/my_designs_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

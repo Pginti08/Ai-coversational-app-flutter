@@ -8,6 +8,7 @@ import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/home/controller/home_controller.dart';
 import 'package:ai_fashion/features/home/screens/start_creating_drag_bottom.dart';
+import 'package:ai_fashion/features/home/screens/user_menu.dart';
 import 'package:ai_fashion/features/home/widgets/outfit_card.dart';
 import 'package:ai_fashion/features/home/widgets/top_progress_bar.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
@@ -147,6 +148,92 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final drawerWidth = screenWidth * 0.85;
+
+    return Obx(() {
+      final isOpen = controller.isDrawerOpen.value;
+
+      return ClipRRect(
+        child: Stack(
+          children: [
+            // LAYER 1: The drawer with proper clipping
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeInOutCubic,
+              left: isOpen
+                  ? 0
+                  : -drawerWidth, // Move drawer off-screen when closed
+              top: 0,
+              bottom: 0,
+              width: drawerWidth,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.blackColor, // Solid opaque background
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(0),
+                    bottomRight: Radius.circular(0),
+                  ),
+                ),
+                child: ColoredBox(
+                    // Prevent transparency leak
+                    color: AppColors.blackColor,
+                    child: UserMenu(
+                      controller: controller,
+                    )),
+              ),
+            ),
+
+            // LAYER 2: The main content view with full background
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeInOutCubic,
+              left: isOpen ? drawerWidth : 0,
+              right: isOpen ? -drawerWidth : 0,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                color: AppColors.blackColor, // Ensure solid background
+                child: ClipRect(
+                  child: Stack(
+                    children: [
+                      // The actual content of your main screen
+                      buildMainView(),
+
+                      // This scrim layer covers the main content when the drawer is open.
+                      if (isOpen)
+                        Positioned.fill(
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              focusColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: controller.toggleDrawer,
+                              child: RepaintBoundary(
+                                child: BackdropFilter(
+                                  filter:
+                                      ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                  child: Container(
+                                      color: Colors.black.withAlpha(100)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Stack buildMainView() {
     return Stack(
       children: [
         // Main content with body sliding effect
@@ -473,22 +560,27 @@ class _HomeScreenState extends State<HomeScreen>
           padding: const EdgeInsets.only(left: 4.5),
           child: Row(
             children: [
-              AppNetworkImage(
-                width: 43,
-                height: 43,
-                shape: BoxShape.circle,
-                imageUrl:
-                    "https://images.unsplash.com/photo-1619895862022-09114b41f16f?fm=jpg&q=60&w=3000&ixlib=rb-4.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tZW4lMjBwcm9maWxlJTIwcGljdHVyZXxlbnwwfHwwfHx8MA%3D%3D",
-                fit: BoxFit.cover,
-                errorWidget: Container(
+              GestureDetector(
+                onTap: () {
+                  controller.toggleDrawer();
+                },
+                child: AppNetworkImage(
                   width: 43,
                   height: 43,
-                  color: AppColors.grey2Color,
-                  padding: EdgeInsets.all(8),
-                  alignment: Alignment.center,
-                  child: SvgPicture.asset(
-                    AssetConstants.user,
-                    color: AppColors.whiteColor,
+                  shape: BoxShape.circle,
+                  imageUrl:
+                      "https://images.unsplash.com/photo-1619895862022-09114b41f16f?fm=jpg&q=60&w=3000&ixlib=rb-4.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tZW4lMjBwcm9maWxlJTIwcGljdHVyZXxlbnwwfHwwfHx8MA%3D%3D",
+                  fit: BoxFit.cover,
+                  errorWidget: Container(
+                    width: 43,
+                    height: 43,
+                    color: AppColors.grey2Color,
+                    padding: EdgeInsets.all(8),
+                    alignment: Alignment.center,
+                    child: SvgPicture.asset(
+                      AssetConstants.user,
+                      color: AppColors.whiteColor,
+                    ),
                   ),
                 ),
               ),

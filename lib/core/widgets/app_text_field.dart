@@ -36,7 +36,7 @@ class AppTextField extends StatelessWidget {
     this.textCapitalization = TextCapitalization.none,
     this.fillColor,
     this.borderColor,
-    this.borderRadius = 14,
+    this.borderRadius = 16,
     this.contentPadding,
     this.outsideMargin,
     this.textStyle,
@@ -97,14 +97,14 @@ class AppTextField extends StatelessWidget {
         children: [
           Container(
             padding: outsideMargin ??
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
             decoration: isGradientBorder
                 ? BoxDecoration(
                     border: GradientBoxBorder(
                       width: 1,
                       gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                         colors: AppColors.glassBorderGradient,
                       ),
                     ),
@@ -134,20 +134,18 @@ class AppTextField extends StatelessWidget {
                       Text(
                         label!,
                         style: labelStyle ??
-                            style600S12.copyWith(
-                              fontSize: 10,
-                              color: AppColors.lightGreyTextColor,
-                              letterSpacing: 0.80,
+                            style700S12.copyWith(
+                              color: Color(0xFF666666),
+                              letterSpacing: 0.96,
                             ),
                       ),
                       if (isRequired)
                         Text(
                           ' *',
                           style: labelStyle ??
-                              style600S12.copyWith(
-                                fontSize: 10,
-                                color: AppColors.lightGreyTextColor,
-                                letterSpacing: 0.80,
+                              style700S12.copyWith(
+                                color: AppColors.redColor,
+                                letterSpacing: 0.96,
                               ),
                         ),
                     ],

@@ -10,23 +10,27 @@ class CustomScaffold extends StatefulWidget {
   final bool isTopEffect;
   final bool isBottomEffect;
   final bool isEffect2;
+  final bool isEffect3;
   final bool isTopSafeArea;
   final bool isBottomSafeArea;
   final Color? scaffoldColor;
+  bool? resizeToAvoidBottomInset;
 
-  CustomScaffold({
-    Key? key,
-    required this.body,
-    this.appBar,
-    this.bottomNavigationBar,
-    this.noPadding = true,
-    this.isTopEffect = true,
-    this.isBottomEffect = true,
-    this.isEffect2 = false,
-    this.isTopSafeArea = true,
-    this.isBottomSafeArea = true,
-    this.scaffoldColor,
-  }) : super(key: key);
+  CustomScaffold(
+      {Key? key,
+      required this.body,
+      this.appBar,
+      this.bottomNavigationBar,
+      this.noPadding = true,
+      this.isTopEffect = true,
+      this.isBottomEffect = true,
+      this.isEffect2 = false,
+      this.isEffect3 = false,
+      this.isTopSafeArea = true,
+      this.isBottomSafeArea = true,
+      this.scaffoldColor,
+      this.resizeToAvoidBottomInset})
+      : super(key: key);
 
   @override
   State<CustomScaffold> createState() => _CustomScaffoldState();
@@ -49,6 +53,7 @@ class _CustomScaffoldState extends State<CustomScaffold> {
 
     // MODIFIED: The scaffoldColor is now applied directly to the Scaffold's backgroundColor.
     return Scaffold(
+      resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
       body: Stack(
         children: [
           Positioned.fill(
@@ -82,7 +87,9 @@ class _CustomScaffoldState extends State<CustomScaffold> {
                     child: Image.asset(
                       widget.isEffect2
                           ? AssetConstants.gradientBottom2
-                          : AssetConstants.gradientBottom,
+                          : widget.isEffect3
+                              ? AssetConstants.gradientBottom3
+                              : AssetConstants.gradientBottom,
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.fitWidth,
                     ),

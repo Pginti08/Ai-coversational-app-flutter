@@ -3,23 +3,25 @@ import 'dart:ui';
 import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
+import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_button.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
+import 'package:ai_fashion/features/product-detail/controller/product_detail_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
-class OutfitDetailScreen extends StatefulWidget {
-  const OutfitDetailScreen({super.key});
+class ProductDetailScreen extends StatefulWidget {
+  const ProductDetailScreen({super.key});
 
   @override
-  State<OutfitDetailScreen> createState() => _OutfitDetailScreenState();
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
 
-class _OutfitDetailScreenState extends State<OutfitDetailScreen> {
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
   // Define the min and max fractional sizes for the bottom sheet.
   final double _minSheetSize = 0.3;
   final double _maxSheetSize = 0.6;
@@ -31,6 +33,8 @@ class _OutfitDetailScreenState extends State<OutfitDetailScreen> {
   // Track the previous extent to determine drag direction
   double _previousExtent = 0.3;
   bool _isSheetClosing = false;
+
+  final ProductDetailController controller = Get.put(ProductDetailController());
 
   @override
   void initState() {
@@ -48,8 +52,8 @@ class _OutfitDetailScreenState extends State<OutfitDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
     // Define the start and end heights for the background image animation.
     final initialImageHeight = screenHeight * 0.7;
@@ -119,9 +123,8 @@ class _OutfitDetailScreenState extends State<OutfitDetailScreen> {
                         ),
                       );
                     },
-                    child: const AppNetworkImage(
-                      imageUrl:
-                          "https://framerusercontent.com/images/ioTL88ZpHCWXDdmKwFbhBBMJfA.png",
+                    child: AppNetworkImage(
+                      imageUrl: controller.productDetail?.image ?? "",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -204,8 +207,8 @@ class _OutfitDetailScreenState extends State<OutfitDetailScreen> {
                                   ),
                                 ),
                                 // --- Sheet Content ---
-                                const Text(
-                                  "The Sapphire Elegance Halter Dress a Perfect Blend of Style and Grace",
+                                Text(
+                                  controller.productDetail?.title ?? "",
                                   style: TextStyle(
                                     color: AppColors.whiteTextColor,
                                     fontSize: 20,
@@ -216,16 +219,30 @@ class _OutfitDetailScreenState extends State<OutfitDetailScreen> {
                                 hSizedBox6,
                                 Row(
                                   children: [
-                                    const AppNetworkImage(
+                                    AppNetworkImage(
                                       width: 24,
                                       height: 24,
                                       shape: BoxShape.circle,
+                                      fit: BoxFit.cover,
                                       imageUrl:
-                                          "https://images.unsplash.com/photo-1619895862022-09114b41f16f?fm=jpg&q=60&w=3000&ixlib=rb-4.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tZW4lMjBwcm9maWxlJTIwcGljdHVyZXxlbnwwfHwwfHx8MA%3D%3D",
+                                          controller.productDetail?.userImage ??
+                                              "",
+                                      errorWidget: Container(
+                                        width: 24,
+                                        height: 24,
+                                        color: AppColors.lightGreyTextColor
+                                            .withAlpha(50),
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.center,
+                                        child: SvgPicture.asset(
+                                          AssetConstants.user,
+                                          color: AppColors.whiteColor,
+                                        ),
+                                      ),
                                     ),
                                     wSizedBox6,
                                     Text(
-                                      'Sophie Bennett',
+                                      controller.productDetail?.userName ?? "",
                                       style: style400S14.copyWith(
                                         color: AppColors.whiteTextColor,
                                         letterSpacing: 0.42,
@@ -266,16 +283,7 @@ class _OutfitDetailScreenState extends State<OutfitDetailScreen> {
                                                   hSizedBox10,
                                                   Text(
                                                     '''Description:
-Vibrant neon purple base with black vertical stripes
-Detailed with bold black rose floral print
-Figure-skimming midi silhouette for a sleek fit
-Spaghetti straps add a delicate, chic touch
-Perfect for turning heads at any evening occasion
-Vibrant neon purple base with black vertical stripes
-Detailed with bold black rose floral print
-Figure-skimming midi silhouette for a sleek fit
-Spaghetti straps add a delicate, chic touch
-Perfect for turning heads at any evening occasion''',
+${controller.productDetail?.description ?? ""}''',
                                                     style: style400S16.copyWith(
                                                         color: const Color(
                                                             0xFFCCCCCC),
@@ -293,21 +301,9 @@ Perfect for turning heads at any evening occasion''',
                                   TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: '₹2,500 ',
-                                        style: style600S20.copyWith(
-                                          color: AppColors.whiteTextColor,
-                                          letterSpacing: 0.42,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: 'to',
-                                        style: style400S16.copyWith(
-                                          color: const Color(0xFFCCCCCC),
-                                          letterSpacing: 0.32,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: ' ₹5,500',
+                                        text: indianRupeeAmountConversion(
+                                            controller.productDetail?.price,
+                                            decimalDigits: 0),
                                         style: style600S20.copyWith(
                                           color: AppColors.whiteTextColor,
                                           letterSpacing: 0.42,

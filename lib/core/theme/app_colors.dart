@@ -23,6 +23,9 @@ class AppColors {
   static const greyButtonColor = Color(0xFF222222);
   static const hintTextColor = Color(0xFF999999);
   static const lightGreyTextColor = Color(0xFFB6B6B9);
+  static const lightShimmerColor = Color(0xFF3B3B3B);
+  static const darkShimmerColor = Color(0xFF191919);
+
   static const scaffoldRadialGradient = [Color(0xFF1F1F1F), Color(0xFF000000)];
   static const colorGradient = [
     Color(0xFF68C3E7),

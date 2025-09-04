@@ -64,7 +64,7 @@ class BodyProfileTypeBottomSheet extends StatelessWidget {
               onTap: () {
                 Get.back();
                 BlurBottomSheet().show<void>(
-                  height: MediaQuery.sizeOf(context).height * 0.65,
+                  height: MediaQuery.sizeOf(context).height * 0.7,
                   context: context,
                   borderColor: AppColors.whiteColor.withAlpha(
                     40,

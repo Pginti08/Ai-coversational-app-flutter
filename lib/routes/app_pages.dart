@@ -12,7 +12,7 @@ import 'package:ai_fashion/features/my-designs/screens/my_designs_screen.dart';
 import 'package:ai_fashion/features/orders-detail/screens/order_detail_screen.dart';
 import 'package:ai_fashion/features/orders/screens/orders_screen.dart';
 import 'package:ai_fashion/features/otp-verify/screens/otp_verify_screen.dart';
-import 'package:ai_fashion/features/outfit-detail/outfit_detail_screen.dart';
+import 'package:ai_fashion/features/product-detail/product_detail_screen.dart';
 import 'package:ai_fashion/features/quotations/screens/quotations_screen.dart';
 import 'package:ai_fashion/features/saved-address/screens/saved_address_screen.dart';
 import 'package:ai_fashion/features/signup/screens/signup_screen.dart';
@@ -87,8 +87,8 @@ class AppPages {
       opaque: false,
       transition: Transition.fadeIn,
       fullscreenDialog: true,
-      name: Routes.outfitDetail,
-      page: () => OutfitDetailScreen(),
+      name: Routes.productDetail,
+      page: () => ProductDetailScreen(),
     ),
     GetPage(
       opaque: false,

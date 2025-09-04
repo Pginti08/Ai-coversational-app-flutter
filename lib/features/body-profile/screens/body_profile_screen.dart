@@ -3,6 +3,7 @@ import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_button.dart';
+import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
@@ -91,81 +92,124 @@ class BodyProfileScreen extends StatelessWidget {
                     ),
                     hSizedBox40,
                     Expanded(
-                      child: ListView.separated(
-                        itemCount: 2,
-                        separatorBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            child: Divider(
-                              color: AppColors.grey2Color,
-                            ),
-                          );
-                        },
-                        itemBuilder: (context, index) {
-                          return Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        SvgPicture.asset(AssetConstants.user2),
-                                        wSizedBox10,
-                                        Expanded(
-                                          child: Text(
-                                            "Body_profile_name",
-                                            overflow: TextOverflow.ellipsis,
-                                            style: style500S18.copyWith(
-                                              letterSpacing: 0.36,
-                                              color: const Color(0xFFEFEFEF),
+                      child: Obx(
+                        () => controller.isLoading.value
+                            ? Center(
+                                child: RotatingLoader(),
+                              )
+                            : (controller.savedBodyProfileModel.value.data
+                                            ?.length ??
+                                        0) ==
+                                    0
+                                ? Center(
+                                    child: Text(
+                                      "Empty Saved Body Profiles",
+                                      style: style400S14,
+                                    ),
+                                  )
+                                : ListView.separated(
+                                    itemCount: controller.savedBodyProfileModel
+                                            .value.data?.length ??
+                                        0,
+                                    separatorBuilder: (context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 14),
+                                        child: Divider(
+                                          color: AppColors.grey2Color,
+                                        ),
+                                      );
+                                    },
+                                    itemBuilder: (context, index) {
+                                      return Row(
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                        AssetConstants.user2),
+                                                    wSizedBox10,
+                                                    Expanded(
+                                                      child: Text(
+                                                        controller
+                                                                .savedBodyProfileModel
+                                                                .value
+                                                                .data?[index]
+                                                                .name ??
+                                                            "",
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: style500S18
+                                                            .copyWith(
+                                                          letterSpacing: 0.36,
+                                                          color: const Color(
+                                                              0xFFEFEFEF),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                hSizedBox10,
+                                                CommonContainer(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 8),
+                                                  borderRadius: 100,
+                                                  borderGradientColors:
+                                                      AppColors
+                                                          .glassBorderGradient,
+                                                  child: Text(
+                                                    "${controller.savedBodyProfileModel.value.data?[index].height?.toStringAsFixed(0) ?? '0'} ${(controller.savedBodyProfileModel.value.data?[index].unit ?? "").toUpperCase()}  •  ${controller.savedBodyProfileModel.value.data?[index].chest?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].waist?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].hips?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].shoulders?.toStringAsFixed(0) ?? '0'}”"
+                                                        .toUpperCase(),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: style700S12.copyWith(
+                                                        letterSpacing: 0.96,
+                                                        color:
+                                                            Color(0xFFCCCCCC)),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    hSizedBox10,
-                                    CommonContainer(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 8),
-                                      borderRadius: 100,
-                                      borderGradientColors:
-                                          AppColors.glassBorderGradient,
-                                      child: Text(
-                                        "172 cm  •  32” | 24” | 36”"
-                                            .toUpperCase(),
-                                        overflow: TextOverflow.ellipsis,
-                                        style: style700S12.copyWith(
-                                            letterSpacing: 0.96,
-                                            color: Color(0xFFCCCCCC)),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    BlurBottomSheet().show<void>(
-                                      height:
-                                          MediaQuery.sizeOf(context).height *
-                                              0.65,
-                                      context: context,
-                                      borderColor:
-                                          AppColors.whiteColor.withAlpha(
-                                        40,
-                                      ),
-                                      backgroundColor: AppColors.scaffoldColor,
-                                      barrierColor:
-                                          AppColors.blackColor.withAlpha(50),
-                                      blurStrength: 30,
-                                      isCloseButton: true,
-                                      child: ScannedManuallyBottomSheet(),
-                                    );
-                                  },
-                                  icon: SvgPicture.asset(AssetConstants.edit))
-                            ],
-                          );
-                        },
+                                          IconButton(
+                                              onPressed: () {
+                                                BlurBottomSheet().show<void>(
+                                                  height:
+                                                      MediaQuery.sizeOf(context)
+                                                              .height *
+                                                          0.7,
+                                                  context: context,
+                                                  borderColor: AppColors
+                                                      .whiteColor
+                                                      .withAlpha(
+                                                    40,
+                                                  ),
+                                                  backgroundColor:
+                                                      AppColors.scaffoldColor,
+                                                  barrierColor: AppColors
+                                                      .blackColor
+                                                      .withAlpha(50),
+                                                  blurStrength: 30,
+                                                  isCloseButton: true,
+                                                  child: ScannedManuallyBottomSheet(
+                                                      isEdit: true,
+                                                      savedBodyProfile: controller
+                                                          .savedBodyProfileModel
+                                                          .value
+                                                          .data?[index]),
+                                                );
+                                              },
+                                              icon: SvgPicture.asset(
+                                                  AssetConstants.edit))
+                                        ],
+                                      );
+                                    },
+                                  ),
                       ),
                     ),
                     hSizedBox10,

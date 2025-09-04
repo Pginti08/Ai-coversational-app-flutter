@@ -4,28 +4,28 @@ import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
-import 'package:ai_fashion/features/home/models/outfit_card_model.dart';
+import 'package:ai_fashion/features/home/models/product_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-class OutfitCard extends StatefulWidget {
-  const OutfitCard({
+class ProductOutfitCard extends StatefulWidget {
+  const ProductOutfitCard({
     super.key,
-    required this.outfit,
+    required this.product,
     required this.isFirst,
     this.swipeProgress = 0,
   });
 
-  final OutfitCardModel outfit;
+  final Product product;
   final RxBool isFirst;
   final double swipeProgress;
 
   @override
-  State<OutfitCard> createState() => _OutfitCardState();
+  State<ProductOutfitCard> createState() => _ProductOutfitCardState();
 }
 
-class _OutfitCardState extends State<OutfitCard> {
+class _ProductOutfitCardState extends State<ProductOutfitCard> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -42,7 +42,7 @@ class _OutfitCardState extends State<OutfitCard> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(24),
             child: AppNetworkImage(
-              imageUrl: widget.outfit.imageUrl ?? "",
+              imageUrl: widget.product.image ?? "",
               fit: BoxFit.cover,
             ),
           ),
@@ -82,21 +82,21 @@ class _OutfitCardState extends State<OutfitCard> {
           ),
 
         // 🏷️ Title on bottom blur
-        if (widget.isFirst.value && isNotNullOrEmpty(widget.outfit.title))
+        if (widget.isFirst.value && isNotNullOrEmpty(widget.product.title))
           Padding(
             padding: const EdgeInsets.all(4),
             child: CommonContainer(
-              blurStrength: 40,
+              blurStrength: 30,
               enableBlur: true,
               borderRadius: 100,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              borderColor: AppColors.whiteColor.withAlpha(50),
-              backgroundColor: AppColors.whiteColor.withAlpha(20),
+              borderColor: AppColors.whiteColor.withAlpha(20),
+              backgroundColor: AppColors.blackColor.withAlpha(70),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                      widget.outfit.title ?? "",
+                      widget.product.title ?? "",
                       overflow: TextOverflow.ellipsis,
                       style: style500S16.copyWith(letterSpacing: 0.32),
                     ),

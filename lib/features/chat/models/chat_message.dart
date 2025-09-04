@@ -1,9 +1,9 @@
-import 'package:ai_fashion/features/home/models/outfit_card_model.dart';
+import 'package:ai_fashion/features/home/models/product_list_model.dart';
 
 class ChatMessage {
   final String? type; // 'user' or 'ai'
   final String? message;
-  final List<OutfitCardModel>? outfits;
+  final List<Product>? outfits;
   final DateTime? timestamp;
 
   ChatMessage({
@@ -14,8 +14,7 @@ class ChatMessage {
   });
 
   // Factory constructor for user messages
-  factory ChatMessage.user(
-      {required String message, List<OutfitCardModel>? outfits}) {
+  factory ChatMessage.user({required String message, List<Product>? outfits}) {
     return ChatMessage(
       type: 'user',
       message: message,
@@ -26,7 +25,7 @@ class ChatMessage {
 
   // Factory constructor for AI messages
   factory ChatMessage.ai(
-      {required String message, required List<OutfitCardModel> outfits}) {
+      {required String message, required List<Product> outfits}) {
     return ChatMessage(
       type: 'ai',
       message: message,

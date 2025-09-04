@@ -12,7 +12,7 @@ class AiTypingTile extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Container(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.9,
+          maxWidth: MediaQuery.sizeOf(context).width * 0.9,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

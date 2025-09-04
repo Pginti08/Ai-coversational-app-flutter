@@ -2,7 +2,7 @@ import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
-import 'package:ai_fashion/features/home/models/outfit_card_model.dart';
+import 'package:ai_fashion/features/home/models/product_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
@@ -12,7 +12,7 @@ class UserMessageTile extends StatelessWidget {
   const UserMessageTile({required this.message, this.outfits, super.key});
 
   final String message;
-  final List<OutfitCardModel>? outfits;
+  final List<Product>? outfits;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,8 @@ class UserMessageTile extends StatelessWidget {
               children: [
                 CardDeckWidget(
                   maxCards: 4,
-                  items: (outfits ?? <OutfitCardModel>[])
-                      .map((e) => e.imageUrl ?? "")
+                  items: (outfits ?? <Product>[])
+                      .map((e) => e.image ?? "")
                       .toList()
                       .obs,
                   itemBuilder: (imageUrl) => ClipRRect(
@@ -48,7 +48,7 @@ class UserMessageTile extends StatelessWidget {
           ],
           Container(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.8,
+              maxWidth: MediaQuery.sizeOf(context).width * 0.8,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,

@@ -9,7 +9,7 @@ import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
 import 'package:ai_fashion/features/chat/controller/chat_controller.dart';
 import 'package:ai_fashion/features/chat/sub-features/card-deck/controller/card_deck_controller.dart';
-import 'package:ai_fashion/features/home/widgets/outfit_card.dart';
+import 'package:ai_fashion/features/home/widgets/product_outfit_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -56,8 +56,8 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                 isLoop: true,
                 cardBuilder:
                     (context, index, percentThresholdX, percentThresholdY) {
-                  return OutfitCard(
-                    outfit: controller.outfits[index],
+                  return ProductOutfitCard(
+                    product: controller.outfits[index],
                     isFirst: (controller.currentCardIndex.value == index).obs,
                     swipeProgress:
                         double.tryParse(percentThresholdX.toString()) ?? 0,
@@ -223,8 +223,7 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                             ),
                                             child: Obx(() => CardDeckWidget(
                                                   items: controller.remixOutfits
-                                                      .map((e) =>
-                                                          e.imageUrl ?? "")
+                                                      .map((e) => e.image ?? "")
                                                       .toList()
                                                       .obs,
                                                   itemBuilder: (imageUrl) =>

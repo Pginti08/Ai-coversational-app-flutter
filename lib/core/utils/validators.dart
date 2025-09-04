@@ -5,6 +5,15 @@ String? validateCommonField(String? value, String filedName) {
   return null;
 }
 
+String? validateMeasurementField(String? value, String filedName) {
+  if (value == null || value.isEmpty) {
+    return 'Please enter $filedName size';
+  } else if (int.tryParse(value.toString()) == 0) {
+    return 'Please enter valid $filedName size';
+  }
+  return null;
+}
+
 String? validateEmail(String? value) {
   final emailRegex = RegExp(r'^[\w.+-]+@([\w-]+\.)+[\w-]{2,}$');
   if (value == null || value.isEmpty) {
@@ -22,6 +31,18 @@ String? validateMobileNumber(String? value, int minLength, int maxLength) {
 
   if (value.length < minLength || value.length > maxLength) {
     return 'Please enter valid mobile number';
+  }
+
+  return null;
+}
+
+String? validatePincode(String? value, int minLength, int maxLength) {
+  if (value == null || value.isEmpty) {
+    return 'Please enter pincode';
+  }
+
+  if (value.length < minLength || value.length > maxLength) {
+    return 'Please enter valid pincode';
   }
 
   return null;

@@ -1,32 +1,86 @@
-import 'package:ai_fashion/features/home/models/outfit_card_model.dart';
+import 'package:ai_fashion/core/constants/api_constants.dart';
+import 'package:ai_fashion/core/services/network_service.dart';
+import 'package:ai_fashion/core/widgets/app_toast.dart';
+import 'package:ai_fashion/features/home/models/product_list_model.dart';
+import 'package:ai_fashion/features/skipped/models/skip_product_list_model.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SkippedController extends GetxController {
-  final RxList<OutfitCardModel> skippedOutfitCardModels = <OutfitCardModel>[
-    OutfitCardModel(
-      imageUrl:
-          "https://framerusercontent.com/images/ioTL88ZpHCWXDdmKwFbhBBMJfA.png",
-      title: "The Midnight Monochrome Street Set",
-    ),
-    OutfitCardModel(
-      imageUrl:
-          "https://framerusercontent.com/images/EDnff5CDaVTXO7iJhG2jmUWgJos.png",
-      title: "The Sandstone Explorer Co-Ord",
-    ),
-    OutfitCardModel(
-      imageUrl:
-          "https://framerusercontent.com/images/497wrI6QPtcqc9q1y7a7kdGc.png",
-      title: "The Urban Ash Layered Look",
-    ),
-    OutfitCardModel(
-      imageUrl:
-          "https://framerusercontent.com/images/uwRHxl9xBPMQcwC7g6f5k6z5o.png",
-      title: "The Crimson Bolt Street Set",
-    ),
-    OutfitCardModel(
-      imageUrl:
-          "https://framerusercontent.com/images/0cz3vf6fEsEb13ulylzz3lTR4.png",
-      title: "The Ivory Mocha Luxe Dress",
-    ),
-  ].obs;
+  final RxBool isLoading = false.obs;
+  RxInt page = 1.obs;
+  RxBool paginationLoading = false.obs;
+  RxBool nextPageStop = true.obs;
+
+  final RxList<Product> skipProductsList = <Product>[].obs;
+
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void onInit() {
+    manageScrollController();
+    getSkipProductListApi();
+    super.onInit();
+  }
+
+  void manageScrollController() async {
+    scrollController.addListener(
+      () {
+        if (scrollController.position.maxScrollExtent ==
+            scrollController.position.pixels) {
+          if (nextPageStop.isTrue && paginationLoading.isFalse) {
+            if (scrollController.hasClients) {
+              scrollController.animateTo(
+                scrollController.position.maxScrollExtent + 100,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              );
+            }
+            paginationLoading.value = true;
+            getSkipProductListApi(isInitial: false);
+          }
+        }
+      },
+    );
+  }
+
+  getSkipProductListApi({bool isInitial = true}) async {
+    try {
+      if (isInitial) {
+        skipProductsList.value = [];
+        page.value = 1;
+        nextPageStop.value = true;
+        isLoading.value = true;
+      }
+      if (nextPageStop.isTrue) {
+        var result = await NetworkClient.instance.callApi(
+          "${ApiConstants.getSkipProducts}?page=${page.value}&limit=20",
+          baseUrlType: BaseUrl.base,
+          MethodType.get,
+        );
+        if (result.isSuccess) {
+          isLoading.value = false;
+          paginationLoading.value = false;
+
+          var notificationModel =
+              SkipProductListModel.fromJson(result.data?.data);
+          skipProductsList.value += notificationModel.data?.items ?? [];
+          page.value = page.value + 1;
+          if (skipProductsList.isNotEmpty) {
+            if (skipProductsList.length.toString() ==
+                notificationModel.data?.total?.toString()) {
+              nextPageStop.value = false;
+            }
+          }
+        } else {
+          isLoading.value = false;
+          paginationLoading.value = false;
+          toast(result.error.toString());
+        }
+      }
+    } catch (e) {
+      isLoading.value = false;
+      paginationLoading.value = false;
+    }
+  }
 }

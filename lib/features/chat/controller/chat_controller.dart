@@ -1,5 +1,5 @@
 import 'package:ai_fashion/features/chat/models/chat_message.dart';
-import 'package:ai_fashion/features/home/models/outfit_card_model.dart';
+import 'package:ai_fashion/features/home/models/product_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,7 +14,7 @@ class ChatController extends GetxController {
 
   // Loading state for typing indicator
   final RxBool isLoading = false.obs;
-  RxList<OutfitCardModel> userSelectedRemixOutfits = <OutfitCardModel>[].obs;
+  RxList<Product> userSelectedRemixOutfits = <Product>[].obs;
 
   @override
   void onInit() {
@@ -26,7 +26,7 @@ class ChatController extends GetxController {
   }
 
   // Send message and get dummy response
-  void sendMessage({required String message, List<OutfitCardModel>? outfits}) {
+  void sendMessage({required String message, List<Product>? outfits}) {
     FocusManager.instance.primaryFocus?.unfocus();
     if ((outfits ?? []).isEmpty) {
       // Add user message
@@ -49,28 +49,28 @@ class ChatController extends GetxController {
             message:
                 "Here are some curated dressed for you. Tap on the deck to view the dress.",
             outfits: [
-              OutfitCardModel(
-                imageUrl:
+              Product(
+                image:
                     "https://framerusercontent.com/images/ioTL88ZpHCWXDdmKwFbhBBMJfA.png",
                 title: "The Midnight Monochrome Street Set",
               ),
-              OutfitCardModel(
-                imageUrl:
+              Product(
+                image:
                     "https://framerusercontent.com/images/EDnff5CDaVTXO7iJhG2jmUWgJos.png",
                 title: "The Sandstone Explorer Co-Ord",
               ),
-              OutfitCardModel(
-                imageUrl:
+              Product(
+                image:
                     "https://framerusercontent.com/images/497wrI6QPtcqc9q1y7a7kdGc.png",
                 title: "The Urban Ash Layered Look",
               ),
-              OutfitCardModel(
-                imageUrl:
+              Product(
+                image:
                     "https://framerusercontent.com/images/uwRHxl9xBPMQcwC7g6f5k6z5o.png",
                 title: "The Crimson Bolt Street Set",
               ),
-              OutfitCardModel(
-                imageUrl:
+              Product(
+                image:
                     "https://framerusercontent.com/images/0cz3vf6fEsEb13ulylzz3lTR4.png",
                 title: "The Ivory Mocha Luxe Dress",
               ),
@@ -104,8 +104,8 @@ class ChatController extends GetxController {
             message:
                 "Here is your curated dress. Tap on the dress to view the details and order it for you.",
             outfits: [
-              OutfitCardModel(
-                imageUrl:
+              Product(
+                image:
                     "https://framerusercontent.com/images/497wrI6QPtcqc9q1y7a7kdGc.png",
                 title: "The Urban Ash Layered Look",
               ),

@@ -24,6 +24,7 @@ class ApiConstants {
   static const String getLikedProducts = '/product/likes';
   static const String getSkipProducts = '/product/skips';
   static const String addresses = '/user/addresses';
+  static const String bodyProfiles = '/user/body-profiles';
 
   // Headers
   static const Map<String, String> headers = {

@@ -46,7 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final drawerWidth = screenWidth * 0.85;
 
     return Obx(() {
@@ -208,7 +208,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   horizontal: 8.0,
                   vertical: Platform.isAndroid
                       ? 8
-                      : MediaQuery.of(context).viewInsets.bottom > 0
+                      : MediaQuery.viewInsetsOf(context).bottom > 0
                           ? 8
                           : 0),
               child: SafeArea(
@@ -329,9 +329,12 @@ class _ChatScreenState extends State<ChatScreen> {
                         border: GradientBoxBorder(
                           width: 1,
                           gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: AppColors.glassBorderGradient,
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors:
+                                controller.userSelectedRemixOutfits.isNotEmpty
+                                    ? AppColors.colorGradient
+                                    : AppColors.glassBorderGradient,
                           ),
                         ),
                         borderRadius: BorderRadius.circular(24),
@@ -339,59 +342,66 @@ class _ChatScreenState extends State<ChatScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (controller.userSelectedRemixOutfits.isNotEmpty)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 8.0)
-                                              .copyWith(right: 10),
-                                      child: CardDeckWidget(
-                                        maxCards: 4,
-                                        items: controller
-                                            .userSelectedRemixOutfits
-                                            .map((e) => e.imageUrl ?? "")
-                                            .toList()
-                                            .obs,
-                                        itemBuilder: (imageUrl) => ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                          child: AppNetworkImage(
-                                            imageUrl: imageUrl,
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                            fit: BoxFit.cover,
-                                            width: 50,
-                                            height: 50,
+                          Obx(
+                            () => (controller
+                                    .userSelectedRemixOutfits.isNotEmpty)
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                    vertical: 8.0)
+                                                .copyWith(right: 10),
+                                            child: CardDeckWidget(
+                                              maxCards: 4,
+                                              items: controller
+                                                  .userSelectedRemixOutfits
+                                                  .map((e) => e.image ?? "")
+                                                  .toList()
+                                                  .obs,
+                                              itemBuilder: (imageUrl) =>
+                                                  ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                                child: AppNetworkImage(
+                                                  imageUrl: imageUrl,
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                  fit: BoxFit.cover,
+                                                  width: 50,
+                                                  height: 50,
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          Positioned(
+                                            right: 0,
+                                            top: 0,
+                                            child: CommonContainer(
+                                              isCircle: true,
+                                              width: 24,
+                                              height: 24,
+                                              backgroundColor:
+                                                  Color(0xFF797877),
+                                              onTap: () {
+                                                controller
+                                                    .userSelectedRemixOutfits
+                                                    .clear();
+                                              },
+                                              child: SvgPicture.asset(
+                                                AssetConstants.closeCircleIcon,
+                                              ),
+                                            ),
+                                          )
+                                        ],
                                       ),
-                                    ),
-                                    Positioned(
-                                      right: 0,
-                                      top: 0,
-                                      child: CommonContainer(
-                                        isCircle: true,
-                                        width: 24,
-                                        height: 24,
-                                        backgroundColor: Color(0xFF797877),
-                                        onTap: () {
-                                          controller.userSelectedRemixOutfits
-                                              .clear();
-                                        },
-                                        child: SvgPicture.asset(
-                                          AssetConstants.closeCircleIcon,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
+                          ),
                           AppTextField(
                             focusNode: controller.typeFocusNode,
                             controller: _textController,

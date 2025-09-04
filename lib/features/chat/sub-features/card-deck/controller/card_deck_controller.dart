@@ -1,5 +1,6 @@
 import 'package:ai_fashion/core/widgets/app_toast.dart';
 import 'package:ai_fashion/features/home/models/outfit_card_model.dart';
+import 'package:ai_fashion/features/home/models/product_list_model.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:get/get.dart';
 
@@ -7,8 +8,8 @@ class CardDeckController extends GetxController {
   RxInt currentCardIndex = 0.obs;
   final CardSwiperController cardSwiperController = CardSwiperController();
 
-  List<OutfitCardModel> outfits = [];
-  final RxList<OutfitCardModel> remixOutfits = <OutfitCardModel>[].obs;
+  List<Product> outfits = [];
+  final RxList<Product> remixOutfits = <Product>[].obs;
 
   @override
   void onInit() {
@@ -24,8 +25,7 @@ class CardDeckController extends GetxController {
       final currentOutfit = outfits[currentCardIndex.value];
 
       // Avoid duplicates
-      if (!remixOutfits
-          .any((outfit) => outfit.imageUrl == currentOutfit.imageUrl)) {
+      if (!remixOutfits.any((outfit) => outfit.image == currentOutfit.image)) {
         remixOutfits.add(currentOutfit);
       } else {
         toast("Already in Remix");

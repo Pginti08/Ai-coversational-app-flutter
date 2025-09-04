@@ -5,7 +5,7 @@ import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
-import 'package:ai_fashion/features/home/models/outfit_card_model.dart';
+import 'package:ai_fashion/features/home/models/product_list_model.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +22,7 @@ class AiMessageTile extends StatefulWidget {
   });
 
   final String message;
-  final List<OutfitCardModel>? outfits;
+  final List<Product>? outfits;
 
   @override
   State<AiMessageTile> createState() => _AiMessageTileState();
@@ -35,7 +35,7 @@ class _AiMessageTileState extends State<AiMessageTile> {
       alignment: Alignment.centerLeft,
       child: Container(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.9,
+          maxWidth: MediaQuery.sizeOf(context).width * 0.9,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +50,7 @@ class _AiMessageTileState extends State<AiMessageTile> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: AppNetworkImage(
-                  imageUrl: widget.outfits?.first.imageUrl ?? "",
+                  imageUrl: widget.outfits?.first.image ?? "",
                   borderRadius: BorderRadius.circular(8),
                   fit: BoxFit.cover,
                   width: 210,
@@ -110,7 +110,7 @@ class _AiMessageTileState extends State<AiMessageTile> {
                     ),
                     child: CardDeckWidget<String>(
                       items: widget.outfits!
-                          .map((e) => e.imageUrl ?? '')
+                          .map((e) => e.image ?? '')
                           .toList()
                           .obs,
                       itemBuilder: (imageUrl) => ClipRRect(

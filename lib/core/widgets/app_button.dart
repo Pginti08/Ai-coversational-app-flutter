@@ -20,6 +20,7 @@ class AppButton extends StatefulWidget {
     this.backgroundColor,
     this.gradientColors,
     this.textColor,
+    this.loaderColor,
     this.borderColor,
     this.borderRadius = 100.0,
     this.fontSize = 16.0,
@@ -39,6 +40,7 @@ class AppButton extends StatefulWidget {
   final List<Color>? gradientColors;
   final List<Color>? gradientBorderColors;
   final Color? textColor;
+  final Color? loaderColor;
   final Color? borderColor;
   final double borderRadius;
   final double fontSize;
@@ -152,7 +154,7 @@ class _AppButtonState extends State<AppButton>
                         child: CircularProgressIndicator(
                           strokeWidth: 3,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            widget.borderColor ?? Colors.black,
+                            widget.loaderColor ?? Colors.black,
                           ),
                         ),
                       )

@@ -403,81 +403,90 @@ class _HomeScreenState extends State<HomeScreen>
                         //                   },
                         //                 ),
                         //     )))
+                        child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 12)
+                                  .copyWith(bottom: 150),
+                          child: controller.outfitCardModels.length == 0 ||
+                                  ((controller.currentCardIndex.value) >=
+                                      controller.outfitCardModels.length)
+                              ? Center(
+                                  child: Text(
+                                    "No More Outfits Available",
+                                    style: style600S20.copyWith(
+                                        letterSpacing: 0.42,
+                                        color: AppColors.whiteTextColor,
+                                        height: 1.1),
+                                  ),
+                                )
+                              : CardSwiper(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  numberOfCardsDisplayed: 4,
+                                  scale: 0.97,
+                                  backCardOffset: Offset(0, 25),
+                                  allowedSwipeDirection:
+                                      AllowedSwipeDirection.only(
+                                          left: true, right: true),
+                                  cardsCount:
+                                      controller.outfitCardModels.length,
+                                  isLoop: false,
+                                  cardBuilder: (context, index,
+                                      percentThresholdX, percentThresholdY) {
+                                    return Obx(() => GestureDetector(
+                                          onTap: () {
+                                            Get.toNamed(Routes.outfitDetail);
+                                          },
+                                          child: OutfitCard(
+                                            outfit: controller
+                                                .outfitCardModels[index],
+                                            isFirst: (controller
+                                                        .currentCardIndex
+                                                        .value ==
+                                                    index)
+                                                .obs,
+                                            swipeProgress: double.tryParse(
+                                                    percentThresholdX
+                                                        .toString()) ??
+                                                0,
+                                          ),
+                                        ));
+                                  },
+                                  initialIndex:
+                                      controller.currentCardIndex.value,
+                                  onSwipe:
+                                      (previousIndex, currentIndex, direction) {
+                                    final outfitList =
+                                        controller.outfitCardModels;
 
-                        child: controller.outfitCardModels.length == 0 ||
-                                ((controller.currentCardIndex.value) >=
-                                    controller.outfitCardModels.length)
-                            ? Center(
-                                child: Text(
-                                  "No More Outfits Available",
-                                  style: style600S20.copyWith(
-                                      letterSpacing: 0.42,
-                                      color: AppColors.whiteTextColor,
-                                      height: 1.1),
-                                ),
-                              )
-                            : CardSwiper(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                numberOfCardsDisplayed: 4,
-                                scale: 0.97,
-                                backCardOffset: Offset(0, 25),
-                                allowedSwipeDirection:
-                                    AllowedSwipeDirection.only(
-                                        left: true, right: true),
-                                cardsCount: controller.outfitCardModels.length,
-                                isLoop: false,
-                                cardBuilder: (context, index, percentThresholdX,
-                                    percentThresholdY) {
-                                  return Obx(() => GestureDetector(
-                                        onTap: () {
-                                          Get.toNamed(Routes.outfitDetail);
-                                        },
-                                        child: OutfitCard(
-                                          outfit: controller
-                                              .outfitCardModels[index],
-                                          isFirst: (controller
-                                                      .currentCardIndex.value ==
-                                                  index)
-                                              .obs,
-                                          swipeProgress: double.tryParse(
-                                                  percentThresholdX
-                                                      .toString()) ??
-                                              0,
-                                        ),
-                                      ));
-                                },
-                                initialIndex: controller.currentCardIndex.value,
-                                onSwipe:
-                                    (previousIndex, currentIndex, direction) {
-                                  final outfitList =
-                                      controller.outfitCardModels;
+                                    if (previousIndex < 0 ||
+                                        previousIndex >= outfitList.length) {
+                                      return true;
+                                    }
 
-                                  if (previousIndex < 0 ||
-                                      previousIndex >= outfitList.length) {
+                                    final swipedItem =
+                                        outfitList[previousIndex];
+
+                                    if (direction ==
+                                        CardSwiperDirection.right) {
+                                      controller.favoriteList.add(swipedItem);
+                                    } else if (direction ==
+                                        CardSwiperDirection.left) {
+                                      controller.dislikeList.add(swipedItem);
+                                    }
+
+                                    // Safely update currentCardIndex
+                                    if (currentIndex != null) {
+                                      controller.currentCardIndex.value =
+                                          currentIndex;
+                                    } else if (currentIndex == null &&
+                                        controller.currentCardIndex.value ==
+                                            outfitList.length - 1) {
+                                      controller.currentCardIndex.value++;
+                                    }
                                     return true;
-                                  }
-
-                                  final swipedItem = outfitList[previousIndex];
-
-                                  if (direction == CardSwiperDirection.right) {
-                                    controller.favoriteList.add(swipedItem);
-                                  } else if (direction ==
-                                      CardSwiperDirection.left) {
-                                    controller.dislikeList.add(swipedItem);
-                                  }
-
-                                  // Safely update currentCardIndex
-                                  if (currentIndex != null) {
-                                    controller.currentCardIndex.value =
-                                        currentIndex;
-                                  } else if (currentIndex == null &&
-                                      controller.currentCardIndex.value ==
-                                          outfitList.length - 1) {
-                                    controller.currentCardIndex.value++;
-                                  }
-                                  return true;
-                                },
-                              ),
+                                  },
+                                ),
+                        ),
                       ),
                     ],
                   ),

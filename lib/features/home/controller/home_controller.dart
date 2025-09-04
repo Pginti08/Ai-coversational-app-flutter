@@ -60,12 +60,12 @@ class HomeController extends GetxController {
 
   // RxInt remainingProductsInQueue = 0.obs;
 
-  // @override
-  // void onInit() {
-  //   getUserDetail();
-  //   getSuggestedProducts();
-  //   super.onInit();
-  // }
+  @override
+  void onInit() {
+    getUserDetail();
+    // getSuggestedProducts();
+    super.onInit();
+  }
 
   // void toggleDrawer() {
   //   isDrawerOpen.value = !isDrawerOpen.value;

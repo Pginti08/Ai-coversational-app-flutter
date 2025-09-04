@@ -23,4 +23,5 @@ abstract class Routes {
   static const String checkout = '/checkout';
   static const String savedAddress = '/saved-address';
   static const String bodyProfile = '/body-profile';
+  static const String editProfile = '/edit-profile';
 }

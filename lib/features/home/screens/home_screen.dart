@@ -10,6 +10,7 @@ import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/home/controller/home_controller.dart';
 import 'package:ai_fashion/features/home/screens/start_creating_drag_bottom.dart';
 import 'package:ai_fashion/features/home/screens/user_menu.dart';
+import 'package:ai_fashion/features/home/widgets/outfit_card.dart';
 import 'package:ai_fashion/features/home/widgets/top_progress_bar.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';

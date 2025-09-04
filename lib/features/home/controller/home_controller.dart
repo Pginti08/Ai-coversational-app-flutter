@@ -1,5 +1,9 @@
+import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/services/local_storage_service.dart';
+import 'package:ai_fashion/core/services/network_service.dart';
+import 'package:ai_fashion/core/widgets/app_toast.dart';
 import 'package:ai_fashion/features/home/models/outfit_card_model.dart';
+import 'package:ai_fashion/features/home/models/user_detail_model.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
@@ -67,28 +71,28 @@ class HomeController extends GetxController {
   //   isDrawerOpen.value = !isDrawerOpen.value;
   // }
 
-  // Future<void> getUserDetail() async {
-  //   try {
-  //     var result = await NetworkClient.instance.callApi(
-  //       "${ApiConstants.getUserDetail}",
-  //       MethodType.get,
-  //       baseUrlType: BaseUrl.base,
-  //     );
+  Future<void> getUserDetail() async {
+    try {
+      var result = await NetworkClient.instance.callApi(
+        "${ApiConstants.getUserDetail}",
+        MethodType.get,
+        baseUrlType: BaseUrl.base,
+      );
 
-  //     if (result.isSuccess) {
-  //       LocalStorageService.instance
-  //           .setUserInfo(UserDetailModel.fromJson(result.data?.data));
-  //       userName.value =
-  //           LocalStorageService.instance.userInfo.value.data?.name ?? "";
-  //       userImage.value =
-  //           LocalStorageService.instance.userInfo.value.data?.image ?? "";
-  //     } else {
-  //       toast(result.error.toString());
-  //     }
-  //   } catch (e) {
-  //     toast(e.toString());
-  //   } finally {}
-  // }
+      if (result.isSuccess) {
+        LocalStorageService.instance
+            .setUserInfo(UserDetailModel.fromJson(result.data?.data));
+        userName.value =
+            LocalStorageService.instance.userInfo.value.data?.name ?? "";
+        userImage.value =
+            LocalStorageService.instance.userInfo.value.data?.image ?? "";
+      } else {
+        toast(result.error.toString());
+      }
+    } catch (e) {
+      toast(e.toString());
+    } finally {}
+  }
 
   // Future<void> getSuggestedProducts({bool isLoadMore = false}) async {
   //   // Guard against simultaneous fetches.

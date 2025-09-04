@@ -4,6 +4,7 @@ import 'package:ai_fashion/features/cart/screens/checkout_screen.dart';
 import 'package:ai_fashion/features/chat/screens/chat_screen.dart';
 import 'package:ai_fashion/features/chat/sub-features/brand_search/brand_search_screen.dart';
 import 'package:ai_fashion/features/chat/sub-features/card-deck/card_deck_screen.dart';
+import 'package:ai_fashion/features/edit-profile/screens/edit_profile_screen.dart';
 import 'package:ai_fashion/features/home/screens/home_screen.dart';
 import 'package:ai_fashion/features/liked/screens/liked_screen.dart';
 import 'package:ai_fashion/features/login/screens/login_screen.dart';
@@ -165,6 +166,13 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.bodyProfile,
       page: () => BodyProfileScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.editProfile,
+      page: () => EditProfileScreen(),
     ),
   ];
 }

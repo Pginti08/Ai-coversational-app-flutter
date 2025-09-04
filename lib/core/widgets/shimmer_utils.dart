@@ -9,9 +9,8 @@ Widget shimmer({
 }) {
   if (isShowSimmer == true) {
     return Shimmer.fromColors(
-      baseColor: color?.withOpacity(0.8) ?? AppColors.greyColor,
-      highlightColor:
-          color?.withOpacity(0.2) ?? AppColors.greyColor.withOpacity(0.2),
+      baseColor: color?.withAlpha(200) ?? const Color(0xFF151515),
+      highlightColor: color?.withAlpha(50) ?? const Color(0xFF262626),
       child: child,
     );
   } else {

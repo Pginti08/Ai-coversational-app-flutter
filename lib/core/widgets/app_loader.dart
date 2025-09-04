@@ -1,14 +1,15 @@
 import 'dart:ui';
 
+import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class GlobalLoader extends StatelessWidget {
-  const GlobalLoader({super.key});
+class AppLoader extends StatelessWidget {
+  const AppLoader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.sizeOf(context).width;
+    final height = MediaQuery.sizeOf(context).height;
 
     return RepaintBoundary(
       child: AbsorbPointer(
@@ -17,10 +18,11 @@ class GlobalLoader extends StatelessWidget {
           canPop: false,
           child: RepaintBoundary(
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: SizedBox(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
                 height: height,
                 width: width,
+                color: AppColors.blackColor.withAlpha(10),
                 child: Center(
                   child: Container(
                     padding: EdgeInsets.all(10),
@@ -37,7 +39,7 @@ class GlobalLoader extends StatelessWidget {
 }
 
 class RotatingLoader extends StatelessWidget {
-  const RotatingLoader({super.key, this.size = 100});
+  const RotatingLoader({super.key, this.size = 40});
   final double size;
 
   @override
@@ -46,7 +48,7 @@ class RotatingLoader extends StatelessWidget {
       width: size,
       height: size,
       child: CircularProgressIndicator(
-        strokeWidth: 2,
+        color: AppColors.secondaryColor,
       ),
     );
   }

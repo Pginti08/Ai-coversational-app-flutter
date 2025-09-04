@@ -22,7 +22,7 @@ class AppButton extends StatefulWidget {
     this.textColor,
     this.borderColor,
     this.borderRadius = 100.0,
-    this.fontSize = 14.0,
+    this.fontSize = 16.0,
     this.padding,
   });
 
@@ -152,7 +152,7 @@ class _AppButtonState extends State<AppButton>
                         child: CircularProgressIndicator(
                           strokeWidth: 3,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            widget.borderColor ?? Colors.white,
+                            widget.borderColor ?? Colors.black,
                           ),
                         ),
                       )

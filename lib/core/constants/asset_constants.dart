@@ -12,6 +12,9 @@ class AssetConstants {
   static const gradientBottom3 = '${images}gradient_bottom3.png';
   static const welcome1 = '${images}welcome1.png';
   static const welcome2 = '${images}welcome2.png';
+  static const frontBody = '${images}front_body.png';
+  static const sideBody = '${images}side_body.png';
+  static const backBody = '${images}back_body.png';
 
   ///__________________________________ icons __________________________________///
 
@@ -52,6 +55,9 @@ class AssetConstants {
   static const invoice = '${icons}invoice.svg';
   static const scissor = '${icons}scissor.svg';
   static const boxTick = '${icons}box-tick.svg';
+  static const warning = '${icons}warning.svg';
+  static const notification = '${icons}notification.svg';
+  static const tickCircleGreen = '${icons}tick-circle-green.svg';
 
   ///__________________________________ gif __________________________________///
 

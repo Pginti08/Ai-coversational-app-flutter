@@ -40,7 +40,7 @@ class _CustomScaffoldState extends State<CustomScaffold> {
   @override
   Widget build(BuildContext context) {
     // Get the status bar height
-    final statusBarHeight = MediaQuery.of(context).padding.top;
+    final statusBarHeight = MediaQuery.paddingOf(context).top;
 
     // Get AppBar height from the widget itself
     final appBarHeight = (widget.appBar?.preferredSize.height ?? 0) - 10;
@@ -73,7 +73,7 @@ class _CustomScaffoldState extends State<CustomScaffold> {
                       widget.isEffect2
                           ? AssetConstants.gradientTop2
                           : AssetConstants.gradientTop,
-                      width: MediaQuery.of(context).size.width,
+                      width: MediaQuery.sizeOf(context).width,
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -90,7 +90,7 @@ class _CustomScaffoldState extends State<CustomScaffold> {
                           : widget.isEffect3
                               ? AssetConstants.gradientBottom3
                               : AssetConstants.gradientBottom,
-                      width: MediaQuery.of(context).size.width,
+                      width: MediaQuery.sizeOf(context).width,
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -144,7 +144,7 @@ class _CustomScaffoldState extends State<CustomScaffold> {
   double _getBottomNavHeight() {
     // For BottomNavigationBar, the default height is kBottomNavigationBarHeight (56.0)
     // But we'll add bottom padding for safe area
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
     return kBottomNavigationBarHeight + bottomPadding;
   }
 }

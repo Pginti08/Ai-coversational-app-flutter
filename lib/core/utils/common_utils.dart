@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 bool isNullOrEmpty(dynamic val) {
   final value = val.toString();
   return val == null ||
@@ -70,76 +72,15 @@ String maskEmail(String email) {
   return '$masked@$domain';
 }
 
-DateTime parseUtcToLocal(String utcString) {
-  // Add 'Z' to mark it as UTC
-  final utcWithZ = '${utcString}Z';
-
-  // Parse as UTC DateTime
-  final utcDateTime = DateTime.parse(utcWithZ);
-
-  // Convert to local
-  return utcDateTime.toLocal();
-}
-
-final Map<String, Map<String, String>> allyroidRegisterQuestion = {
-  "1": {
-    "title": "Cognition",
-    "question": "Will your Allyroid think logically or creatively?",
-    "option1": "🧠 Rational",
-    "option2": "🎨 Intuitive"
-  },
-  "2": {
-    "title": "Energy/Focus",
-    "question": "Will your Allyroid thrive outwardly or inwardly?",
-    "option1": "🌟 Extraverted",
-    "option2": "🧘 Introverted"
-  },
-  "3": {
-    "title": "Interaction Style",
-    "question": "Will your Allyroid lead or collaborate?",
-    "option1": "🎯 Directive",
-    "option2": "🤝 Collaborative"
-  },
-  "4": {
-    "title": "Task Approach",
-    "question": "Will your Allyroid prefer structure or adaptability?",
-    "option1": "📋 Structured",
-    "option2": "🌊 Flexible"
-  },
-  "5": {
-    "title": "Tone",
-    "question": "Will your Allyroid sound formal or casual?",
-    "option1": "🎩 Formal",
-    "option2": "👕 Casual"
-  },
-  "6": {
-    "title": "Worldview",
-    "question": "Will your Allyroid see possibilities or practicalities?",
-    "option1": "🌈 Optimistic",
-    "option2": "🌱 Realistic"
-  },
-  "7": {
-    "title": "Emotional Sensitivity",
-    "question": "Will your Allyroid stay neutral or connect emotionally?",
-    "option1": "🎛️ Neutral",
-    "option2": "❤️ Empathetic"
-  },
-  "8": {
-    "title": "Decision-Making",
-    "question": "Will your Allyroid act fast or think it through?",
-    "option1": "⚡ Quick",
-    "option2": "🕰️ Deliberative"
-  },
-  "9": {
-    "title": "Scope",
-    "question": "Will your Allyroid focus on details or the big picture?",
-    "option1": "🔍 Detail-Oriented",
-    "option2": "🌐 Big-Picture"
-  },
-  "10": {
-    "title": "Communication",
-    "question": "Will your Allyroid inform or motivate?",
-    "option1": "🎩 Informative",
-    "option2": "🔥 Persuasive"
+String indianRupeeAmountConversion(double? amount, {int? decimalDigits}) {
+  try {
+    String formattedAmount = NumberFormat.currency(
+      locale: 'en_IN',
+      symbol: '₹',
+      decimalDigits: decimalDigits ?? 2,
+    ).format(amount ?? 0.0);
+    return formattedAmount;
+  } catch (e) {
+    return "Invalid";
   }
-};
+}

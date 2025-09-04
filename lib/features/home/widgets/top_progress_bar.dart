@@ -62,7 +62,7 @@ class _TopProgressBarState extends State<TopProgressBar>
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Now MediaQuery is available
-    _containerWidth = MediaQuery.of(context).size.width;
+    _containerWidth = MediaQuery.sizeOf(context).width;
 
     // Update animation with correct width calculation
     final targetWidth = _calculateWidth(_currentValue);
@@ -129,7 +129,7 @@ class _TopProgressBarState extends State<TopProgressBar>
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
         child: Container(
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery.sizeOf(context).width,
           height: widget.height,
           decoration: BoxDecoration(
             color:

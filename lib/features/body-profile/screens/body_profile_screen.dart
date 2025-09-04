@@ -7,7 +7,8 @@ import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/body-profile/controller/body_profile_controller.dart';
-import 'package:ai_fashion/features/saved-address/screens/add_address_bottom_sheet.dart';
+import 'package:ai_fashion/features/body-profile/screens/body_profile_type_bottom_sheet.dart';
+import 'package:ai_fashion/features/body-profile/screens/scanned_manually_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,7 @@ class BodyProfileScreen extends StatelessWidget {
         child: Column(
           children: [
             Stack(
+              clipBehavior: Clip.none,
               alignment: Alignment.center,
               children: [
                 Row(
@@ -58,18 +60,18 @@ class BodyProfileScreen extends StatelessWidget {
                       isOutlined: true,
                       isGradientBorder: true,
                       onTap: () {
-                        // BlurBottomSheet().show<void>(
-                        //   height: MediaQuery.sizeOf(context).height * 0.9,
-                        //   context: context,
-                        //   borderColor: AppColors.whiteColor.withAlpha(
-                        //     40,
-                        //   ),
-                        //   backgroundColor: AppColors.scaffoldColor,
-                        //   barrierColor: AppColors.blackColor.withAlpha(100),
-                        //   blurStrength: 30,
-                        //   isCloseButton: true,
-                        //   child: AddAddressBottomSheet(),
-                        // );
+                        BlurBottomSheet().show<void>(
+                          height: MediaQuery.sizeOf(context).height * 0.2,
+                          context: context,
+                          borderColor: AppColors.whiteColor.withAlpha(
+                            40,
+                          ),
+                          backgroundColor: AppColors.scaffoldColor,
+                          barrierColor: AppColors.blackColor.withAlpha(50),
+                          blurStrength: 30,
+                          isCloseButton: true,
+                          child: BodyProfileTypeBottomSheet(),
+                        );
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -146,7 +148,7 @@ class BodyProfileScreen extends StatelessWidget {
                                     BlurBottomSheet().show<void>(
                                       height:
                                           MediaQuery.sizeOf(context).height *
-                                              0.9,
+                                              0.65,
                                       context: context,
                                       borderColor:
                                           AppColors.whiteColor.withAlpha(
@@ -154,10 +156,10 @@ class BodyProfileScreen extends StatelessWidget {
                                       ),
                                       backgroundColor: AppColors.scaffoldColor,
                                       barrierColor:
-                                          AppColors.blackColor.withAlpha(100),
+                                          AppColors.blackColor.withAlpha(50),
                                       blurStrength: 30,
                                       isCloseButton: true,
-                                      child: AddAddressBottomSheet(),
+                                      child: ScannedManuallyBottomSheet(),
                                     );
                                   },
                                   icon: SvgPicture.asset(AssetConstants.edit))

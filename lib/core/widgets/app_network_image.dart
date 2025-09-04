@@ -122,7 +122,7 @@ class AppNetworkImage extends StatelessWidget {
                         Center(
                           child: Icon(
                             Icons.error,
-                            color: AppColors.greyTextColor,
+                            color: AppColors.hintTextColor,
                           ),
                         ),
                   ),
@@ -142,7 +142,7 @@ class AppNetworkImage extends StatelessWidget {
                     child: Center(
                       child: Icon(
                         Icons.error,
-                        color: AppColors.greyTextColor,
+                        color: AppColors.hintTextColor,
                       ),
                     ),
                   ),

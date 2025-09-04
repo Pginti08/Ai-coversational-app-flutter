@@ -9,6 +9,7 @@ import 'package:ai_fashion/features/signup/controller/signup_controller.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -53,18 +54,29 @@ class _SignupScreenState extends State<SignupScreen> {
                 hSizedBox30,
                 AppTextField(
                   hint: "Name",
+                  controller: controller.nameController,
                   isGradientBorder: true,
                   fillColor: AppColors.whiteColor.withAlpha(8),
                   hintStyle: style400S16.copyWith(color: Color(0xFF444444)),
+                  errorText: controller.nameError.value.isEmpty
+                      ? null
+                      : controller.nameError.value,
+                  onChanged: (value) {
+                    if (controller.nameError.value.isNotEmpty) {
+                      controller.nameError.value = '';
+                    }
+                  },
                 ),
                 hSizedBox16,
                 AppTextField(
                   hint: "Mobile number",
+                  controller: controller.mobileNoController,
                   isGradientBorder: true,
                   fillColor: AppColors.whiteColor.withAlpha(8),
                   hintStyle: style400S16.copyWith(color: Color(0xFF444444)),
                   maxLength: 10,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   prefixIcon: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -78,6 +90,14 @@ class _SignupScreenState extends State<SignupScreen> {
                           )),
                     ],
                   ),
+                  errorText: controller.mobileError.value.isEmpty
+                      ? null
+                      : controller.mobileError.value,
+                  onChanged: (value) {
+                    if (controller.mobileError.value.isNotEmpty) {
+                      controller.mobileError.value = '';
+                    }
+                  },
                 ),
                 Text(
                   "Lorem Ipsum is simply dummy text of the printing nd typesetting industry. Lorem Ipsum has been the industry's",
@@ -114,12 +134,13 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
                 Spacer(),
-                AppButton(
-                  onTap: () {
-                    Get.toNamed(Routes.otpVerify);
-                  },
-                  text: "Continue",
-                ),
+                Obx(() => AppButton(
+                      onTap: () {
+                        controller.validateAndSignUp();
+                      },
+                      text: "Continue",
+                      isLoading: controller.isLoading.value,
+                    )),
                 hSizedBox24,
                 Text(
                   "By signing in, you agree to our Terms & Privacy Policy.",

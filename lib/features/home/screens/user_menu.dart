@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:ai_fashion/core/constants/asset_constants.dart';
+import 'package:ai_fashion/core/services/local_storage_service.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
@@ -13,7 +14,7 @@ import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 
 class UserMenu extends StatefulWidget {
   const UserMenu({required this.controller, super.key});
@@ -43,32 +44,37 @@ class _UserMenuState extends State<UserMenu> {
                   enableBlur: true,
                   child: Row(
                     children: [
-                      AppNetworkImage(
-                        width: 40,
-                        height: 40,
-                        shape: BoxShape.circle,
-                        imageUrl:
-                            "https://images.unsplash.com/photo-1619895862022-09114b41f16f?fm=jpg&q=60&w=3000&ixlib=rb-4.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tZW4lMjBwcm9maWxlJTIwcGljdHVyZXxlbnwwfHwwfHx8MA%3D%3D",
-                        fit: BoxFit.cover,
-                        errorWidget: Container(
-                          width: 40,
-                          height: 40,
-                          color: AppColors.grey2Color,
-                          padding: EdgeInsets.all(8),
-                          alignment: Alignment.center,
-                          child: SvgPicture.asset(
-                            AssetConstants.user,
-                            color: AppColors.whiteColor,
-                          ),
-                        ),
-                      ),
+                      Obx(() => AppNetworkImage(
+                            width: 40,
+                            height: 40,
+                            shape: BoxShape.circle,
+                            imageUrl: LocalStorageService
+                                    .instance.userInfo.value.data?.image ??
+                                "",
+                            fit: BoxFit.cover,
+                            errorWidget: Container(
+                              width: 40,
+                              height: 40,
+                              color: AppColors.lightGreyTextColor.withAlpha(30),
+                              padding: EdgeInsets.all(8),
+                              alignment: Alignment.center,
+                              child: SvgPicture.asset(
+                                AssetConstants.user,
+                                color: AppColors.whiteColor,
+                              ),
+                            ),
+                          )),
                       wSizedBox8,
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Amelie Clarke",
+                              (LocalStorageService.instance.userInfo.value.data
+                                              ?.name ??
+                                          "")
+                                      .capitalize ??
+                                  "",
                               overflow: TextOverflow.ellipsis,
                               style: style400S16.copyWith(
                                 letterSpacing: 0.32,
@@ -76,7 +82,7 @@ class _UserMenuState extends State<UserMenu> {
                               ),
                             ),
                             Text(
-                              "+91 88299-92878",
+                              "${LocalStorageService.instance.userInfo.value.data?.countryCode ?? ""} ${LocalStorageService.instance.userInfo.value.data?.phone ?? ""}",
                               overflow: TextOverflow.ellipsis,
                               style: style400S14.copyWith(
                                 letterSpacing: 0.28,
@@ -87,7 +93,10 @@ class _UserMenuState extends State<UserMenu> {
                         ),
                       ),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            widget.controller.toggleDrawer();
+                            Get.toNamed(Routes.editProfile);
+                          },
                           icon: SvgPicture.asset(
                             AssetConstants.edit,
                             width: 24,
@@ -164,6 +173,7 @@ class _UserMenuState extends State<UserMenu> {
                   children: [
                     AppButton(
                       onTap: () {
+                        widget.controller.toggleDrawer();
                         Get.toNamed(Routes.myDesigns);
                       },
                       child: Row(

@@ -4,12 +4,12 @@ import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
+import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/home/controller/home_controller.dart';
 import 'package:ai_fashion/features/home/screens/start_creating_drag_bottom.dart';
 import 'package:ai_fashion/features/home/screens/user_menu.dart';
-import 'package:ai_fashion/features/home/widgets/outfit_card.dart';
 import 'package:ai_fashion/features/home/widgets/top_progress_bar.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void _handleDragStart(DragStartDetails details) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     _thumbPosition = details.globalPosition.dx;
     _selectedOption = _getSelectionFromPosition(_thumbPosition, screenWidth);
 
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void _handleDragUpdate(DragUpdateDetails details) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
     // Only allow downward dragging from top
     if (details.delta.dy > 0) {
@@ -148,87 +148,92 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final drawerWidth = screenWidth * 0.85;
 
     return Obx(() {
       final isOpen = controller.isDrawerOpen.value;
 
-      return ClipRRect(
-        child: Stack(
-          children: [
-            // LAYER 1: The drawer with proper clipping
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOutCubic,
-              left: isOpen
-                  ? 0
-                  : -drawerWidth, // Move drawer off-screen when closed
-              top: 0,
-              bottom: 0,
-              width: drawerWidth,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.blackColor, // Solid opaque background
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(0),
-                    bottomRight: Radius.circular(0),
+      return Stack(
+        children: [
+          ClipRRect(
+            child: Stack(
+              children: [
+                // LAYER 1: The drawer with proper clipping
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOutCubic,
+                  left: isOpen
+                      ? 0
+                      : -drawerWidth, // Move drawer off-screen when closed
+                  top: 0,
+                  bottom: 0,
+                  width: drawerWidth,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.blackColor, // Solid opaque background
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(0),
+                        bottomRight: Radius.circular(0),
+                      ),
+                    ),
+                    child: ColoredBox(
+                        // Prevent transparency leak
+                        color: AppColors.blackColor,
+                        child: UserMenu(
+                          controller: controller,
+                        )),
                   ),
                 ),
-                child: ColoredBox(
-                    // Prevent transparency leak
-                    color: AppColors.blackColor,
-                    child: UserMenu(
-                      controller: controller,
-                    )),
-              ),
-            ),
 
-            // LAYER 2: The main content view with full background
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOutCubic,
-              left: isOpen ? drawerWidth : 0,
-              right: isOpen ? -drawerWidth : 0,
-              top: 0,
-              bottom: 0,
-              child: Container(
-                color: AppColors.blackColor, // Ensure solid background
-                child: ClipRect(
-                  child: Stack(
-                    children: [
-                      // The actual content of your main screen
-                      buildMainView(),
+                // LAYER 2: The main content view with full background
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOutCubic,
+                  left: isOpen ? drawerWidth : 0,
+                  right: isOpen ? -drawerWidth : 0,
+                  top: 0,
+                  bottom: 0,
+                  child: Container(
+                    color: AppColors.blackColor, // Ensure solid background
+                    child: ClipRect(
+                      child: Stack(
+                        children: [
+                          // The actual content of your main screen
+                          buildMainView(),
 
-                      // This scrim layer covers the main content when the drawer is open.
-                      if (isOpen)
-                        Positioned.fill(
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              onTap: controller.toggleDrawer,
-                              child: RepaintBoundary(
-                                child: BackdropFilter(
-                                  filter:
-                                      ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                                  child: Container(
-                                      color: Colors.black.withAlpha(100)),
+                          // This scrim layer covers the main content when the drawer is open.
+                          if (isOpen)
+                            Positioned.fill(
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  onTap: controller.toggleDrawer,
+                                  child: RepaintBoundary(
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                          sigmaX: 8, sigmaY: 8),
+                                      child: Container(
+                                          color: Colors.black.withAlpha(100)),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                    ],
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+          if (controller.isLoading.value) AppLoader()
+        ],
       );
     });
   }
@@ -259,101 +264,220 @@ class _HomeScreenState extends State<HomeScreen>
                   offset: Offset(0, slideOffset),
                   child: Column(
                     children: [
-                      topProgressImageNameWidget(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: topProgressImageNameWidget(),
+                      ),
                       Expanded(
-                          child: Obx(() => Padding(
-                                padding: EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 12)
-                                    .copyWith(bottom: 150),
-                                child: controller.outfitCardModels.length ==
-                                            0 ||
-                                        ((controller.currentCardIndex.value) >=
-                                            controller.outfitCardModels.length)
-                                    ? Center(
-                                        child: Text(
-                                          "No More Outfits Available",
-                                          style: style600S20.copyWith(
-                                              letterSpacing: 0.42,
-                                              color: AppColors.whiteTextColor,
-                                              height: 1.1),
-                                        ),
-                                      )
-                                    : CardSwiper(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 10),
-                                        numberOfCardsDisplayed: 4,
-                                        scale: 0.97,
-                                        backCardOffset: Offset(0, 25),
-                                        allowedSwipeDirection:
-                                            AllowedSwipeDirection.only(
-                                                left: true, right: true),
-                                        cardsCount:
-                                            controller.outfitCardModels.length,
-                                        isLoop: false,
-                                        cardBuilder: (context,
-                                            index,
-                                            percentThresholdX,
-                                            percentThresholdY) {
-                                          return Obx(() => GestureDetector(
-                                                onTap: () {
-                                                  Get.toNamed(
-                                                      Routes.outfitDetail);
-                                                },
-                                                child: OutfitCard(
-                                                  outfit: controller
-                                                      .outfitCardModels[index],
-                                                  isFirst: (controller
-                                                              .currentCardIndex
-                                                              .value ==
-                                                          index)
-                                                      .obs,
-                                                  swipeProgress: double.tryParse(
-                                                          percentThresholdX
-                                                              .toString()) ??
-                                                      0,
-                                                ),
-                                              ));
+                        // child: Obx(() => Padding(
+                        //       padding: EdgeInsets.symmetric(
+                        //               horizontal: 16, vertical: 12)
+                        //           .copyWith(bottom: 150),
+                        //       child: controller.isLoading.value
+                        //           ? SizedBox.shrink()
+                        //           : controller.suggestedProductsList.length ==
+                        //                       0 ||
+                        //                   ((controller
+                        //                           .currentCardIndex.value) >=
+                        //                       controller.suggestedProductsList
+                        //                           .length)
+                        //               ? Center(
+                        //                   child: controller.isPaginating.value
+                        //                       ? shimmer(
+                        //                           child: Text(
+                        //                             "Finding more products you might love...",
+                        //                             style: style600S20.copyWith(
+                        //                                 letterSpacing: 0.42,
+                        //                                 color: AppColors
+                        //                                     .whiteTextColor,
+                        //                                 height: 1.1),
+                        //                           ),
+                        //                         )
+                        //                       : Text(
+                        //                           "No More Outfits Available",
+                        //                           style: style600S20.copyWith(
+                        //                               letterSpacing: 0.42,
+                        //                               color: AppColors
+                        //                                   .whiteTextColor,
+                        //                               height: 1.1),
+                        //                         ),
+                        //                 )
+                        //               : CardSwiper(
+                        //                   padding: EdgeInsets.symmetric(
+                        //                       vertical: 10),
+                        //                   numberOfCardsDisplayed: 4,
+                        //                   scale: 0.97,
+                        //                   backCardOffset: Offset(0, 25),
+                        //                   allowedSwipeDirection:
+                        //                       AllowedSwipeDirection.only(
+                        //                           left: true, right: true),
+                        //                   cardsCount: controller
+                        //                       .suggestedProductsList.length,
+                        //                   isLoop: false,
+                        //                   cardBuilder: (context,
+                        //                       index,
+                        //                       percentThresholdX,
+                        //                       percentThresholdY) {
+                        //                     return Obx(() => GestureDetector(
+                        //                           onTap: () {
+                        //                             Get.toNamed(
+                        //                                 Routes.productDetail,
+                        //                                 arguments: {
+                        //                                   "productDetail":
+                        //                                       controller
+                        //                                               .suggestedProductsList[
+                        //                                           index]
+                        //                                 });
+                        //                           },
+                        //                           child: ProductOutfitCard(
+                        //                             product: controller
+                        //                                     .suggestedProductsList[
+                        //                                 index],
+                        //                             isFirst: (controller
+                        //                                         .currentCardIndex
+                        //                                         .value ==
+                        //                                     index)
+                        //                                 .obs,
+                        //                             swipeProgress: double.tryParse(
+                        //                                     percentThresholdX
+                        //                                         .toString()) ??
+                        //                                 0,
+                        //                           ),
+                        //                         ));
+                        //                   },
+                        //                   initialIndex: controller
+                        //                       .currentCardIndex.value,
+                        //                   onSwipe: (previousIndex,
+                        //                       currentIndex, direction) {
+                        //                     final outfitList = controller
+                        //                         .suggestedProductsList;
+
+                        //                     if (previousIndex < 0 ||
+                        //                         previousIndex >=
+                        //                             outfitList.length) {
+                        //                       return true;
+                        //                     }
+
+                        //                     // ... (logic for adding to favorite/dislike lists)
+                        //                     if (direction ==
+                        //                         CardSwiperDirection.right) {
+                        //                       controller.likedProduct(
+                        //                           outfitList[previousIndex]
+                        //                                   .id ??
+                        //                               "");
+                        //                     } else if (direction ==
+                        //                         CardSwiperDirection.left) {
+                        //                       controller.skipProduct(
+                        //                           outfitList[previousIndex]
+                        //                                   .id ??
+                        //                               "");
+                        //                     }
+                        //                     controller
+                        //                         .remainingProductsInQueue
+                        //                         .value--;
+
+                        //                     if (controller
+                        //                                 .remainingProductsInQueue
+                        //                                 .value <
+                        //                             5 &&
+                        //                         !controller.isLoading.value &&
+                        //                         !controller
+                        //                             .isPaginating.value) {
+                        //                       controller.getSuggestedProducts(
+                        //                           isLoadMore: true);
+                        //                     }
+
+                        //                     // ... (logic for updating currentCardIndex)
+                        //                     if (currentIndex != null) {
+                        //                       controller.currentCardIndex
+                        //                           .value = currentIndex;
+                        //                     } else if (currentIndex == null &&
+                        //                         controller.currentCardIndex
+                        //                                 .value ==
+                        //                             outfitList.length - 1) {
+                        //                       controller
+                        //                           .currentCardIndex.value++;
+                        //                     }
+                        //                     return true;
+                        //                   },
+                        //                 ),
+                        //     )))
+
+                        child: controller.outfitCardModels.length == 0 ||
+                                ((controller.currentCardIndex.value) >=
+                                    controller.outfitCardModels.length)
+                            ? Center(
+                                child: Text(
+                                  "No More Outfits Available",
+                                  style: style600S20.copyWith(
+                                      letterSpacing: 0.42,
+                                      color: AppColors.whiteTextColor,
+                                      height: 1.1),
+                                ),
+                              )
+                            : CardSwiper(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                numberOfCardsDisplayed: 4,
+                                scale: 0.97,
+                                backCardOffset: Offset(0, 25),
+                                allowedSwipeDirection:
+                                    AllowedSwipeDirection.only(
+                                        left: true, right: true),
+                                cardsCount: controller.outfitCardModels.length,
+                                isLoop: false,
+                                cardBuilder: (context, index, percentThresholdX,
+                                    percentThresholdY) {
+                                  return Obx(() => GestureDetector(
+                                        onTap: () {
+                                          Get.toNamed(Routes.outfitDetail);
                                         },
-                                        initialIndex:
-                                            controller.currentCardIndex.value,
-                                        onSwipe: (previousIndex, currentIndex,
-                                            direction) {
-                                          final outfitList =
-                                              controller.outfitCardModels;
-
-                                          if (previousIndex < 0 ||
-                                              previousIndex >=
-                                                  outfitList.length) {
-                                            return true;
-                                          }
-
-                                          final swipedItem =
-                                              outfitList[previousIndex];
-
-                                          if (direction ==
-                                              CardSwiperDirection.right) {
-                                            controller.favoriteList
-                                                .add(swipedItem);
-                                          } else if (direction ==
-                                              CardSwiperDirection.left) {
-                                            controller.dislikeList
-                                                .add(swipedItem);
-                                          }
-
-                                          // Safely update currentCardIndex
-                                          if (currentIndex != null) {
-                                            controller.currentCardIndex.value =
-                                                currentIndex;
-                                          } else if (currentIndex == null &&
-                                              controller
+                                        child: OutfitCard(
+                                          outfit: controller
+                                              .outfitCardModels[index],
+                                          isFirst: (controller
                                                       .currentCardIndex.value ==
-                                                  outfitList.length - 1) {
-                                            controller.currentCardIndex.value++;
-                                          }
-                                          return true;
-                                        },
-                                      ),
-                              )))
+                                                  index)
+                                              .obs,
+                                          swipeProgress: double.tryParse(
+                                                  percentThresholdX
+                                                      .toString()) ??
+                                              0,
+                                        ),
+                                      ));
+                                },
+                                initialIndex: controller.currentCardIndex.value,
+                                onSwipe:
+                                    (previousIndex, currentIndex, direction) {
+                                  final outfitList =
+                                      controller.outfitCardModels;
+
+                                  if (previousIndex < 0 ||
+                                      previousIndex >= outfitList.length) {
+                                    return true;
+                                  }
+
+                                  final swipedItem = outfitList[previousIndex];
+
+                                  if (direction == CardSwiperDirection.right) {
+                                    controller.favoriteList.add(swipedItem);
+                                  } else if (direction ==
+                                      CardSwiperDirection.left) {
+                                    controller.dislikeList.add(swipedItem);
+                                  }
+
+                                  // Safely update currentCardIndex
+                                  if (currentIndex != null) {
+                                    controller.currentCardIndex.value =
+                                        currentIndex;
+                                  } else if (currentIndex == null &&
+                                      controller.currentCardIndex.value ==
+                                          outfitList.length - 1) {
+                                    controller.currentCardIndex.value++;
+                                  }
+                                  return true;
+                                },
+                              ),
+                      ),
                     ],
                   ),
                 );
@@ -564,25 +688,24 @@ class _HomeScreenState extends State<HomeScreen>
                 onTap: () {
                   controller.toggleDrawer();
                 },
-                child: AppNetworkImage(
-                  width: 43,
-                  height: 43,
-                  shape: BoxShape.circle,
-                  imageUrl:
-                      "https://images.unsplash.com/photo-1619895862022-09114b41f16f?fm=jpg&q=60&w=3000&ixlib=rb-4.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tZW4lMjBwcm9maWxlJTIwcGljdHVyZXxlbnwwfHwwfHx8MA%3D%3D",
-                  fit: BoxFit.cover,
-                  errorWidget: Container(
-                    width: 43,
-                    height: 43,
-                    color: AppColors.grey2Color,
-                    padding: EdgeInsets.all(8),
-                    alignment: Alignment.center,
-                    child: SvgPicture.asset(
-                      AssetConstants.user,
-                      color: AppColors.whiteColor,
-                    ),
-                  ),
-                ),
+                child: Obx(() => AppNetworkImage(
+                      width: 43,
+                      height: 43,
+                      shape: BoxShape.circle,
+                      imageUrl: controller.userImage.value,
+                      fit: BoxFit.cover,
+                      errorWidget: Container(
+                        width: 43,
+                        height: 43,
+                        color: AppColors.grey2Color.withAlpha(150),
+                        padding: EdgeInsets.all(8),
+                        alignment: Alignment.center,
+                        child: SvgPicture.asset(
+                          AssetConstants.user,
+                          color: AppColors.whiteColor,
+                        ),
+                      ),
+                    )),
               ),
               wSizedBox12,
               Expanded(
@@ -597,13 +720,17 @@ class _HomeScreenState extends State<HomeScreen>
                           letterSpacing: 0.80,
                           color: AppColors.whiteColor),
                     ),
-                    Text(
-                      "Amelie",
-                      style: style600S20.copyWith(
-                          letterSpacing: 0.42,
-                          color: AppColors.whiteTextColor,
-                          height: 1.1),
-                    ),
+                    Obx(() => Text(
+                          controller.userName.value
+                                  .split(" ")
+                                  .first
+                                  .capitalizeFirst ??
+                              "",
+                          style: style600S20.copyWith(
+                              letterSpacing: 0.42,
+                              color: AppColors.whiteTextColor,
+                              height: 1.1),
+                        )),
                   ],
                 ),
               ),

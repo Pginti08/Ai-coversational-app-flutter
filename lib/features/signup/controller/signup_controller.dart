@@ -1,3 +1,57 @@
+import 'package:ai_fashion/core/constants/api_constants.dart';
+import 'package:ai_fashion/core/services/network_service.dart';
+import 'package:ai_fashion/core/utils/validators.dart';
+import 'package:ai_fashion/core/widgets/app_toast.dart';
+import 'package:ai_fashion/routes/app_pages.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SignupController extends GetxController {}
+class SignupController extends GetxController {
+  final RxBool isLoading = false.obs;
+  final RxString countryCode = '+91'.obs;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController mobileNoController = TextEditingController();
+
+  final RxString nameError = ''.obs;
+  final RxString mobileError = ''.obs;
+
+  void validateAndSignUp() {
+    final error1 = validateCommonField(nameController.text.trim(), "name");
+
+    final error2 = validateMobileNumber(mobileNoController.text.trim(), 10, 10);
+    nameError.value = error1 ?? '';
+    mobileError.value = error2 ?? '';
+
+    if (error1 == null && error2 == null) {
+      signUpApi(mobileNoController.text.trim());
+    }
+  }
+
+  Future<void> signUpApi(String mobileNumber) async {
+    try {
+      isLoading.value = true;
+
+      var result = await NetworkClient.instance.callApi(
+          "${ApiConstants.signUp}", MethodType.post,
+          baseUrlType: BaseUrl.base,
+          params: {
+            "name": nameController.text.trim(),
+            "phone": mobileNumber,
+            "code": countryCode.value
+          });
+
+      if (result.isSuccess) {
+        Get.toNamed(Routes.otpVerify, arguments: {
+          "mobileNo": mobileNumber,
+          "countryCode": countryCode.value
+        });
+      } else {
+        toast(result.error.toString());
+      }
+    } catch (e) {
+      toast(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}

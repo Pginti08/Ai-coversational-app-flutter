@@ -15,6 +15,18 @@ String? validateEmail(String? value) {
   return null;
 }
 
+String? validateMobileNumber(String? value, int minLength, int maxLength) {
+  if (value == null || value.isEmpty) {
+    return 'Please enter mobile number';
+  }
+
+  if (value.length < minLength || value.length > maxLength) {
+    return 'Please enter valid mobile number';
+  }
+
+  return null;
+}
+
 String? validatePassword(String? value) {
   if (value == null || value.isEmpty) {
     return 'Please enter password';
@@ -24,13 +36,12 @@ String? validatePassword(String? value) {
     return 'Password must be between 8 and 20 characters';
   }
 
-  final hasUppercase = RegExp(r'[A-Z]').hasMatch(value);
   final hasLetter = RegExp(r'[A-Za-z]').hasMatch(value);
   final hasNumber = RegExp(r'\d').hasMatch(value);
   final hasSpecial = RegExp(r'[!@#\$&*~]').hasMatch(value);
 
-  if (!hasLetter || !hasNumber || !hasSpecial || !hasUppercase) {
-    return 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character';
+  if (!hasLetter || !hasNumber || !hasSpecial) {
+    return 'Password must include at least one letter, one number, and one special character';
   }
 
   return null;

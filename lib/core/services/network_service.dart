@@ -7,7 +7,7 @@ import 'package:dio/dio.dart' as dioClient;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-enum BaseUrl { forge, auth, chat, lyceum, none }
+enum BaseUrl { base, none }
 
 class MethodType {
   static const String post = 'POST';
@@ -91,14 +91,9 @@ class NetworkClient {
 
   String _getBaseUrl(BaseUrl type) {
     switch (type) {
-      case BaseUrl.auth:
+      case BaseUrl.base:
         return ApiConstants.authURL;
-      case BaseUrl.forge:
-        return ApiConstants.forgeURL;
-      case BaseUrl.lyceum:
-        return ApiConstants.lyceumURL;
-      case BaseUrl.chat:
-        return ApiConstants.chatURL;
+
       case BaseUrl.none:
         return '';
     }

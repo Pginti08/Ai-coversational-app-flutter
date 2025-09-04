@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:ai_fashion/core/constants/storage_constants.dart';
+import 'package:ai_fashion/features/home/models/user_detail_model.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageService {
@@ -11,8 +14,13 @@ class LocalStorageService {
   static final LocalStorageService instance = LocalStorageService._internal();
   static SharedPreferences? _prefs;
 
+  // Create a single reactive instance that persists
+  final Rx<UserDetailModel> _userInfo = UserDetailModel().obs;
+
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
+    // Load user info on initialization
+    _loadUserInfo();
   }
 
   Future<void> saveString(String key, String value) async {
@@ -46,5 +54,25 @@ class LocalStorageService {
 
   Future<void> clear() async {
     await _prefs?.clear();
+    // Reset user info when clearing
+    _userInfo.value = UserDetailModel();
   }
+
+  /// Load user info from storage into reactive variable
+  void _loadUserInfo() {
+    final data = getObject(StorageConstants.userModel);
+    if (data != null) {
+      _userInfo.value = UserDetailModel.fromJson(data);
+    }
+  }
+
+  /// Save User Info and update reactive variable
+  void setUserInfo(UserDetailModel user) {
+    saveObject(StorageConstants.userModel, user.toJson());
+    // Update the reactive variable to trigger UI updates
+    _userInfo.value = user;
+  }
+
+  /// Read User Info - returns the same reactive instance
+  Rx<UserDetailModel> get userInfo => _userInfo;
 }

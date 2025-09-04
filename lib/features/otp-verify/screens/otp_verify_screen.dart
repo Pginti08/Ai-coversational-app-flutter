@@ -9,14 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-class OtpVerify extends StatefulWidget {
-  const OtpVerify({super.key});
+class OtpVerify extends StatelessWidget {
+  OtpVerify({super.key});
 
-  @override
-  State<OtpVerify> createState() => _OtpVerifyState();
-}
-
-class _OtpVerifyState extends State<OtpVerify> {
   final OtpVerifyController controller = Get.put(OtpVerifyController());
 
   @override
@@ -60,7 +55,6 @@ class _OtpVerifyState extends State<OtpVerify> {
                             ],
                           )
                         : Column(
-                            key: const ValueKey("otpView"),
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               hSizedBox50,
@@ -71,69 +65,84 @@ class _OtpVerifyState extends State<OtpVerify> {
                                     color: AppColors.textColor),
                               ),
                               Text(
-                                "to your phone number +91 98** *****",
+                                "to your phone number +91 ${controller.mobileNo.value.substring(0, 1)}*** *****",
                                 style: style300S12.copyWith(
                                     color: AppColors.textColor),
                               ),
                               hSizedBox30,
                               AppPinputField(
-                                length: 4,
+                                length: 6,
                                 size: 60,
+                                controller: controller.otpController,
                                 keyboardType: TextInputType.number,
                                 autofocus: true,
                                 onChanged: (value) {},
                                 onCompleted: (val) {
-                                  controller.verifyOtp();
+                                  controller.verifyOtpApi();
                                 },
                               ),
                               hSizedBox30,
                               Obx(
-                                () => controller.secondsRemaining.value == 0
-                                    ? InkWell(
-                                        splashColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                        onTap: () {
-                                          controller.startResendTimer();
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 8,
-                                          ),
-                                          child: Text(
-                                            "Resend Code",
-                                            style: style400S14.copyWith(
-                                              letterSpacing: 0.28,
-                                              color: AppColors.primaryColor,
-                                            ),
+                                () => controller.isLoading.value
+                                    ? SizedBox(
+                                        width: 30,
+                                        height: 30,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 3,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                            AppColors.secondaryColor,
                                           ),
                                         ),
                                       )
-                                    : Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 8,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Resend OTP in ",
-                                              style: style400S14.copyWith(
-                                                letterSpacing: 0.28,
-                                                color: AppColors.hintTextColor,
+                                    : controller.secondsRemaining.value == 0
+                                        ? InkWell(
+                                            splashColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () {
+                                              controller.resendOtpApi();
+                                            },
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 10,
+                                                vertical: 8,
+                                              ),
+                                              child: Text(
+                                                "Resend Code",
+                                                style: style400S14.copyWith(
+                                                  letterSpacing: 0.28,
+                                                  color: AppColors.primaryColor,
+                                                ),
                                               ),
                                             ),
-                                            Text(
-                                              "${(controller.secondsRemaining.value ~/ 60).toString().padLeft(2, '0')}:${(controller.secondsRemaining.value % 60).toString().padLeft(2, '0')}",
-                                              style: style400S14.copyWith(
-                                                letterSpacing: 0.28,
-                                              ),
+                                          )
+                                        : Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 8,
                                             ),
-                                          ],
-                                        ),
-                                      ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "Resend OTP in ",
+                                                  style: style400S14.copyWith(
+                                                    letterSpacing: 0.28,
+                                                    color:
+                                                        AppColors.hintTextColor,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "${(controller.secondsRemaining.value ~/ 60).toString().padLeft(2, '0')}:${(controller.secondsRemaining.value % 60).toString().padLeft(2, '0')}",
+                                                  style: style400S14.copyWith(
+                                                    letterSpacing: 0.28,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                               ),
                             ],
                           ),

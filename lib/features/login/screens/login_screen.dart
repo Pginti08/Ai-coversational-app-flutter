@@ -9,6 +9,7 @@ import 'package:ai_fashion/features/login/controller/login_controller.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -51,27 +52,37 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 hSizedBox30,
-                AppTextField(
-                  hint: "Mobile number",
-                  isGradientBorder: true,
-                  fillColor: AppColors.whiteColor.withAlpha(8),
-                  hintStyle: style400S16.copyWith(color: Color(0xFF444444)),
-                  maxLength: 10,
-                  keyboardType: TextInputType.number,
-                  prefixIcon: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('🇮🇳+91', style: style400S14),
-                      wSizedBox4,
-                      Transform.rotate(
-                          angle: 3.14159 * 1.5,
-                          child: SvgPicture.asset(
-                            AssetConstants.backward,
-                            width: 16,
-                          )),
-                    ],
-                  ),
-                ),
+                Obx(() => AppTextField(
+                      hint: "Mobile number",
+                      controller: controller.mobileNoController,
+                      isGradientBorder: true,
+                      fillColor: AppColors.whiteColor.withAlpha(8),
+                      hintStyle: style400S16.copyWith(color: Color(0xFF444444)),
+                      maxLength: 10,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      prefixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('🇮🇳+91', style: style400S14),
+                          wSizedBox4,
+                          Transform.rotate(
+                              angle: 3.14159 * 1.5,
+                              child: SvgPicture.asset(
+                                AssetConstants.backward,
+                                width: 16,
+                              )),
+                        ],
+                      ),
+                      errorText: controller.mobileError.value.isEmpty
+                          ? null
+                          : controller.mobileError.value,
+                      onChanged: (value) {
+                        if (controller.mobileError.value.isNotEmpty) {
+                          controller.mobileError.value = '';
+                        }
+                      },
+                    )),
                 hSizedBox16,
                 Text(
                   "Lorem Ipsum is simply dummy text of the printing nd typesetting industry. Lorem Ipsum has been the industry's",
@@ -108,12 +119,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Spacer(),
-                AppButton(
-                  onTap: () {
-                    Get.toNamed(Routes.otpVerify);
-                  },
-                  text: "Continue",
-                ),
+                Obx(() => AppButton(
+                      onTap: () {
+                        controller.validateAndLogin();
+                      },
+                      text: "Continue",
+                      isLoading: controller.isLoading.value,
+                    )),
                 hSizedBox24,
                 Text(
                   "By signing in, you agree to our Terms & Privacy Policy.",

@@ -1,10 +1,10 @@
 import 'dart:ui';
 
+import 'package:ai_fashion/core/services/haptic_service.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/widgets/lower_clippath.dart';
 import 'package:ai_fashion/core/widgets/upper_clippath.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class AnimatedCurvedBarIndicator extends StatefulWidget {
   final int currentIndex;
@@ -43,7 +43,8 @@ class _AnimatedCurvedBarIndicatorState extends State<AnimatedCurvedBarIndicator>
   late AnimationController _slideController;
   late Animation<double> _slideAnimation;
   int _previousIndex = 0;
-  bool _isAnimating = false;
+  // --- MODIFIED: This will accumulate the user's drag distance.
+  double _panDeltaAccumulator = 0.0;
 
   @override
   void initState() {
@@ -74,13 +75,10 @@ class _AnimatedCurvedBarIndicatorState extends State<AnimatedCurvedBarIndicator>
     }
   }
 
+  // --- MODIFIED: Simplified to allow animations to be re-triggered.
   void _triggerSlideAnimation() {
-    if (!_isAnimating) {
-      _isAnimating = true;
-      _slideController.forward(from: 0.0).then((_) {
-        _isAnimating = false;
-      });
-    }
+    // Just restart the animation from the beginning.
+    _slideController.forward(from: 0.0);
   }
 
   @override
@@ -109,6 +107,7 @@ class _AnimatedCurvedBarIndicatorState extends State<AnimatedCurvedBarIndicator>
       child: Stack(
         alignment: Alignment.center,
         children: [
+          // ... (Your background, blur, and clipper widgets remain unchanged)
           Opacity(
             opacity: 0.25,
             child: Container(
@@ -155,33 +154,49 @@ class _AnimatedCurvedBarIndicatorState extends State<AnimatedCurvedBarIndicator>
                   ),
                 ],
               ),
+              // --- MODIFIED: The GestureDetector logic is completely new.
               GestureDetector(
                 onPanUpdate: (details) {
-                  if (widget.onIndexChanged != null && !_isAnimating) {
-                    final sensitivity = 0.5;
-                    final deltaX = details.delta.dx;
+                  if (widget.onIndexChanged == null) return;
 
-                    if (deltaX > sensitivity) {
-                      // Swipe right
-                      final newIndex = widget.currentIndex > 0
-                          ? widget.currentIndex - 1
-                          : widget.totalItems - 1; // Wrap to last item
-                      widget.onIndexChanged!(newIndex);
-                      HapticFeedback.mediumImpact();
-                    } else if (deltaX < -sensitivity) {
-                      // Swipe left
-                      final newIndex =
-                          widget.currentIndex < widget.totalItems - 1
-                              ? widget.currentIndex + 1
-                              : 0; // Wrap to first item
-                      widget.onIndexChanged!(newIndex);
-                      HapticFeedback.mediumImpact();
+                  // 1. Accumulate the horizontal drag delta
+                  _panDeltaAccumulator += details.delta.dx;
+
+                  // 2. Define a threshold for a swipe action
+                  //    (e.g., 1/8th of the screen width)
+                  final swipeThreshold = MediaQuery.of(context).size.width / 8;
+
+                  // 3. Check for swipes and update index
+                  // Swipe right → previous item
+                  if (_panDeltaAccumulator > swipeThreshold) {
+                    if (widget.currentIndex > 0) {
+                      widget.onIndexChanged!(widget.currentIndex - 1);
+                      HapticService.medium();
+                      // Decrement accumulator to allow for continuous swiping
+                      _panDeltaAccumulator -= swipeThreshold;
+                    }
+                  }
+                  // Swipe left → next item
+                  else if (_panDeltaAccumulator < -swipeThreshold) {
+                    if (widget.currentIndex < widget.totalItems - 1) {
+                      widget.onIndexChanged!(widget.currentIndex + 1);
+                      HapticService.medium();
+                      // Increment accumulator to allow for continuous swiping
+                      _panDeltaAccumulator += swipeThreshold;
                     }
                   }
                 },
+                onPanEnd: (_) {
+                  // Reset accumulator when the gesture ends
+                  _panDeltaAccumulator = 0.0;
+                },
+                onPanCancel: () {
+                  // Also reset on cancellation
+                  _panDeltaAccumulator = 0.0;
+                },
                 child: Container(
                   color: Colors.transparent,
-                  margin: EdgeInsets.symmetric(vertical: 10),
+                  margin: const EdgeInsets.symmetric(vertical: 10),
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: AnimatedBuilder(
                     animation: _slideAnimation,
@@ -221,6 +236,7 @@ class _AnimatedCurvedBarIndicatorState extends State<AnimatedCurvedBarIndicator>
   }
 
   Widget _buildBars() {
+    // ... (This function remains unchanged)
     final middle = widget.barCount ~/ 2;
     final isMovingLeft = widget.currentIndex > _previousIndex;
     final isMovingRight = widget.currentIndex < _previousIndex;
@@ -228,34 +244,26 @@ class _AnimatedCurvedBarIndicatorState extends State<AnimatedCurvedBarIndicator>
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: List.generate(widget.barCount, (barIndex) {
-        // Calculate bar height based on distance from center
         final barHeight = _calculateBarHeight(barIndex);
-
-        // Calculate opacity based on distance from center
         final distanceFromCenter = (barIndex - middle).abs();
         final maxDistance = middle.toDouble();
 
-        // Center bar has full opacity (1.0), edges have minimum opacity
         double baseOpacity;
         if (distanceFromCenter == 0) {
-          baseOpacity = 1.0; // Center bar - full opacity
+          baseOpacity = 1.0;
         } else {
-          // Gradual decrease from center to edges
           final opacityRatio = 1.0 - (distanceFromCenter / maxDistance);
-          baseOpacity = 0.2 + (opacityRatio * 0.8); // Range from 0.2 to 1.0
+          baseOpacity = 0.2 + (opacityRatio * 0.8);
         }
 
-        // Animation offset for sliding effect
         double offsetX = 0.0;
         double animationOpacityMultiplier = 1.0;
 
         if (_slideAnimation.value > 0 && _slideAnimation.value < 1) {
           if (isMovingLeft) {
-            // Sliding left animation
             offsetX = -20 * (1 - _slideAnimation.value);
             animationOpacityMultiplier = 0.3 + (0.7 * _slideAnimation.value);
           } else if (isMovingRight) {
-            // Sliding right animation
             offsetX = 20 * (1 - _slideAnimation.value);
             animationOpacityMultiplier = 0.3 + (0.7 * _slideAnimation.value);
           }

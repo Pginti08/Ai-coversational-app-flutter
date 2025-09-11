@@ -1,7 +1,7 @@
+import 'package:ai_fashion/core/services/haptic_service.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
 class AppButton extends StatefulWidget {
@@ -107,7 +107,7 @@ class _AppButtonState extends State<AppButton>
         onTap: (widget.isDisabled || widget.isLoading)
             ? null
             : () {
-                HapticFeedback.mediumImpact();
+                HapticService.medium();
                 widget.onTap?.call();
               },
         child: Stack(

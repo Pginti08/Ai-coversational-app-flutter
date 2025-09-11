@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:ai_fashion/core/constants/asset_constants.dart';
+import 'package:ai_fashion/core/services/haptic_service.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
@@ -15,7 +16,6 @@ import 'package:ai_fashion/features/home/widgets/product_outfit_card.dart';
 import 'package:ai_fashion/features/home/widgets/top_progress_bar.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen>
       setState(() {
         _selectedOption = newSelection;
       });
-      HapticFeedback.mediumImpact();
+      HapticService.medium();
     }
   }
 

@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
+import 'package:ai_fashion/core/services/haptic_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 
 class CommonContainer extends StatelessWidget {
@@ -79,7 +79,7 @@ class CommonContainer extends StatelessWidget {
       hoverColor: Colors.transparent,
       onTap: onTap != null
           ? () {
-              HapticFeedback.mediumImpact();
+              HapticService.medium();
               onTap!();
             }
           : null,

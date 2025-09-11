@@ -1,82 +1,109 @@
+import 'package:ai_fashion/core/constants/api_constants.dart';
+import 'package:ai_fashion/core/services/network_service.dart';
 import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/features/home/models/outfit_card_model.dart';
+import 'package:ai_fashion/features/home/models/product_list_model.dart';
+import 'package:ai_fashion/features/liked/models/liked_product_list_model.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LikedController extends GetxController {
   var currentCarouselIndex = 0.obs;
-  final RxList<OutfitCardModel> remixOutfits = <OutfitCardModel>[].obs;
+  final RxList<Product> remixProducts = <Product>[].obs;
+  final RxBool isLoading = false.obs;
+  RxInt page = 1.obs;
+  RxBool paginationLoading = false.obs;
+  RxBool nextPageStop = true.obs;
 
-  final RxList<OutfitCardModel> likedOutfitCardModels = <OutfitCardModel>[
-    OutfitCardModel(
-      imageUrl:
-          "https://framerusercontent.com/images/ioTL88ZpHCWXDdmKwFbhBBMJfA.png",
-      title: "The Midnight Monochrome Street Set",
-    ),
-    OutfitCardModel(
-      imageUrl:
-          "https://framerusercontent.com/images/EDnff5CDaVTXO7iJhG2jmUWgJos.png",
-      title: "The Sandstone Explorer Co-Ord",
-    ),
-    OutfitCardModel(
-      imageUrl:
-          "https://framerusercontent.com/images/497wrI6QPtcqc9q1y7a7kdGc.png",
-      title: "The Urban Ash Layered Look",
-    ),
-    OutfitCardModel(
-      imageUrl:
-          "https://framerusercontent.com/images/uwRHxl9xBPMQcwC7g6f5k6z5o.png",
-      title: "The Crimson Bolt Street Set",
-    ),
-    OutfitCardModel(
-      imageUrl:
-          "https://framerusercontent.com/images/0cz3vf6fEsEb13ulylzz3lTR4.png",
-      title: "The Ivory Mocha Luxe Dress",
-    ),
-  ].obs;
+  final RxList<Product> likedProductsList = <Product>[].obs;
 
-  // Method to add current carousel item to remix outfits
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
+
+  @override
+  void onInit() {
+    getLikedProductListApi();
+    super.onInit();
+  }
+
+  getLikedProductListApi({bool isInitial = true}) async {
+    try {
+      if (isInitial) {
+        likedProductsList.clear();
+        page.value = 1;
+        nextPageStop.value = true;
+        isLoading.value = true;
+      } else {
+        paginationLoading.value = true;
+      }
+
+      if (nextPageStop.isTrue) {
+        var result = await NetworkClient.instance.callApi(
+          "${ApiConstants.getLikedProducts}?page=${page.value}&limit=20",
+          baseUrlType: BaseUrl.base,
+          MethodType.get,
+        );
+        if (result.isSuccess) {
+          isLoading.value = false;
+          paginationLoading.value = false;
+
+          var likedProductListModel =
+              LikedProductListModel.fromJson(result.data?.data);
+          likedProductsList.addAll(likedProductListModel.data?.items ?? []);
+
+          page.value = page.value + 1;
+
+          if (likedProductsList.length.toString() ==
+              likedProductListModel.data?.total?.toString()) {
+            nextPageStop.value = false;
+          }
+        } else {
+          isLoading.value = false;
+          paginationLoading.value = false;
+          toast(result.error.toString());
+        }
+      }
+    } catch (e) {
+      isLoading.value = false;
+      paginationLoading.value = false;
+    }
+  }
+
+  // Method to add current carousel item to remix products
   void addToRemix(CarouselSliderController carouselController) {
-    if (likedOutfitCardModels.isNotEmpty &&
-        currentCarouselIndex.value < likedOutfitCardModels.length) {
-      final currentOutfit = likedOutfitCardModels[currentCarouselIndex.value];
+    if (likedProductsList.isNotEmpty &&
+        currentCarouselIndex.value < likedProductsList.length) {
+      final currentProduct = likedProductsList[currentCarouselIndex.value];
 
       // Avoid duplicates
-      if (!remixOutfits
-          .any((outfit) => outfit.imageUrl == currentOutfit.imageUrl)) {
-        remixOutfits.add(currentOutfit);
+      if (!remixProducts.any((product) => product.id == currentProduct.id)) {
+        remixProducts.add(currentProduct);
       } else {
         toast("Already in Remix");
       }
 
       // Move to next index
-      if (currentCarouselIndex.value < likedOutfitCardModels.length - 1) {
+      if (currentCarouselIndex.value < likedProductsList.length - 1) {
         currentCarouselIndex.value++;
         carouselController.animateToPage(
           currentCarouselIndex.value,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
         );
-      } else if (currentCarouselIndex.value ==
-          likedOutfitCardModels.length - 1) {
-        currentCarouselIndex.value = 0;
-        carouselController.animateToPage(
-          currentCarouselIndex.value,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
       }
+      //else if (currentCarouselIndex.value == likedProductsList.length - 1) {
+      //   currentCarouselIndex.value = 0;
+      //   carouselController.animateToPage(
+      //     currentCarouselIndex.value,
+      //     duration: const Duration(milliseconds: 300),
+      //     curve: Curves.easeInOut,
+      //   );
+      // }
     }
   }
 
-  // Method to remove from remix outfits (optional)
-  void removeFromRemix(OutfitCardModel outfit) {
-    remixOutfits.remove(outfit);
-  }
-
-  // Method to clear all remix outfits (optional)
-  void clearRemixOutfits() {
-    remixOutfits.clear();
+  // Method to clear all remix products (optional)
+  void clearRemixProducts() {
+    remixProducts.clear();
   }
 }

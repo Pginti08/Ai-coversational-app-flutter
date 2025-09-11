@@ -119,8 +119,7 @@ class MyDesignsScreen extends StatelessWidget {
                     aspectRatio: 0.8,
                     viewportFraction: 0.8,
                     initialPage: 0,
-                    enableInfiniteScroll:
-                        true, // Changed to false for better indicator sync
+                    enableInfiniteScroll: false, // disable to avoid looping
                     reverse: false,
                     autoPlay: false,
                     autoPlayInterval: const Duration(seconds: 3),

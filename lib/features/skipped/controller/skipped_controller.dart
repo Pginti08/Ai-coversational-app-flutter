@@ -62,13 +62,13 @@ class SkippedController extends GetxController {
           isLoading.value = false;
           paginationLoading.value = false;
 
-          var notificationModel =
+          var skipProductListModel =
               SkipProductListModel.fromJson(result.data?.data);
-          skipProductsList.value += notificationModel.data?.items ?? [];
+          skipProductsList.value += skipProductListModel.data?.items ?? [];
           page.value = page.value + 1;
           if (skipProductsList.isNotEmpty) {
             if (skipProductsList.length.toString() ==
-                notificationModel.data?.total?.toString()) {
+                skipProductListModel.data?.total?.toString()) {
               nextPageStop.value = false;
             }
           }

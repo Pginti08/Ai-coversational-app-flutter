@@ -4,7 +4,6 @@ import 'package:ai_fashion/core/constants/flavors.dart';
 import 'package:ai_fashion/core/constants/storage_constants.dart';
 import 'package:ai_fashion/core/services/local_storage_service.dart';
 import 'package:ai_fashion/core/theme/app_theme.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,10 +49,7 @@ class App extends StatelessWidget {
           child: GetMaterialApp(
             debugShowCheckedModeBanner: false,
             theme: AppTheme.darkTheme,
-            initialRoute: isNotNullOrEmpty(LocalStorageService.instance
-                    .getString(StorageConstants.accessToken))
-                ? Routes.home
-                : Routes.splash,
+            initialRoute: Routes.splash,
             getPages: AppPages.routes,
             builder: (context, child) {
               return MediaQuery(

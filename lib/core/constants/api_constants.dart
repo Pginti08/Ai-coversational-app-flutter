@@ -2,7 +2,7 @@
 import 'package:ai_fashion/core/constants/flavors.dart';
 
 class ApiConstants {
-  static String authURL = Flavor.getFlavor == FlavorType.development
+  static String baseURL = Flavor.getFlavor == FlavorType.development
       ? 'http://13.235.114.164:3000'
       : Flavor.getFlavor == FlavorType.staging
           ? 'http://13.235.114.164:3000'
@@ -10,6 +10,25 @@ class ApiConstants {
               ? 'http://13.235.114.164:3000'
               : Flavor.getFlavor == FlavorType.production
                   ? 'http://13.235.114.164:3000'
+                  : '';
+  static String chatURL = Flavor.getFlavor == FlavorType.development
+      ? 'http://34.233.54.141:8000'
+      : Flavor.getFlavor == FlavorType.staging
+          ? 'http://34.233.54.141:8000'
+          : Flavor.getFlavor == FlavorType.demo
+              ? 'http://34.233.54.141:8000'
+              : Flavor.getFlavor == FlavorType.production
+                  ? 'http://34.233.54.141:8000'
+                  : '';
+
+  static String imageURL = Flavor.getFlavor == FlavorType.development
+      ? 'http://34.233.54.141:8000/uploads/'
+      : Flavor.getFlavor == FlavorType.staging
+          ? 'http://34.233.54.141:8000/uploads/'
+          : Flavor.getFlavor == FlavorType.demo
+              ? 'http://34.233.54.141:8000/uploads/'
+              : Flavor.getFlavor == FlavorType.production
+                  ? 'http://34.233.54.141:8000/uploads/'
                   : '';
 
   // Auth endpoints
@@ -25,6 +44,7 @@ class ApiConstants {
   static const String getSkipProducts = '/product/skips';
   static const String addresses = '/user/addresses';
   static const String bodyProfiles = '/user/body-profiles';
+  static const String getSessionList = '/sessions';
 
   // Headers
   static const Map<String, String> headers = {

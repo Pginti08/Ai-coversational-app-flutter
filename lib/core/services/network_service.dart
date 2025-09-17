@@ -7,7 +7,7 @@ import 'package:dio/dio.dart' as dioClient;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-enum BaseUrl { base, none }
+enum BaseUrl { base, chat, none }
 
 class MethodType {
   static const String post = 'POST';
@@ -92,7 +92,10 @@ class NetworkClient {
   String _getBaseUrl(BaseUrl type) {
     switch (type) {
       case BaseUrl.base:
-        return ApiConstants.authURL;
+        return ApiConstants.baseURL;
+
+      case BaseUrl.chat:
+        return ApiConstants.chatURL;
 
       case BaseUrl.none:
         return '';
@@ -140,7 +143,7 @@ class NetworkClient {
 
   Future<String?> _getAccessToken() async {
     try {
-      final token = await LocalStorageService.instance.getString(
+      final token = LocalStorageService.instance.getString(
         StorageConstants.accessToken,
       );
       return isNotNullOrEmpty(token) ? token : null;

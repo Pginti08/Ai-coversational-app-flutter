@@ -1,11 +1,11 @@
+import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
-import 'package:ai_fashion/features/home/models/product_list_model.dart';
+import 'package:ai_fashion/features/chat/models/chat_history_model.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,14 +15,12 @@ import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AiMessageTile extends StatefulWidget {
-  AiMessageTile({
+  const AiMessageTile({
     required this.message,
-    this.outfits,
     super.key,
   });
 
-  final String message;
-  final List<Product>? outfits;
+  final Message message;
 
   @override
   State<AiMessageTile> createState() => _AiMessageTileState();
@@ -31,6 +29,9 @@ class AiMessageTile extends StatefulWidget {
 class _AiMessageTileState extends State<AiMessageTile> {
   @override
   Widget build(BuildContext context) {
+    final hasOutfits =
+        widget.message.images != null && widget.message.images!.isNotEmpty;
+
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
@@ -45,13 +46,26 @@ class _AiMessageTileState extends State<AiMessageTile> {
               width: 20,
             ),
             hSizedBox10,
-            if (isNotNullOrEmpty(widget.outfits) &&
-                widget.outfits?.length == 1) ...[
+
+            // CASE 1: No outfits → just message
+            if (!hasOutfits)
+              GptMarkdown(
+                widget.message.message ?? "",
+                style: style400S16.copyWith(letterSpacing: 0.32),
+                onLinkTab: (url, title) {
+                  launchUrl(Uri.parse(url),
+                      mode: LaunchMode.externalApplication);
+                },
+              ),
+
+            // CASE 2: Exactly 1 outfit → image + message
+            if (hasOutfits && widget.message.images!.length == 1) ...[
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: AppNetworkImage(
-                  imageUrl: widget.outfits?.first.image ?? "",
-                  borderRadius: BorderRadius.circular(8),
+                  imageUrl:
+                      "${ApiConstants.imageURL}${widget.message.images!.first.filename ?? ""}",
+                  borderRadius: BorderRadius.circular(12),
                   fit: BoxFit.cover,
                   width: 210,
                   height: 315,
@@ -59,16 +73,19 @@ class _AiMessageTileState extends State<AiMessageTile> {
               ),
               hSizedBox10,
               GptMarkdown(
-                widget.message,
+                widget.message.message ?? "",
                 style: style400S16.copyWith(letterSpacing: 0.32),
                 onLinkTab: (url, title) {
                   launchUrl(Uri.parse(url),
                       mode: LaunchMode.externalApplication);
                 },
               ),
-            ] else if (isNotNullOrEmpty(widget.outfits)) ...[
+            ],
+
+            // CASE 3: Multiple outfits → message + card deck
+            if (hasOutfits && widget.message.images!.length > 1) ...[
               GptMarkdown(
-                widget.message,
+                widget.message.message ?? "",
                 style: style400S16.copyWith(letterSpacing: 0.32),
                 onLinkTab: (url, title) {
                   launchUrl(Uri.parse(url),
@@ -76,14 +93,15 @@ class _AiMessageTileState extends State<AiMessageTile> {
                 },
               ),
               hSizedBox30,
-              // The main change is here. We wrap the cards in a Container
-              // with a multi-layered boxShadow to create the glow effect.
               Align(
                 alignment: Alignment.center,
                 child: GestureDetector(
                   onTap: () {
-                    Get.toNamed(Routes.cardDeck,
-                        arguments: {"outfits": widget.outfits});
+                    Get.toNamed(Routes.cardDeck, arguments: {
+                      "outfits": widget.message.images
+                          ?.map((e) => e.filename ?? "")
+                          .toList()
+                    });
                   },
                   child: Container(
                     width: 200.w,
@@ -92,14 +110,12 @@ class _AiMessageTileState extends State<AiMessageTile> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
-                        // First shadow layer, using the first color of your gradient
                         BoxShadow(
                           color: AppColors.colorGradient[0].withAlpha(50),
                           blurRadius: 50,
                           spreadRadius: 5,
                           offset: const Offset(-20, 0),
                         ),
-                        // Second shadow layer, using the second color of your gradient
                         BoxShadow(
                           color: AppColors.colorGradient[1].withAlpha(50),
                           blurRadius: 50,
@@ -109,14 +125,14 @@ class _AiMessageTileState extends State<AiMessageTile> {
                       ],
                     ),
                     child: CardDeckWidget<String>(
-                      items: widget.outfits!
-                          .map((e) => e.image ?? '')
+                      items: widget.message.images!
+                          .map((e) => e.filename ?? "")
                           .toList()
                           .obs,
                       itemBuilder: (imageUrl) => ClipRRect(
                         borderRadius: BorderRadius.circular(14),
                         child: AppNetworkImage(
-                          imageUrl: imageUrl,
+                          imageUrl: "${ApiConstants.imageURL}$imageUrl",
                           borderRadius: BorderRadius.circular(14),
                           fit: BoxFit.cover,
                           width: 190.w,

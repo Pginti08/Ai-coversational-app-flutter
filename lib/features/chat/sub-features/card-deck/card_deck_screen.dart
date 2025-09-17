@@ -1,3 +1,4 @@
+import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
@@ -9,6 +10,7 @@ import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
 import 'package:ai_fashion/features/chat/controller/chat_controller.dart';
 import 'package:ai_fashion/features/chat/sub-features/card-deck/controller/card_deck_controller.dart';
+import 'package:ai_fashion/features/home/models/product_list_model.dart';
 import 'package:ai_fashion/features/home/widgets/product_outfit_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -47,7 +49,9 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
               child: CardSwiper(
                 controller: controller.cardSwiperController,
                 padding: EdgeInsets.zero,
-                numberOfCardsDisplayed: 4,
+                numberOfCardsDisplayed: controller.outfits.length < 4
+                    ? controller.outfits.length
+                    : 4,
                 scale: 0.97,
                 backCardOffset: Offset(0, 25),
                 allowedSwipeDirection:
@@ -57,7 +61,9 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                 cardBuilder:
                     (context, index, percentThresholdX, percentThresholdY) {
                   return ProductOutfitCard(
-                    product: controller.outfits[index],
+                    product: Product(
+                        image:
+                            "${ApiConstants.imageURL}${controller.outfits[index]}"),
                     isFirst: (controller.currentCardIndex.value == index).obs,
                     swipeProgress:
                         double.tryParse(percentThresholdX.toString()) ?? 0,
@@ -93,7 +99,7 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
             SafeArea(
               top: false,
               child: Obx(() => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -144,7 +150,7 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                       height: 28,
                                     ),
                                   ),
-                                  wSizedBox12,
+                                  wSizedBox10,
                                   CommonContainer(
                                     onTap: () {
                                       controller.cardSwiperController
@@ -162,7 +168,7 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                       height: 28,
                                     ),
                                   ),
-                                  wSizedBox12,
+                                  wSizedBox10,
                                   AppButton(
                                     height: 52,
                                     onTap: () {
@@ -223,7 +229,7 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                             ),
                                             child: Obx(() => CardDeckWidget(
                                                   items: controller.remixOutfits
-                                                      .map((e) => e.image ?? "")
+                                                      .map((e) => e)
                                                       .toList()
                                                       .obs,
                                                   itemBuilder: (imageUrl) =>
@@ -232,7 +238,8 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                                         BorderRadius.circular(
                                                             4),
                                                     child: AppNetworkImage(
-                                                      imageUrl: imageUrl,
+                                                      imageUrl:
+                                                          "${ApiConstants.imageURL}$imageUrl",
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               4),

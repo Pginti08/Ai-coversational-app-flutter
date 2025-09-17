@@ -16,7 +16,7 @@ class HapticService {
   /// Medium tap feedback
   static Future<void> medium() async {
     if (Platform.isIOS) {
-      HapticService.medium();
+      HapticFeedback.mediumImpact(); // ✅ Fixed
     } else {
       _androidVibrate(duration: 30, amplitude: 100);
     }
@@ -46,8 +46,10 @@ class HapticService {
   }
 
   /// Internal: Android vibration with control
-  static Future<void> _androidVibrate(
-      {int duration = 30, int amplitude = -1}) async {
+  static Future<void> _androidVibrate({
+    int duration = 30,
+    int amplitude = -1,
+  }) async {
     if (await Vibration.hasVibrator()) {
       Vibration.vibrate(duration: duration, amplitude: amplitude);
     }

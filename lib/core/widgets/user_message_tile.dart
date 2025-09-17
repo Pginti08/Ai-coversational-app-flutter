@@ -1,18 +1,18 @@
+import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
-import 'package:ai_fashion/features/home/models/product_list_model.dart';
+import 'package:ai_fashion/features/chat/models/chat_history_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UserMessageTile extends StatelessWidget {
-  const UserMessageTile({required this.message, this.outfits, super.key});
+  const UserMessageTile({required this.message, super.key});
 
-  final String message;
-  final List<Product>? outfits;
+  final Message message;
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +21,17 @@ class UserMessageTile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if ((outfits ?? []).isNotEmpty) ...[
+          if ((message.refImage ?? []).isNotEmpty) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 CardDeckWidget(
                   maxCards: 4,
-                  items: (outfits ?? <Product>[])
-                      .map((e) => e.image ?? "")
-                      .toList()
-                      .obs,
+                  items: ([message.refImage]).map((e) => e ?? "").toList().obs,
                   itemBuilder: (imageUrl) => ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: AppNetworkImage(
-                      imageUrl: imageUrl,
+                      imageUrl: "${ApiConstants.imageURL}$imageUrl",
                       borderRadius: BorderRadius.circular(8),
                       fit: BoxFit.cover,
                       width: 100,
@@ -44,7 +41,7 @@ class UserMessageTile extends StatelessWidget {
                 ),
               ],
             ),
-            hSizedBox2
+            hSizedBox6,
           ],
           Container(
             constraints: BoxConstraints(
@@ -66,7 +63,7 @@ class UserMessageTile extends StatelessWidget {
                       ),
                     ),
                     child: GptMarkdown(
-                      message,
+                      message.message ?? "",
                       style: style400S16.copyWith(letterSpacing: 0.32),
                       onLinkTab: (url, title) {
                         launchUrl(

@@ -4,7 +4,8 @@ import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:flutter/material.dart';
 
 class AiTypingTile extends StatelessWidget {
-  const AiTypingTile({super.key});
+  const AiTypingTile({required this.message, super.key});
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class AiTypingTile extends StatelessWidget {
               width: 28,
             ),
             hSizedBox10,
-            Text("Finding curated dresses for you...",
+            Text(message ?? "Finding curated dresses for you...",
                 style: style400S16.copyWith(letterSpacing: 0.32)),
           ],
         ),

@@ -30,16 +30,23 @@ class _PastConversationState extends State<PastConversation> {
   final controller = Get.find<ChatController>();
 
   RxList<Session> sessionList = <Session>[].obs;
-
   RxBool loader = false.obs;
+  RxBool hasLoadedOnce =
+      false.obs; // Track if API has been called for current drawer opening
 
   Future getSessionList() async {
+    if (hasLoadedOnce.value)
+      return; // Don't load if already loaded for this drawer opening
+
     loader.value = true;
+    hasLoadedOnce.value = true; // Mark as loaded
+
     var result = await NetworkClient.instance.callApi(
       "${ApiConstants.getSessionList}",
       MethodType.get,
       baseUrlType: BaseUrl.chat,
     );
+
     if (result.isSuccess) {
       loader.value = false;
       var sessionsModel = SessionsModel.fromJson(result.data?.data);
@@ -51,9 +58,20 @@ class _PastConversationState extends State<PastConversation> {
   }
 
   @override
-  void didChangeDependencies() {
-    getSessionList();
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    // Don't call getSessionList here anymore
+
+    // Listen to drawer open/close state
+    ever(controller.isDrawerOpen, (bool isOpen) {
+      if (isOpen && !hasLoadedOnce.value) {
+        // Only call API when drawer opens and hasn't been loaded yet
+        getSessionList();
+      } else if (!isOpen) {
+        // Reset the flag when drawer closes so it can load again next time it opens
+        hasLoadedOnce.value = false;
+      }
+    });
   }
 
   @override
@@ -73,7 +91,7 @@ class _PastConversationState extends State<PastConversation> {
                   },
                   itemBuilder: (context, index) {
                     return shimmer(
-                      color: AppColors.grey2Color,
+                      color: const Color(0xFF222222),
                       child: shimmerContainer(
                         height: 40,
                         borderRadius: 6,

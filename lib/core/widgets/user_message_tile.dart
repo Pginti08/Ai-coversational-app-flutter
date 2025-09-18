@@ -1,5 +1,6 @@
 import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
+import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
@@ -21,7 +22,7 @@ class UserMessageTile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if ((message.refImage ?? []).isNotEmpty) ...[
+          if (isNotNullOrEmpty(message.refImage)) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

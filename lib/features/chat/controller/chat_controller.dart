@@ -1,10 +1,15 @@
 import 'dart:developer' show log;
+import 'dart:io';
 
+import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/constants/storage_constants.dart';
 import 'package:ai_fashion/core/services/local_storage_service.dart';
 import 'package:ai_fashion/core/services/network_service.dart';
+import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/widgets/app_toast.dart';
 import 'package:ai_fashion/features/chat/models/chat_history_model.dart';
+import 'package:ai_fashion/features/chat/models/sessions_model.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -17,6 +22,8 @@ class ChatController extends GetxController {
   final ScrollController scrollController = ScrollController();
 
   final RxBool loader = false.obs;
+  final RxBool uploadLoader = false.obs;
+
   RxInt page = 1.obs;
   RxBool paginationLoading = false.obs;
   RxBool nextPageStop = true.obs;
@@ -28,14 +35,16 @@ class ChatController extends GetxController {
   String? currentSessionId;
 
   RxList<String> userSelectedRemixOutfits = <String>[].obs;
+  RxString uploadImage = "".obs;
+
   // Chat messages list
   final RxList<Message> messages = <Message>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    connectSocket();
     _enableWakelock();
+    getSessionList();
     manageScrollController();
   }
 
@@ -89,8 +98,35 @@ class ChatController extends GetxController {
     );
   }
 
-  getChatHistoryApi(
-      {bool isInitial = true, bool isChangeSession = false}) async {
+  Future getSessionList() async {
+    loader.value = true;
+
+    var result = await NetworkClient.instance.callApi(
+      "${ApiConstants.getSessionList}",
+      MethodType.get,
+      baseUrlType: BaseUrl.chat,
+    );
+
+    if (result.isSuccess) {
+      loader.value = false;
+
+      var sessionsModel = SessionsModel.fromJson(result.data?.data);
+      var sessionList = sessionsModel.data?.items ?? [];
+      if (sessionList.isNotEmpty) {
+        currentSessionId = sessionList.first.id;
+        if (isNotNullOrEmpty(currentSessionId)) {
+          getChatHistoryApi();
+        } else {
+          connectSocket(isConnectExisting: true);
+        }
+      }
+    } else {
+      loader.value = false;
+      toast(result.error ?? "Failed to load data");
+    }
+  }
+
+  getChatHistoryApi({bool isInitial = true}) async {
     try {
       if (isInitial) {
         messages.clear(); // Use clear() instead of assigning empty list
@@ -98,7 +134,6 @@ class ChatController extends GetxController {
         nextPageStop.value = true;
         loader.value = true;
       }
-
       if (nextPageStop.isTrue) {
         var result = await NetworkClient.instance.callApi(
           "/sessions/${currentSessionId}/chats?page=${page.value}&limit=20",
@@ -109,14 +144,9 @@ class ChatController extends GetxController {
         if (result.isSuccess) {
           loader.value = false;
           paginationLoading.value = false;
-
-          if (isChangeSession) {
-            joinSession(currentSessionId ?? "");
+          if (isInitial) {
+            connectSocket(isConnectExisting: true);
           }
-
-          loader.value = false;
-          paginationLoading.value = false;
-
           var chatHistoryModel = ChatHistoryModel.fromJson(result.data?.data);
           messages.value += chatHistoryModel.data?.items ?? [];
           page.value = page.value + 1;
@@ -138,7 +168,7 @@ class ChatController extends GetxController {
     }
   }
 
-  void connectSocket() {
+  void connectSocket({bool isConnectExisting = false}) {
     loader.value = true;
 
     socket = IO.io(
@@ -166,6 +196,11 @@ class ChatController extends GetxController {
     socket.onConnect((_) {
       loader.value = false;
       debugPrint('✅ Socket.IO connected');
+      if (isConnectExisting) {
+        joinExistingSessionEvent(currentSessionId ?? "");
+      } else {
+        createNewSessionEvent();
+      }
     });
 
     socket.onDisconnect((_) {
@@ -265,36 +300,90 @@ class ChatController extends GetxController {
         Message(
             sender: "user",
             message: message,
-            refImage: userSelectedRemixOutfits.firstOrNull));
-    isThinking.value = true;
-
+            refImage:
+                userSelectedRemixOutfits.firstOrNull ?? uploadImage.value));
     socket.emit("user_message", {
       "prompt": message,
-      "reference_filename": userSelectedRemixOutfits.isEmpty
-          ? null
-          : userSelectedRemixOutfits.first, // optional
+      "reference_filename": userSelectedRemixOutfits.isNotEmpty
+          ? userSelectedRemixOutfits.first
+          : isNotNullOrEmpty(uploadImage.value)
+              ? uploadImage.value
+              : null,
+      "session_id": currentSessionId
     });
     userSelectedRemixOutfits.clear();
+    uploadImage.value = "";
+    log({
+      "prompt": message,
+      "reference_filename": userSelectedRemixOutfits.isNotEmpty
+          ? userSelectedRemixOutfits.first
+          : isNotNullOrEmpty(uploadImage.value)
+              ? uploadImage.value
+              : null,
+      "session_id": currentSessionId
+    }.toString());
   }
 
   /// Join existing session
-  void joinSession(String sessionId) {
-    loader.value = true;
+  void joinExistingSessionEvent(String sessionId) {
     socket.emit("join_session", {"session_id": sessionId});
   }
 
-  void changeSession(String sessionId) {
+  void createNewSessionEvent() {
+    socket.emit("join_session", {});
+  }
+
+  void changeSession(String sessionId) async {
     toggleDrawer();
+    resetAndCloseSession();
     currentSessionId = sessionId;
-    getChatHistoryApi(isChangeSession: true);
+    getChatHistoryApi();
   }
 
   void newSession() {
     toggleDrawer();
+    resetAndCloseSession();
     currentSessionId = null;
-    messages.clear(); // Clear messages for new session
+    connectSocket();
+  }
+
+  void resetAndCloseSession() {
+    socket.close();
+    loader.value = false;
+    messages.clear();
     page.value = 1;
     nextPageStop.value = true;
+  }
+
+  Future<void> imageUploadApi(File imageFile) async {
+    try {
+      uploadLoader.value = true;
+      var result = await NetworkClient.instance
+          .callApi("${ApiConstants.uploadImage}", MethodType.post,
+              baseUrlType: BaseUrl.chat,
+              headers: {"Content-Type": "multipart/form-data"},
+              params: dio.FormData.fromMap({
+                'file': dio.MultipartFile.fromFileSync(
+                  imageFile.path,
+                  filename: imageFile.path.split('/').last,
+                  contentType: dio.DioMediaType("image", "png"),
+                )
+              }));
+
+      if (result.isSuccess) {
+        if (result.data != null &&
+            result.data?.data != null &&
+            result.data?.data["url"] != null)
+          uploadImage.value =
+              "${result.data?.data["url"].toString().replaceFirst("/uploads/", "")}";
+      } else {
+        toast(result.error.toString());
+      }
+    } catch (e) {
+      toast(e.toString());
+    } finally {
+      uploadLoader.value = false;
+    }
   }
 
   @override

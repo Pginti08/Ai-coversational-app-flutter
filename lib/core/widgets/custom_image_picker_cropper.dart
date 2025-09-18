@@ -6,12 +6,12 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 Future<void> imagePickerCropper(
-  BuildContext context,
   Function(File file) selectedImage,
 ) async {
   XFile? pickedFile;
   try {
-    pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    pickedFile = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 50);
   } catch (e) {
     debugPrint(e.toString());
   }
@@ -55,5 +55,36 @@ Future<void> imagePickerCropper(
     }
   } else {
     return;
+  }
+}
+
+Future<void> imagePicker(
+  Function(File file) selectedImage,
+) async {
+  try {
+    final XFile? pickedFile = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 50);
+
+    if (pickedFile != null) {
+      selectedImage(File(pickedFile.path));
+    }
+  } catch (e) {
+    debugPrint("Image pick error: $e");
+  }
+}
+
+Future<void> capturePhoto(
+  Function(File file) capturedImage,
+) async {
+  try {
+    final XFile? image = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      imageQuality: 30, // lower for compression
+    );
+    if (image != null) {
+      capturedImage(File(image.path));
+    }
+  } catch (e) {
+    debugPrint("Camera pick error: $e");
   }
 }

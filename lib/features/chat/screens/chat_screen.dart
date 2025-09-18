@@ -5,18 +5,21 @@ import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
+import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/ai_message_tile.dart';
 import 'package:ai_fashion/core/widgets/ai_typing_tile.dart';
 import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/app_text_field.dart';
+import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
 import 'package:ai_fashion/core/widgets/user_message_tile.dart';
 import 'package:ai_fashion/features/chat/controller/chat_controller.dart';
 import 'package:ai_fashion/features/chat/screens/widgets/past_conversation.dart';
+import 'package:ai_fashion/features/chat/screens/widgets/upload_image_type_bottom_sheet.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -200,8 +203,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       if (controller.isThinking.value && index == 0) {
                         return Padding(
                           padding: EdgeInsets.only(bottom: 16),
-                          child: AiTypingTile(
-                              message: controller.thinkingMessage.value),
+                          child:
+                              AiTypingTile(message: controller.thinkingMessage),
                         );
                       }
 
@@ -238,7 +241,8 @@ class _ChatScreenState extends State<ChatScreen> {
               SizedBox(
                 height: controller.showBrandContainer.value
                     ? 200.h
-                    : controller.userSelectedRemixOutfits.isNotEmpty
+                    : controller.userSelectedRemixOutfits.isNotEmpty ||
+                            isNotNullOrEmpty(controller.uploadImage.value)
                         ? 160.h
                         : 100.h,
               )
@@ -329,7 +333,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   return CommonContainer(
                       onTap: () {
                         // Handle brand selection
-                        if (!controller.isThinking.value) {
+                        if (!controller.isThinking.value &&
+                            !controller.uploadLoader.value) {
                           controller.sendMessage(message: "Dresses by Zara");
                           controller.showBrandContainer.value = false;
                         }
@@ -375,10 +380,12 @@ class _ChatScreenState extends State<ChatScreen> {
                           gradient: LinearGradient(
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
-                            colors:
-                                controller.userSelectedRemixOutfits.isNotEmpty
-                                    ? AppColors.colorGradient
-                                    : AppColors.glassBorderGradient,
+                            colors: controller
+                                        .userSelectedRemixOutfits.isNotEmpty ||
+                                    isNotNullOrEmpty(
+                                        controller.uploadImage.value)
+                                ? AppColors.colorGradient
+                                : AppColors.glassBorderGradient,
                           ),
                         ),
                         borderRadius: BorderRadius.circular(24),
@@ -435,6 +442,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 controller
                                                     .userSelectedRemixOutfits
                                                     .clear();
+                                                controller.uploadImage.value =
+                                                    "";
                                               },
                                               child: SvgPicture.asset(
                                                 AssetConstants.closeCircleIcon,
@@ -445,7 +454,75 @@ class _ChatScreenState extends State<ChatScreen> {
                                       ),
                                     ],
                                   )
-                                : SizedBox.shrink(),
+                                : isNotNullOrEmpty(controller.uploadImage.value)
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                        vertical: 8.0)
+                                                    .copyWith(right: 10),
+                                                child: CardDeckWidget(
+                                                  maxCards: 1,
+                                                  items: [
+                                                    controller.uploadImage.value
+                                                  ].obs,
+                                                  itemBuilder: (imageUrl) =>
+                                                      ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                    child: AppNetworkImage(
+                                                      imageUrl:
+                                                          "${ApiConstants.imageURL}$imageUrl",
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                      fit: BoxFit.cover,
+                                                      width: 50,
+                                                      height: 50,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                right: 0,
+                                                top: 0,
+                                                child: CommonContainer(
+                                                  isCircle: true,
+                                                  width: 24,
+                                                  height: 24,
+                                                  backgroundColor:
+                                                      Color(0xFF797877),
+                                                  onTap: () {
+                                                    controller
+                                                        .userSelectedRemixOutfits
+                                                        .clear();
+                                                    controller
+                                                        .uploadImage.value = "";
+                                                  },
+                                                  child: SvgPicture.asset(
+                                                    AssetConstants
+                                                        .closeCircleIcon,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    : controller.uploadLoader.value
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(12),
+                                            child: RotatingLoader(
+                                              size: 30,
+                                            ),
+                                          )
+                                        : SizedBox.shrink(),
                           ),
                           AppTextField(
                             focusNode: controller.typeFocusNode,
@@ -456,12 +533,14 @@ class _ChatScreenState extends State<ChatScreen> {
                             borderColor: Colors.transparent,
                             onSubmitted: (value) {
                               if (value.trim().isNotEmpty &&
-                                  !controller.isThinking.value) {
+                                  !controller.isThinking.value &&
+                                  !controller.uploadLoader.value) {
                                 controller.sendMessage(
                                   message: value.trim(),
                                 );
                                 _textController.clear();
                                 controller.userSelectedRemixOutfits.clear();
+                                controller.uploadImage.value = "";
                               }
                             },
                           ),
@@ -477,7 +556,28 @@ class _ChatScreenState extends State<ChatScreen> {
                                         AppColors.greyTextColor.withAlpha(100),
                                     enableBlur: true,
                                     isCircle: true,
-                                    onTap: () {},
+                                    onTap: () async {
+                                      final File? pickedImage =
+                                          await BlurBottomSheet().show<File?>(
+                                        height:
+                                            MediaQuery.sizeOf(context).height *
+                                                0.2,
+                                        context: context,
+                                        borderColor:
+                                            AppColors.whiteColor.withAlpha(40),
+                                        backgroundColor:
+                                            AppColors.scaffoldColor,
+                                        barrierColor:
+                                            AppColors.blackColor.withAlpha(50),
+                                        blurStrength: 30,
+                                        isCloseButton: true,
+                                        child:
+                                            const UploadImageTypeBottomSheet(),
+                                      );
+                                      if (pickedImage != null) {
+                                        controller.imageUploadApi(pickedImage);
+                                      }
+                                    },
                                     padding: EdgeInsets.all(4),
                                     child: Icon(Icons.add),
                                   ),
@@ -512,7 +612,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                         if (_textController.text
                                                 .trim()
                                                 .isNotEmpty &&
-                                            !controller.isThinking.value) {
+                                            !controller.isThinking.value &&
+                                            !controller.uploadLoader.value) {
                                           controller.sendMessage(
                                             message:
                                                 _textController.text.trim(),
@@ -520,6 +621,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           _textController.clear();
                                           controller.userSelectedRemixOutfits
                                               .clear();
+                                          controller.uploadImage.value = "";
                                         }
                                       },
                                       icon: SvgPicture.asset(

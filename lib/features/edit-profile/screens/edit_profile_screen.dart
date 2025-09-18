@@ -117,7 +117,7 @@ class EditProfileScreen extends StatelessWidget {
                                 bottom: 0,
                                 child: CommonContainer(
                                     onTap: () {
-                                      imagePickerCropper(context, (file) {
+                                      imagePickerCropper((file) {
                                         controller.newProfileImage.value = file;
                                       });
                                     },

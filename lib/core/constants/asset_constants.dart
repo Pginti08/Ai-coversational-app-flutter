@@ -58,6 +58,8 @@ class AssetConstants {
   static const warning = '${icons}warning.svg';
   static const notification = '${icons}notification.svg';
   static const tickCircleGreen = '${icons}tick-circle-green.svg';
+  static const camera = '${icons}camera.svg';
+  static const gallery = '${icons}gallery.svg';
 
   ///__________________________________ gif __________________________________///
 

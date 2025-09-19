@@ -311,8 +311,6 @@ class ChatController extends GetxController {
               : null,
       "session_id": currentSessionId
     });
-    userSelectedRemixOutfits.clear();
-    uploadImage.value = "";
     log({
       "prompt": message,
       "reference_filename": userSelectedRemixOutfits.isNotEmpty
@@ -322,6 +320,8 @@ class ChatController extends GetxController {
               : null,
       "session_id": currentSessionId
     }.toString());
+    userSelectedRemixOutfits.clear();
+    uploadImage.value = "";
   }
 
   /// Join existing session

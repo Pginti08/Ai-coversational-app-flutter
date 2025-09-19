@@ -30,8 +30,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.vrozart.aifashion"
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    compileSdkVersion 36
+    ndkVersion "28.0.12433566"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -51,8 +51,8 @@ android {
         applicationId "com.vrozart.aifashion"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 28
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

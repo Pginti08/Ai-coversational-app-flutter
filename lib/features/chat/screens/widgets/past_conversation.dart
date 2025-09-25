@@ -7,9 +7,9 @@ import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_button.dart';
+import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/app_toast.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
-import 'package:ai_fashion/core/widgets/shimmer_utils.dart';
 import 'package:ai_fashion/features/chat/controller/chat_controller.dart';
 import 'package:ai_fashion/features/chat/models/sessions_model.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
@@ -80,52 +80,36 @@ class _PastConversationState extends State<PastConversation> {
       scaffoldColor: Color(0xFF121212),
       body: Container(
         child: Obx(
-          () => loader.value
-              ? ListView.separated(
-                  shrinkWrap: true,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-                  itemCount: 20,
-                  separatorBuilder: (context, index) {
-                    return hSizedBox20;
-                  },
-                  itemBuilder: (context, index) {
-                    return shimmer(
-                      color: const Color(0xFF222222),
-                      child: shimmerContainer(
-                        height: 40,
-                        borderRadius: 6,
-                      ),
-                    );
-                  },
-                )
-              : SafeArea(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          () => SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10),
+                  child: Row(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 12.w, vertical: 10),
+                      Expanded(
                         child: Row(
                           children: [
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Conversations".toUpperCase(),
-                                    style: style700S16.copyWith(
-                                      letterSpacing: 1.28,
-                                      color: Color(0xFFCCCCCC),
-                                    ),
-                                  ),
-                                ],
+                            Text(
+                              "Conversations".toUpperCase(),
+                              style: style700S16.copyWith(
+                                letterSpacing: 1.28,
+                                color: Color(0xFFCCCCCC),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Expanded(
-                        child: ListView.separated(
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: loader.value
+                      ? Center(
+                          child: RotatingLoader(),
+                        )
+                      : ListView.separated(
                           shrinkWrap: true,
                           padding: EdgeInsets.zero,
                           itemCount: sessionList.length,
@@ -156,7 +140,8 @@ class _PastConversationState extends State<PastConversation> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            sessionList[index].title ?? "",
+                                            sessionList[index].firstMessage ??
+                                                "",
                                             overflow: TextOverflow.ellipsis,
                                             style: style400S16.copyWith(
                                               color: Color(0xFFE0E0E0),
@@ -172,54 +157,54 @@ class _PastConversationState extends State<PastConversation> {
                             );
                           },
                         ),
-                      ),
-                      hSizedBox12,
-                      Divider(
-                        thickness: 0.5,
-                        color: AppColors.dividerColor,
-                      ),
-                      hSizedBox12,
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.w),
-                        child: Column(
+                ),
+                hSizedBox12,
+                Divider(
+                  thickness: 0.5,
+                  color: AppColors.dividerColor,
+                ),
+                hSizedBox12,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.w),
+                  child: Column(
+                    children: [
+                      AppButton(
+                        onTap: () {
+                          controller.newSession();
+                        },
+                        isOutlined: true,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            AppButton(
-                              onTap: () {
-                                controller.newSession();
-                              },
-                              isOutlined: true,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(AssetConstants.edit),
-                                  wSizedBox6,
-                                  Text("New Chat", style: style700S16),
-                                ],
-                              ),
-                            ),
-                            hSizedBox12,
-                            AppButton(
-                              onTap: () {
-                                Get.toNamed(Routes.myDesigns);
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(AssetConstants.colorfilter),
-                                  wSizedBox6,
-                                  Text("My Designs",
-                                      style: style700S16.copyWith(
-                                          color: AppColors.blackColor)),
-                                ],
-                              ),
-                            ),
+                            SvgPicture.asset(AssetConstants.edit),
+                            wSizedBox6,
+                            Text("New Chat", style: style700S16),
                           ],
                         ),
                       ),
-                      if (Platform.isAndroid) hSizedBox10,
+                      hSizedBox12,
+                      AppButton(
+                        onTap: () {
+                          Get.toNamed(Routes.myDesigns);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(AssetConstants.colorfilter),
+                            wSizedBox6,
+                            Text("My Designs",
+                                style: style700S16.copyWith(
+                                    color: AppColors.blackColor)),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
+                if (Platform.isAndroid) hSizedBox10,
+              ],
+            ),
+          ),
         ),
       ),
     );

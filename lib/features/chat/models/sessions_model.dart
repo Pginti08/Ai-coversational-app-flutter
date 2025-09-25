@@ -71,16 +71,20 @@ class Session {
   String? userId;
   UserDetails? userDetails;
   dynamic image;
-  String? title;
+  String? firstMessage;
+  String? lastMessage;
   DateTime? createdAt;
+  DateTime? updatedAt;
 
   Session({
     this.id,
     this.userId,
     this.userDetails,
     this.image,
-    this.title,
+    this.firstMessage,
+    this.lastMessage,
     this.createdAt,
+    this.updatedAt,
   });
 
   factory Session.fromJson(Map<String, dynamic> json) => Session(
@@ -90,10 +94,14 @@ class Session {
             ? null
             : UserDetails.fromJson(json["userDetails"]),
         image: json["image"],
-        title: json["title"],
+        firstMessage: json["firstMessage"],
+        lastMessage: json["lastMessage"],
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -101,8 +109,10 @@ class Session {
         "userId": userId,
         "userDetails": userDetails?.toJson(),
         "image": image,
-        "title": title,
+        "firstMessage": firstMessage,
+        "lastMessage": lastMessage,
         "createdAt": createdAt?.toIso8601String(),
+        "updatedAt": updatedAt?.toIso8601String(),
       };
 }
 

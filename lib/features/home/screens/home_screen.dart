@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen>
         Get.toNamed(Routes.skipped);
         break;
       case ThumbSelection.shuffle:
-        print("Shuffle selected");
+        controller.getSuggestedProducts();
         break;
       case ThumbSelection.favorite:
         Get.toNamed(Routes.liked);

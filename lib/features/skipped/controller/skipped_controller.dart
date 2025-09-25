@@ -81,6 +81,7 @@ class SkippedController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       paginationLoading.value = false;
+      toast(e.toString());
     }
   }
 }

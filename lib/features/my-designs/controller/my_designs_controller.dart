@@ -45,7 +45,11 @@ class MyDesignsController extends GetxController {
       // Avoid duplicates
       if (!remixOutfits
           .any((outfit) => outfit.imageUrl == currentOutfit.imageUrl)) {
-        remixOutfits.add(currentOutfit);
+        if (remixOutfits.length < 4) {
+          remixOutfits.add(currentOutfit);
+        } else {
+          toast("You can select maximum 4 images in Remix");
+        }
       } else {
         toast("Already in Remix");
       }

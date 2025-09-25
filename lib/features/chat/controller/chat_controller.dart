@@ -27,7 +27,7 @@ class ChatController extends GetxController {
   RxInt page = 1.obs;
   RxBool paginationLoading = false.obs;
   RxBool nextPageStop = true.obs;
-  late IO.Socket socket;
+  IO.Socket? socket;
 
   final RxBool isThinking = false.obs;
   final Rx<String?> thinkingMessage = Rx<String?>(null);
@@ -82,7 +82,9 @@ class ChatController extends GetxController {
       () {
         if (scrollController.position.maxScrollExtent ==
             scrollController.position.pixels) {
-          if (nextPageStop.isTrue && paginationLoading.isFalse) {
+          if (nextPageStop.isTrue &&
+              paginationLoading.isFalse &&
+              currentSessionId != null) {
             if (scrollController.hasClients) {
               scrollController.animateTo(
                 scrollController.position.maxScrollExtent + 100,
@@ -112,13 +114,16 @@ class ChatController extends GetxController {
 
       var sessionsModel = SessionsModel.fromJson(result.data?.data);
       var sessionList = sessionsModel.data?.items ?? [];
+
       if (sessionList.isNotEmpty) {
         currentSessionId = sessionList.first.id;
         if (isNotNullOrEmpty(currentSessionId)) {
           getChatHistoryApi();
         } else {
-          connectSocket(isConnectExisting: true);
+          connectSocket();
         }
+      } else {
+        connectSocket();
       }
     } else {
       loader.value = false;
@@ -136,7 +141,7 @@ class ChatController extends GetxController {
       }
       if (nextPageStop.isTrue) {
         var result = await NetworkClient.instance.callApi(
-          "/sessions/${currentSessionId}/chats?page=${page.value}&limit=20",
+          "/sessions/${currentSessionId}/chats?page=${page.value}&limit=100",
           baseUrlType: BaseUrl.chat,
           MethodType.get,
         );
@@ -189,11 +194,11 @@ class ChatController extends GetxController {
     );
 
     // 🔥 Log all events
-    socket.onAny((event, data) {
+    socket?.onAny((event, data) {
       log("📩 Event: $event | Data: $data");
     });
 
-    socket.onConnect((_) {
+    socket?.onConnect((_) {
       loader.value = false;
       debugPrint('✅ Socket.IO connected');
       if (isConnectExisting) {
@@ -203,25 +208,25 @@ class ChatController extends GetxController {
       }
     });
 
-    socket.onDisconnect((_) {
+    socket?.onDisconnect((_) {
       debugPrint('⚠️ Socket.IO disconnected');
       isThinking.value = false;
       loader.value = false;
     });
 
-    socket.onConnectError((err) {
+    socket?.onConnectError((err) {
       debugPrint('🔌 connect error: $err');
       loader.value = false;
     });
 
-    socket.onError((err) {
+    socket?.onError((err) {
       debugPrint('❌ socket error: $err');
       isThinking.value = false;
       loader.value = false;
     });
 
     // server events (match your backend event names)
-    socket.on('server_message', (data) {
+    socket?.on('server_message', (data) {
       final msg = (data is Map && data['msg'] != null)
           ? data['msg'].toString()
           : data.toString();
@@ -231,18 +236,18 @@ class ChatController extends GetxController {
       }
     });
 
-    socket.on('session_created', (data) {
+    socket?.on('session_created', (data) {
       final msg = (data is Map && data['session_id'] != null)
           ? data['session_id'].toString()
           : data.toString();
       currentSessionId = msg;
     });
 
-    socket.on('session_joined', (data) {
+    socket?.on('session_joined', (data) {
       loader.value = false;
     });
 
-    socket.on('generation_started', (data) {
+    socket?.on('generation_started', (data) {
       final msg = (data is Map && data['msg'] != null)
           ? data['msg'].toString()
           : data.toString();
@@ -250,7 +255,7 @@ class ChatController extends GetxController {
       isThinking.value = true;
     });
 
-    socket.on('chat_response', (data) {
+    socket?.on('chat_response', (data) {
       isThinking.value = false;
       if (data is Map) {
         final reply = (data['response'] ?? data['message'])?.toString() ?? '';
@@ -261,7 +266,7 @@ class ChatController extends GetxController {
       }
     });
 
-    socket.on('generation_complete', (data) {
+    socket?.on('generation_complete', (data) {
       isThinking.value = false;
       if (data is Map) {
         final String msg = (data['msg'] != null)
@@ -281,7 +286,7 @@ class ChatController extends GetxController {
       }
     });
 
-    socket.on('error', (data) {
+    socket?.on('error', (data) {
       final err = (data is Map && data['error'] != null)
           ? data['error'].toString()
           : data.toString();
@@ -295,42 +300,47 @@ class ChatController extends GetxController {
     if (message.trim().isEmpty) return;
 
     FocusManager.instance.primaryFocus?.unfocus();
+
+    final refImages = isNotNullOrEmpty(userSelectedRemixOutfits)
+        ? userSelectedRemixOutfits.toList() // ✅ copy instead of reference
+        : [uploadImage.value];
+
     messages.insert(
-        0,
-        Message(
-            sender: "user",
-            message: message,
-            refImage:
-                userSelectedRemixOutfits.firstOrNull ?? uploadImage.value));
-    socket.emit("user_message", {
+      0,
+      Message(
+        sender: "user",
+        message: message,
+        sessionId: currentSessionId,
+        refImage: refImages,
+      ),
+    );
+
+    socket?.emit("user_message", {
       "prompt": message,
-      "reference_filename": userSelectedRemixOutfits.isNotEmpty
-          ? userSelectedRemixOutfits.first
-          : isNotNullOrEmpty(uploadImage.value)
-              ? uploadImage.value
-              : null,
-      "session_id": currentSessionId
+      "reference_filename": refImages, // ✅ send the copy too
+      "uploaded_reference": [uploadImage.value],
+      "session_id": currentSessionId,
     });
+
     log({
       "prompt": message,
-      "reference_filename": userSelectedRemixOutfits.isNotEmpty
-          ? userSelectedRemixOutfits.first
-          : isNotNullOrEmpty(uploadImage.value)
-              ? uploadImage.value
-              : null,
-      "session_id": currentSessionId
+      "reference_filename": refImages,
+      "uploaded_reference": [uploadImage.value],
+      "session_id": currentSessionId,
     }.toString());
+
+    // Now safe to clear
     userSelectedRemixOutfits.clear();
     uploadImage.value = "";
   }
 
   /// Join existing session
   void joinExistingSessionEvent(String sessionId) {
-    socket.emit("join_session", {"session_id": sessionId});
+    socket?.emit("join_session", {"session_id": sessionId});
   }
 
   void createNewSessionEvent() {
-    socket.emit("join_session", {});
+    socket?.emit("join_session", {});
   }
 
   void changeSession(String sessionId) async {
@@ -348,7 +358,7 @@ class ChatController extends GetxController {
   }
 
   void resetAndCloseSession() {
-    socket.close();
+    socket?.close();
     loader.value = false;
     messages.clear();
     page.value = 1;
@@ -374,8 +384,7 @@ class ChatController extends GetxController {
         if (result.data != null &&
             result.data?.data != null &&
             result.data?.data["url"] != null)
-          uploadImage.value =
-              "${result.data?.data["url"].toString().replaceFirst("/uploads/", "")}";
+          uploadImage.value = "${result.data?.data["filename"].toString()}";
       } else {
         toast(result.error.toString());
       }
@@ -390,7 +399,9 @@ class ChatController extends GetxController {
   void onClose() {
     scrollController.dispose();
     typeFocusNode.dispose();
-    socket.close();
+    if (socket != null) {
+      socket?.close();
+    }
     // Disable wakelock when controller is disposed
     _disableWakelock();
     super.onClose();

@@ -17,6 +17,17 @@ class UserMessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final refImages = (message.refImage ?? []);
+    List<String> filteredImages = [];
+
+    if (refImages.any((e) => e.startsWith("upl-"))) {
+      // If any `upl-` exists, keep only `upl-`
+      filteredImages = refImages.where((e) => e.startsWith("upl-")).toList();
+    } else {
+      // Otherwise keep only `gen-`
+      filteredImages = refImages.where((e) => e.startsWith("gen-")).toList();
+    }
+
     return Align(
       alignment: Alignment.centerRight,
       child: Column(
@@ -28,21 +39,21 @@ class UserMessageTile extends StatelessWidget {
               children: [
                 CardDeckWidget(
                   maxCards: 4,
-                  items: ([message.refImage]).map((e) => e ?? "").toList().obs,
+                  items: filteredImages.toList().obs,
                   itemBuilder: (imageUrl) => ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: AppNetworkImage(
                       imageUrl: "${ApiConstants.imageURL}$imageUrl",
                       borderRadius: BorderRadius.circular(8),
                       fit: BoxFit.cover,
-                      width: 100,
-                      height: 100,
+                      width: 80,
+                      height: 80,
                     ),
                   ),
                 ),
               ],
             ),
-            hSizedBox6,
+            hSizedBox12,
           ],
           Container(
             constraints: BoxConstraints(

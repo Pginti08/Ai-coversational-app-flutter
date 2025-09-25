@@ -66,6 +66,7 @@ class LikedController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       paginationLoading.value = false;
+      toast(e.toString());
     }
   }
 
@@ -77,7 +78,11 @@ class LikedController extends GetxController {
 
       // Avoid duplicates
       if (!remixProducts.any((product) => product.id == currentProduct.id)) {
-        remixProducts.add(currentProduct);
+        if (remixProducts.length < 4) {
+          remixProducts.add(currentProduct);
+        } else {
+          toast("You can select maximum 4 images in Remix");
+        }
       } else {
         toast("Already in Remix");
       }

@@ -74,9 +74,9 @@ class Message {
   String? type;
   String? sender;
   String? message;
-  dynamic refImage;
+  List<String>? refImage;
   List<ImageModel>? images;
-  String? parentImage;
+  List<String>? parentImage;
   DateTime? createdAt;
 
   Message({
@@ -97,12 +97,16 @@ class Message {
         type: json["type"],
         sender: json["sender"],
         message: json["message"],
-        refImage: json["refImage"],
+        refImage: json["refImage"] == null
+            ? []
+            : List<String>.from(json["refImage"]!.map((x) => x)),
         images: json["images"] == null
             ? []
             : List<ImageModel>.from(
                 json["images"]!.map((x) => ImageModel.fromJson(x))),
-        parentImage: json["parentImage"],
+        parentImage: json["parentImage"] == null
+            ? []
+            : List<String>.from(json["parentImage"]!.map((x) => x)),
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),
@@ -114,11 +118,14 @@ class Message {
         "type": type,
         "sender": sender,
         "message": message,
-        "refImage": refImage,
+        "refImage":
+            refImage == null ? [] : List<String>.from(refImage!.map((x) => x)),
         "images": images == null
             ? []
             : List<dynamic>.from(images!.map((x) => x.toJson())),
-        "parentImage": parentImage,
+        "parentImage": parentImage == null
+            ? []
+            : List<String>.from(parentImage!.map((x) => x)),
         "createdAt": createdAt?.toIso8601String(),
       };
 }

@@ -7,7 +7,8 @@ bool isNullOrEmpty(dynamic val) {
       value == 'null' ||
       value == '' ||
       value == 'NULL' ||
-      value == '{}';
+      value == '{}' ||
+      value == '[]';
 }
 
 bool isNotNullOrEmpty(dynamic val) {
@@ -17,7 +18,8 @@ bool isNotNullOrEmpty(dynamic val) {
       value == 'null' ||
       value == '' ||
       value == 'NULL' ||
-      value == '{}');
+      value == '{}' ||
+      value == '[]');
 }
 
 bool isUrl(String? input) {

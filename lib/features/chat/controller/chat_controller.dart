@@ -317,15 +317,19 @@ class ChatController extends GetxController {
 
     socket?.emit("user_message", {
       "prompt": message,
-      "reference_filename": refImages, // ✅ send the copy too
-      "uploaded_reference": [uploadImage.value],
+      "reference_filename":
+          isNotNullOrEmpty(refImages) ? refImages : null, // ✅ send the copy too
+      "uploaded_reference":
+          isNotNullOrEmpty(uploadImage.value) ? [uploadImage.value] : null,
       "session_id": currentSessionId,
     });
 
     log({
       "prompt": message,
-      "reference_filename": refImages,
-      "uploaded_reference": [uploadImage.value],
+      "reference_filename":
+          isNotNullOrEmpty(refImages) ? refImages : null, // ✅ send the copy too
+      "uploaded_reference":
+          isNotNullOrEmpty(uploadImage.value) ? [uploadImage.value] : null,
       "session_id": currentSessionId,
     }.toString());
 

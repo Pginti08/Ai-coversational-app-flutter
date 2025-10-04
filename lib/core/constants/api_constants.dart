@@ -36,6 +36,7 @@ class ApiConstants {
   static const String signUp = '/auth/send-otp/sign-up';
   static const String verifyOtp = '/auth/verify-otp';
   static const String resendOtp = '/auth/resend-otp';
+  static const String refreshToken = '/auth/refresh-token';
   static const String getUserDetail = '/user/me';
   static const String updateProfileDetail = '/user/profile';
   static const String updateProfileImage = '/user/profile-image';

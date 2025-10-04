@@ -2,10 +2,12 @@ import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/constants/storage_constants.dart';
 import 'package:ai_fashion/core/services/local_storage_service.dart';
 import 'package:ai_fashion/core/utils/common_utils.dart';
+import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:awesome_dio_interceptor/awesome_dio_interceptor.dart';
 import 'package:dio/dio.dart' as dioClient;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 
 enum BaseUrl { base, chat, none }
 
@@ -41,6 +43,49 @@ class NetworkClient {
           logRequestTimeout: false,
           logResponseHeaders: false,
         ),
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          return handler.next(options);
+        },
+        onResponse: (response, handler) async {
+          return handler.next(response);
+        },
+        onError: (DioException e, handler) async {
+          if (e.response != null) {
+            // Handle 401 Unauthorized - Token Refresh
+            if (e.response?.statusCode == 401 &&
+                e.response?.data["detail"].toString().toLowerCase() ==
+                    "access token has expired") {
+              // Skip refresh if it's the refresh endpoint itself
+              if (e.requestOptions.path.contains(ApiConstants.refreshToken)) {
+                await _clearStorageAndLogout();
+                return handler.next(e);
+              }
+
+              // Attempt to refresh the access token
+              final refreshSuccess = await _refreshAccessToken();
+
+              if (refreshSuccess) {
+                // Get the new access token
+                final newAccessToken = await LocalStorageService.instance
+                    .getString(StorageConstants.accessToken);
+
+                // Update the request header with the new access token
+                e.requestOptions.headers['Authorization'] =
+                    'Bearer $newAccessToken';
+
+                // Retry the original request with the updated header
+                return handler.resolve(await _dio.fetch(e.requestOptions));
+              } else {
+                // Refresh failed, logout user
+                await _clearStorageAndLogout();
+                return handler.next(e);
+              }
+            }
+          }
+          return handler.next(e);
+        },
+      ),
     ]);
   }
 
@@ -79,9 +124,6 @@ class NetworkClient {
       );
       return Result.success(response);
     } on DioException catch (dioError) {
-      // if (dioError.response?.statusCode == 401) {
-      //   await _handleUnauthorized();
-      // }
       final errorMessage = _mapDioError(dioError);
       return Result.error(errorMessage);
     } catch (e) {
@@ -93,20 +135,80 @@ class NetworkClient {
     switch (type) {
       case BaseUrl.base:
         return ApiConstants.baseURL;
-
       case BaseUrl.chat:
         return ApiConstants.chatURL;
-
       case BaseUrl.none:
         return '';
     }
   }
 
-  // Future<void> _handleUnauthorized() async {
-  //   // Clear local storage
-  //   await LocalStorageService.instance.clear();
-  //   Get.offAllNamed(Routes.login);
-  // }
+  Future<bool> _refreshAccessToken() async {
+    try {
+      // Get refresh token from storage
+
+      // Call refresh token API using the same NetworkClient
+      final result = await _callRefreshTokenApi();
+
+      if (result.isSuccess && result.data != null) {
+        final data = result.data!.data;
+
+        // Save new access token
+        if (isNotNullOrEmpty(data["data"]['token'])) {
+          await LocalStorageService.instance.saveString(
+            StorageConstants.accessToken,
+            data["data"]['token'],
+          );
+        } else {
+          return false;
+        }
+
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      debugPrint('Error refreshing token: $e');
+      return false;
+    }
+  }
+
+  // Direct API call for refresh token to bypass interceptor
+  Future<Result<dioClient.Response<dynamic>>> _callRefreshTokenApi() async {
+    final fullUrl = ApiConstants.baseURL + ApiConstants.refreshToken;
+
+    final accessToken = await _getAccessToken();
+    try {
+      final response = await _dio.post(
+        fullUrl,
+        options: Options(
+          headers: {'Authorization': 'Bearer $accessToken'},
+          validateStatus: (status) {
+            // Accept any status code to handle it manually
+            return status != null && status < 500;
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return Result.success(response);
+      } else {
+        return Result.error('Failed to refresh token');
+      }
+    } on DioException catch (dioError) {
+      final errorMessage = _mapDioError(dioError);
+      return Result.error(errorMessage);
+    } catch (e) {
+      return Result.error('Something went wrong');
+    }
+  }
+
+  Future<void> _clearStorageAndLogout() async {
+    // Clear local storage
+    await LocalStorageService.instance.clear();
+    Get.offAllNamed(Routes.login);
+
+    debugPrint('Session expired. Please login again.');
+  }
 
   String _mapDioError(DioException error) {
     switch (error.type) {
@@ -143,9 +245,8 @@ class NetworkClient {
 
   Future<String?> _getAccessToken() async {
     try {
-      final token = LocalStorageService.instance.getString(
-        StorageConstants.accessToken,
-      );
+      final token = await LocalStorageService.instance
+          .getString(StorageConstants.accessToken);
       return isNotNullOrEmpty(token) ? token : null;
     } catch (e) {
       debugPrint('Error retrieving access token: $e');

@@ -12,6 +12,7 @@ import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
 import 'package:ai_fashion/features/liked/controller/liked_controller.dart';
+import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -242,7 +243,15 @@ class LikedScreen extends StatelessWidget {
                                   wSizedBox12,
                                   AppButton(
                                     height: 52,
-                                    onTap: () {},
+                                    onTap: () {
+                                      Get.offNamed(Routes.chat, arguments: {
+                                        "isInitialRemix": true,
+                                        "userSelectedRemixOutfits": controller
+                                            .remixProducts
+                                            .map((e) => e.image ?? "")
+                                            .toList()
+                                      });
+                                    },
                                     gradientBorderColors:
                                         AppColors.colorGradient,
                                     isOutlined: true,

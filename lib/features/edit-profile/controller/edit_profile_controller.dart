@@ -19,7 +19,6 @@ class EditProfileController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
   final TextEditingController bioController = TextEditingController();
-  RxBool isPrivatePost = true.obs;
 
   final RxString nameError = ''.obs;
   final RxString bioError = ''.obs;
@@ -32,9 +31,6 @@ class EditProfileController extends GetxController {
         "${LocalStorageService.instance.userInfo.value.data?.countryCode ?? ""} ${LocalStorageService.instance.userInfo.value.data?.phone ?? ""} ";
     bioController.text =
         LocalStorageService.instance.userInfo.value.data?.bio ?? "";
-    isPrivatePost.value =
-        LocalStorageService.instance.userInfo.value.data?.isPrivatePost ??
-            false;
     super.onInit();
   }
 
@@ -60,7 +56,6 @@ class EditProfileController extends GetxController {
           params: {
             "name": nameController.text.trim(),
             "bio": bioController.text.trim(),
-            "isPrivatePost": isPrivatePost.value
           });
       if (result.isSuccess) {
         if (isNullOrEmpty(newProfileImage.value.path)) {

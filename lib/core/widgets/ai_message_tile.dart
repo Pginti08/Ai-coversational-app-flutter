@@ -1,4 +1,3 @@
-import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
@@ -63,8 +62,7 @@ class _AiMessageTileState extends State<AiMessageTile> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: AppNetworkImage(
-                  imageUrl:
-                      "${ApiConstants.imageURL}${widget.message.images!.first.filename ?? ""}",
+                  imageUrl: "${widget.message.images!.first.filename ?? ""}",
                   borderRadius: BorderRadius.circular(12),
                   fit: BoxFit.cover,
                   width: 210,
@@ -132,7 +130,7 @@ class _AiMessageTileState extends State<AiMessageTile> {
                       itemBuilder: (imageUrl) => ClipRRect(
                         borderRadius: BorderRadius.circular(14),
                         child: AppNetworkImage(
-                          imageUrl: "${ApiConstants.imageURL}$imageUrl",
+                          imageUrl: "$imageUrl",
                           borderRadius: BorderRadius.circular(14),
                           fit: BoxFit.cover,
                           width: 190.w,

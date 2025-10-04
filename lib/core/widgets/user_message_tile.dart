@@ -1,4 +1,3 @@
-import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
@@ -18,15 +17,6 @@ class UserMessageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final refImages = (message.refImage ?? []);
-    List<String> filteredImages = [];
-
-    if (refImages.any((e) => e.startsWith("upl-"))) {
-      // If any `upl-` exists, keep only `upl-`
-      filteredImages = refImages.where((e) => e.startsWith("upl-")).toList();
-    } else {
-      // Otherwise keep only `gen-`
-      filteredImages = refImages.where((e) => e.startsWith("gen-")).toList();
-    }
 
     return Align(
       alignment: Alignment.centerRight,
@@ -39,11 +29,11 @@ class UserMessageTile extends StatelessWidget {
               children: [
                 CardDeckWidget(
                   maxCards: 4,
-                  items: filteredImages.toList().obs,
+                  items: refImages.toList().obs,
                   itemBuilder: (imageUrl) => ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: AppNetworkImage(
-                      imageUrl: "${ApiConstants.imageURL}$imageUrl",
+                      imageUrl: "$imageUrl",
                       borderRadius: BorderRadius.circular(8),
                       fit: BoxFit.cover,
                       width: 80,

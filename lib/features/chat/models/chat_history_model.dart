@@ -14,11 +14,13 @@ class ChatHistoryModel {
   String? status;
   String? message;
   Data? data;
+  DateTime? timestamp;
 
   ChatHistoryModel({
     this.status,
     this.message,
     this.data,
+    this.timestamp,
   });
 
   factory ChatHistoryModel.fromJson(Map<String, dynamic> json) =>
@@ -26,12 +28,16 @@ class ChatHistoryModel {
         status: json["status"],
         message: json["message"],
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
+        timestamp: json["timestamp"] == null
+            ? null
+            : DateTime.parse(json["timestamp"]),
       );
 
   Map<String, dynamic> toJson() => {
         "status": status,
         "message": message,
         "data": data?.toJson(),
+        "timestamp": timestamp?.toIso8601String(),
       };
 }
 
@@ -40,12 +46,14 @@ class Data {
   int? total;
   int? page;
   int? limit;
+  DateTime? timestamp;
 
   Data({
     this.items,
     this.total,
     this.page,
     this.limit,
+    this.timestamp,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -56,6 +64,9 @@ class Data {
         total: json["total"],
         page: json["page"],
         limit: json["limit"],
+        timestamp: json["timestamp"] == null
+            ? null
+            : DateTime.parse(json["timestamp"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -65,6 +76,7 @@ class Data {
         "total": total,
         "page": page,
         "limit": limit,
+        "timestamp": timestamp?.toIso8601String(),
       };
 }
 
@@ -76,7 +88,6 @@ class Message {
   String? message;
   List<String>? refImage;
   List<ImageModel>? images;
-  List<String>? parentImage;
   DateTime? createdAt;
 
   Message({
@@ -87,7 +98,6 @@ class Message {
     this.message,
     this.refImage,
     this.images,
-    this.parentImage,
     this.createdAt,
   });
 
@@ -104,9 +114,6 @@ class Message {
             ? []
             : List<ImageModel>.from(
                 json["images"]!.map((x) => ImageModel.fromJson(x))),
-        parentImage: json["parentImage"] == null
-            ? []
-            : List<String>.from(json["parentImage"]!.map((x) => x)),
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),
@@ -119,13 +126,10 @@ class Message {
         "sender": sender,
         "message": message,
         "refImage":
-            refImage == null ? [] : List<String>.from(refImage!.map((x) => x)),
+            refImage == null ? [] : List<dynamic>.from(refImage!.map((x) => x)),
         "images": images == null
             ? []
             : List<dynamic>.from(images!.map((x) => x.toJson())),
-        "parentImage": parentImage == null
-            ? []
-            : List<String>.from(parentImage!.map((x) => x)),
         "createdAt": createdAt?.toIso8601String(),
       };
 }

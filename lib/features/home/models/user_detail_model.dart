@@ -43,7 +43,6 @@ class Data {
   String? role;
   String? image;
   String? bio;
-  bool? isPrivatePost;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -55,7 +54,6 @@ class Data {
     this.role,
     this.image,
     this.bio,
-    this.isPrivatePost,
     this.createdAt,
     this.updatedAt,
   });
@@ -68,7 +66,6 @@ class Data {
         role: json["role"],
         image: json["image"],
         bio: json["bio"],
-        isPrivatePost: json["isPrivatePost"],
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),
@@ -85,7 +82,6 @@ class Data {
         "role": role,
         "image": image,
         "bio": bio,
-        "isPrivatePost": isPrivatePost,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
       };

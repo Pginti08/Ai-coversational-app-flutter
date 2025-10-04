@@ -27,6 +27,7 @@ class ChatController extends GetxController {
   RxInt page = 1.obs;
   RxBool paginationLoading = false.obs;
   RxBool nextPageStop = true.obs;
+  ChatHistoryModel chatHistoryModel = ChatHistoryModel();
   IO.Socket? socket;
 
   final RxBool isThinking = false.obs;
@@ -43,8 +44,20 @@ class ChatController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    if (Get.arguments != null &&
+        Get.arguments["userSelectedRemixOutfits"] != null) {
+      userSelectedRemixOutfits.value =
+          Get.arguments["userSelectedRemixOutfits"];
+    }
+    if (Get.arguments != null &&
+        Get.arguments["isInitialRemix"] != null &&
+        Get.arguments["isInitialRemix"] == true) {
+      connectSocket();
+    } else {
+      getSessionList();
+    }
     _enableWakelock();
-    getSessionList();
     manageScrollController();
   }
 
@@ -135,13 +148,14 @@ class ChatController extends GetxController {
     try {
       if (isInitial) {
         messages.clear(); // Use clear() instead of assigning empty list
+        chatHistoryModel = ChatHistoryModel();
         page.value = 1;
         nextPageStop.value = true;
         loader.value = true;
       }
       if (nextPageStop.isTrue) {
         var result = await NetworkClient.instance.callApi(
-          "/sessions/${currentSessionId}/chats?page=${page.value}&limit=100",
+          "/sessions/${currentSessionId}/chats?page=${page.value}&limit=20&timestamp=${chatHistoryModel.data?.timestamp}",
           baseUrlType: BaseUrl.chat,
           MethodType.get,
         );
@@ -152,7 +166,7 @@ class ChatController extends GetxController {
           if (isInitial) {
             connectSocket(isConnectExisting: true);
           }
-          var chatHistoryModel = ChatHistoryModel.fromJson(result.data?.data);
+          chatHistoryModel = ChatHistoryModel.fromJson(result.data?.data);
           messages.value += chatHistoryModel.data?.items ?? [];
           page.value = page.value + 1;
           if (messages.isNotEmpty) {
@@ -303,16 +317,19 @@ class ChatController extends GetxController {
 
     final refImages = isNotNullOrEmpty(userSelectedRemixOutfits)
         ? userSelectedRemixOutfits.toList() // ✅ copy instead of reference
-        : [uploadImage.value];
+        : null;
 
     messages.insert(
       0,
       Message(
-        sender: "user",
-        message: message,
-        sessionId: currentSessionId,
-        refImage: refImages,
-      ),
+          sender: "user",
+          message: message,
+          sessionId: currentSessionId,
+          refImage: isNotNullOrEmpty(userSelectedRemixOutfits)
+              ? userSelectedRemixOutfits.toList()
+              : isNotNullOrEmpty(uploadImage.value)
+                  ? [uploadImage.value]
+                  : null),
     );
 
     socket?.emit("user_message", {
@@ -365,6 +382,7 @@ class ChatController extends GetxController {
     socket?.close();
     loader.value = false;
     messages.clear();
+    chatHistoryModel = ChatHistoryModel();
     page.value = 1;
     nextPageStop.value = true;
   }

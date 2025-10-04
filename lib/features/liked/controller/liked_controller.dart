@@ -96,14 +96,6 @@ class LikedController extends GetxController {
           curve: Curves.easeInOut,
         );
       }
-      //else if (currentCarouselIndex.value == likedProductsList.length - 1) {
-      //   currentCarouselIndex.value = 0;
-      //   carouselController.animateToPage(
-      //     currentCarouselIndex.value,
-      //     duration: const Duration(milliseconds: 300),
-      //     curve: Curves.easeInOut,
-      //   );
-      // }
     }
   }
 

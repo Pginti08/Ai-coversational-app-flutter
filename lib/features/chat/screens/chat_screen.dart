@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
@@ -418,8 +417,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 borderRadius:
                                                     BorderRadius.circular(4),
                                                 child: AppNetworkImage(
-                                                  imageUrl:
-                                                      "${ApiConstants.imageURL}$imageUrl",
+                                                  imageUrl: "$imageUrl",
                                                   borderRadius:
                                                       BorderRadius.circular(4),
                                                   fit: BoxFit.cover,
@@ -477,8 +475,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                         BorderRadius.circular(
                                                             4),
                                                     child: AppNetworkImage(
-                                                      imageUrl:
-                                                          "${ApiConstants.imageURL}$imageUrl",
+                                                      imageUrl: "$imageUrl",
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               4),

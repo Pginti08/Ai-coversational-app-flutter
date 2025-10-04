@@ -1,4 +1,3 @@
-import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
@@ -61,9 +60,7 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                 cardBuilder:
                     (context, index, percentThresholdX, percentThresholdY) {
                   return ProductOutfitCard(
-                    product: Product(
-                        image:
-                            "${ApiConstants.imageURL}${controller.outfits[index]}"),
+                    product: Product(image: "${controller.outfits[index]}"),
                     isFirst: (controller.currentCardIndex.value == index).obs,
                     swipeProgress:
                         double.tryParse(percentThresholdX.toString()) ?? 0,
@@ -238,8 +235,7 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                                         BorderRadius.circular(
                                                             4),
                                                     child: AppNetworkImage(
-                                                      imageUrl:
-                                                          "${ApiConstants.imageURL}$imageUrl",
+                                                      imageUrl: "$imageUrl",
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               4),

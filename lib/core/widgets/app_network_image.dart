@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/widgets/shimmer_utils.dart';
@@ -55,6 +56,18 @@ class AppNetworkImage extends StatelessWidget {
   final BorderRadiusGeometry? borderRadius;
   final Widget? errorWidget;
 
+  String get _fullImageUrl {
+    if (imageUrl.isEmpty) return '';
+
+    // Check if URL already has a protocol
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+
+    // Otherwise, prepend the base URL
+    return '${ApiConstants.imageURL}$imageUrl';
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -67,7 +80,7 @@ class AppNetworkImage extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           margin: padding,
           decoration: BoxDecoration(color: backgroundColor, shape: shape),
-          child: isUrl(imageUrl)
+          child: isUrl(_fullImageUrl)
               ? CachedNetworkImage(
                   imageBuilder: (context, imageProvider) => Container(
                     decoration: BoxDecoration(
@@ -77,36 +90,13 @@ class AppNetworkImage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  imageUrl: imageUrl,
+                  imageUrl: _fullImageUrl,
                   fit: fit,
                   height: height,
                   width: width,
                   colorBlendMode: BlendMode.saturation,
                   color: imageColor,
-                  // maxHeightDiskCache: 999,
-                  // maxWidthDiskCache: 999,
-                  // memCacheHeight: 999,
-                  // memCacheWidth: 999,
                   filterQuality: filterQuality,
-                  // fadeOutDuration:
-                  //     fadeOutDuration ?? const Duration(microseconds: 1),
-                  // placeholderFadeInDuration: placeholderFadeInDuration ??
-                  //     const Duration(microseconds: 1),
-                  // fadeInDuration:
-                  //     fadeInDuration ?? const Duration(milliseconds: 500),
-                  // progressIndicatorBuilder: (showProgressIndicator ?? false
-                  //     ? (context, url, progress) => Center(
-                  //           child: SizedBox(
-                  //             height: indicatorSize,
-                  //             width: indicatorSize,
-                  //             child: Center(
-                  //               child: CircularProgressIndicator(
-                  //                   strokeWidth: indicatorStrokeWidth ?? 2.0,
-                  //                   value: progress.progress),
-                  //             ),
-                  //           ),
-                  //         )
-                  //     : null),
                   placeholder: (context, url) => shimmer(
                     child: shimmerContainer(
                       width: width,

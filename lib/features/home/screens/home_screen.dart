@@ -307,7 +307,14 @@ class _HomeScreenState extends State<HomeScreen>
                                         : CardSwiper(
                                             padding: EdgeInsets.symmetric(
                                                 vertical: 10),
-                                            numberOfCardsDisplayed: 4,
+                                            numberOfCardsDisplayed: controller
+                                                        .suggestedProductsList
+                                                        .length <
+                                                    4
+                                                ? controller
+                                                    .suggestedProductsList
+                                                    .length
+                                                : 4,
                                             scale: 0.97,
                                             backCardOffset: Offset(0, 25),
                                             allowedSwipeDirection:
@@ -320,7 +327,20 @@ class _HomeScreenState extends State<HomeScreen>
                                                 index,
                                                 percentThresholdX,
                                                 percentThresholdY) {
-                                              return Obx(() => GestureDetector(
+                                              return Obx(() =>
+                                                  ProductOutfitCard(
+                                                    product: controller
+                                                            .suggestedProductsList[
+                                                        index],
+                                                    isFirst: (controller
+                                                                .currentCardIndex
+                                                                .value ==
+                                                            index)
+                                                        .obs,
+                                                    swipeProgress: double.tryParse(
+                                                            percentThresholdX
+                                                                .toString()) ??
+                                                        0,
                                                     onTap: () {
                                                       Get.toNamed(
                                                           Routes.productDetail,
@@ -331,20 +351,6 @@ class _HomeScreenState extends State<HomeScreen>
                                                                     index]
                                                           });
                                                     },
-                                                    child: ProductOutfitCard(
-                                                      product: controller
-                                                              .suggestedProductsList[
-                                                          index],
-                                                      isFirst: (controller
-                                                                  .currentCardIndex
-                                                                  .value ==
-                                                              index)
-                                                          .obs,
-                                                      swipeProgress: double.tryParse(
-                                                              percentThresholdX
-                                                                  .toString()) ??
-                                                          0,
-                                                    ),
                                                   ));
                                             },
                                             initialIndex: controller

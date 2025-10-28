@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/services/network_service.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
@@ -18,9 +20,10 @@ import 'package:get/get.dart';
 
 class ScannedManuallyBottomSheet extends StatefulWidget {
   ScannedManuallyBottomSheet(
-      {super.key, this.isEdit = false, this.savedBodyProfile});
+      {super.key, this.isEdit = false, this.savedBodyProfile, this.onSave});
   final bool isEdit;
   final SavedBodyProfile? savedBodyProfile;
+  final void Function(dynamic)? onSave;
 
   @override
   State<ScannedManuallyBottomSheet> createState() =>
@@ -35,7 +38,7 @@ class _ScannedManuallyBottomSheetState
 
   final TextEditingController heightController = TextEditingController();
 
-  final TextEditingController chestController = TextEditingController();
+  final TextEditingController bustController = TextEditingController();
 
   final TextEditingController waistController = TextEditingController();
 
@@ -47,7 +50,7 @@ class _ScannedManuallyBottomSheetState
 
   final RxString heightError = ''.obs;
 
-  final RxString chestError = ''.obs;
+  final RxString bustError = ''.obs;
 
   final RxString waistError = ''.obs;
 
@@ -60,8 +63,8 @@ class _ScannedManuallyBottomSheetState
     nameController.text = widget.savedBodyProfile?.name ?? "";
     heightController.text =
         (widget.savedBodyProfile?.height?.toInt() ?? "").toString();
-    chestController.text =
-        (widget.savedBodyProfile?.chest?.toInt() ?? "").toString();
+    bustController.text =
+        (widget.savedBodyProfile?.bust?.toInt() ?? "").toString();
     waistController.text =
         (widget.savedBodyProfile?.waist?.toInt() ?? "").toString();
     hipController.text =
@@ -74,11 +77,9 @@ class _ScannedManuallyBottomSheetState
 
   void validateAndSave() {
     final error1 = validateCommonField(nameController.text.trim(), "name");
-
     final error2 =
         validateMeasurementField(heightController.text.trim(), "height");
-    final error3 =
-        validateMeasurementField(chestController.text.trim(), "chest");
+    final error3 = validateMeasurementField(bustController.text.trim(), "bust");
     final error4 =
         validateMeasurementField(waistController.text.trim(), "waist");
     final error5 = validateMeasurementField(hipController.text.trim(), "hip");
@@ -87,7 +88,7 @@ class _ScannedManuallyBottomSheetState
 
     nameError.value = error1 ?? '';
     heightError.value = error2 ?? '';
-    chestError.value = error3 ?? '';
+    bustError.value = error3 ?? '';
     waistError.value = error4 ?? '';
     hipError.value = error5 ?? '';
     shoulderError.value = error6 ?? '';
@@ -98,7 +99,30 @@ class _ScannedManuallyBottomSheetState
         error4 == null &&
         error5 == null &&
         error6 == null) {
-      saveBodyProfileApi();
+      // Create JSON string from current field values
+      final Map<String, dynamic> bodyProfileMap = {
+        "name": nameController.text.trim(),
+        "height": int.tryParse(heightController.text.trim()) ?? 0,
+        "heightUnit": "CM",
+        "bust": int.tryParse(bustController.text.trim()) ?? 0,
+        "bustUnit": "CM",
+        "waist": int.tryParse(waistController.text.trim()) ?? 0,
+        "waistUnit": "CM",
+        "hips": int.tryParse(hipController.text.trim()) ?? 0,
+        "hipsUnit": "CM",
+        "shoulders": int.tryParse(shoulderController.text.trim()) ?? 0,
+        "shouldersUnit": "CM",
+      };
+
+      final String jsonString = json.encode(bodyProfileMap);
+
+      // Pass the JSON string via onSave callback
+      widget.onSave?.call(jsonString);
+
+      // If no onSave provided, fallback to API call
+      if (widget.onSave == null) {
+        saveBodyProfileApi();
+      }
     }
   }
 
@@ -115,7 +139,7 @@ class _ScannedManuallyBottomSheetState
           params: {
             "name": nameController.text.trim(),
             "height": int.tryParse(heightController.text.trim()),
-            "chest": int.tryParse(chestController.text.trim()),
+            "bust": int.tryParse(bustController.text.trim()),
             "waist": int.tryParse(waistController.text.trim()),
             "hips": int.tryParse(hipController.text.trim()),
             "shoulders": int.tryParse(shoulderController.text.trim()),
@@ -184,31 +208,31 @@ class _ScannedManuallyBottomSheetState
                   children: [
                     measurementsTextField(
                         title: "Height",
-                        unit: "cm",
+                        unit: "CM",
                         textEditingController: heightController,
                         fieldError: heightError),
                     hSizedBox18,
                     measurementsTextField(
-                        title: "Chest",
-                        unit: "cm",
-                        textEditingController: chestController,
-                        fieldError: chestError),
+                        title: "Bust",
+                        unit: "CM",
+                        textEditingController: bustController,
+                        fieldError: bustError),
                     hSizedBox18,
                     measurementsTextField(
                         title: "Waist",
-                        unit: "cm",
+                        unit: "CM",
                         textEditingController: waistController,
                         fieldError: waistError),
                     hSizedBox18,
                     measurementsTextField(
                         title: "Hips",
-                        unit: "cm",
+                        unit: "CM",
                         textEditingController: hipController,
                         fieldError: hipError),
                     hSizedBox18,
                     measurementsTextField(
                         title: "Shoulders",
-                        unit: "cm",
+                        unit: "CM",
                         textEditingController: shoulderController,
                         fieldError: shoulderError),
                     hSizedBox18,
@@ -220,7 +244,7 @@ class _ScannedManuallyBottomSheetState
                   return isKeyboardVisible
                       ? const SizedBox.shrink()
                       : Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(top: 8, bottom: 8.0),
                           child: SafeArea(
                               top: false,
                               child: Obx(() => AppButton(

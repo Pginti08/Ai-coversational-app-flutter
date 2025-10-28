@@ -46,7 +46,12 @@ class ApiConstants {
   static const String addresses = '/user/addresses';
   static const String bodyProfiles = '/user/body-profiles';
   static const String getSessionList = '/sessions';
+  static const String getBrandList = '/product/brands';
   static const String uploadImage = '/upload/';
+  static const String quotations = '/quotations';
+  static const String analyzeDress = '/quotations/analyze-dress';
+  static const String bodyMeasurementsAnalyze = '/body-measurements/analyze';
+  static const String cart = '/cart';
 
   // Headers
   static const Map<String, String> headers = {

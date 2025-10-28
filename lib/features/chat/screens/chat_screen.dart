@@ -6,8 +6,6 @@ import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/core/widgets/ai_message_tile.dart';
-import 'package:ai_fashion/core/widgets/ai_typing_tile.dart';
 import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/app_text_field.dart';
@@ -15,10 +13,12 @@ import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
-import 'package:ai_fashion/core/widgets/user_message_tile.dart';
 import 'package:ai_fashion/features/chat/controller/chat_controller.dart';
 import 'package:ai_fashion/features/chat/screens/widgets/past_conversation.dart';
 import 'package:ai_fashion/features/chat/screens/widgets/upload_image_type_bottom_sheet.dart';
+import 'package:ai_fashion/features/chat/widgets/ai_message_tile.dart';
+import 'package:ai_fashion/features/chat/widgets/ai_typing_tile.dart';
+import 'package:ai_fashion/features/chat/widgets/user_message_tile.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -231,7 +231,10 @@ class _ChatScreenState extends State<ChatScreen> {
                             ? UserMessageTile(
                                 message: message,
                               )
-                            : AiMessageTile(message: message),
+                            : AiMessageTile(
+                                message: message,
+                                chatController: controller,
+                              ),
                       );
                     },
                   ),
@@ -319,34 +322,37 @@ class _ChatScreenState extends State<ChatScreen> {
 
             // Brand grid
             Expanded(
-              child: GridView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1,
-                ),
-                itemCount: 20,
-                itemBuilder: (context, index) {
-                  return CommonContainer(
-                      onTap: () {
-                        // Handle brand selection
-                        if (!controller.isThinking.value &&
-                            !controller.uploadLoader.value) {
-                          controller.sendMessage(message: "Dresses by Zara");
-                          controller.showBrandContainer.value = false;
-                        }
+              child: Obx(() => controller.brandLoader.value
+                  ? Center(child: RotatingLoader())
+                  : GridView.builder(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 1,
+                      ),
+                      itemCount: controller.brands.length,
+                      itemBuilder: (context, index) {
+                        return CommonContainer(
+                            onTap: () {
+                              // Handle brand selection
+                              if (!controller.isThinking.value &&
+                                  !controller.uploadLoader.value) {
+                                controller.sendMessage(
+                                    message:
+                                        "Dresses by ${controller.brands[index].name}");
+                                controller.showBrandContainer.value = false;
+                              }
+                            },
+                            backgroundColor: AppColors.grey2Color,
+                            borderRadius: 10,
+                            child: AppNetworkImage(
+                              imageUrl: controller.brands[index].logo ?? "",
+                              fit: BoxFit.cover,
+                            ));
                       },
-                      backgroundColor: AppColors.grey2Color,
-                      borderRadius: 10,
-                      child: AppNetworkImage(
-                        imageUrl:
-                            "https://i.pinimg.com/474x/af/84/6e/af846e8b9c2f4ecec25e6a13e0faa07e.jpg",
-                        fit: BoxFit.cover,
-                      ));
-                },
-              ),
+                    )),
             ),
           ],
         ),
@@ -371,7 +377,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Container(
                       width: double.infinity,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       decoration: BoxDecoration(
                         color: Colors.white.withAlpha(15),
                         border: GradientBoxBorder(
@@ -527,6 +533,9 @@ class _ChatScreenState extends State<ChatScreen> {
                             outsideMargin: EdgeInsets.zero,
                             contentPadding: EdgeInsets.symmetric(vertical: 6),
                             hint: "Start Creating...",
+                            maxLines: 2,
+                            minLines: 1,
+                            keyboardType: TextInputType.multiline,
                             borderColor: Colors.transparent,
                             onSubmitted: (value) {
                               if (value.trim().isNotEmpty &&
@@ -604,8 +613,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                 ],
                               ),
                               isKeyboardVisible
-                                  ? IconButton(
-                                      onPressed: () {
+                                  ? GestureDetector(
+                                      onTap: () {
                                         if (_textController.text
                                                 .trim()
                                                 .isNotEmpty &&
@@ -621,12 +630,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                           controller.uploadImage.value = "";
                                         }
                                       },
-                                      icon: SvgPicture.asset(
+                                      child: SvgPicture.asset(
                                           AssetConstants.arrowUp),
                                     )
-                                  : IconButton(
-                                      onPressed: () {},
-                                      icon: SvgPicture.asset(
+                                  : GestureDetector(
+                                      onTap: () {},
+                                      child: SvgPicture.asset(
                                           AssetConstants.voiceCircleIcon),
                                     ),
                             ],

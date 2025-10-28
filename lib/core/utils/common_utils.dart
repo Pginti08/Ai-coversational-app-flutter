@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:intl/intl.dart';
 
 bool isNullOrEmpty(dynamic val) {
@@ -85,4 +87,54 @@ String indianRupeeAmountConversion(double? amount, {int? decimalDigits}) {
   } catch (e) {
     return "Invalid";
   }
+}
+
+bool isJson(String? str) {
+  if (str == null || str.isEmpty) return false;
+  try {
+    json.decode(str);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+String jsonToReadableText(String jsonString, {int indent = 0}) {
+  try {
+    final dynamic data = json.decode(jsonString);
+    return _convertJsonToText(data, indent);
+  } catch (e) {
+    return "⚠️ Invalid JSON format";
+  }
+}
+
+String _convertJsonToText(dynamic data, int indent) {
+  final buffer = StringBuffer();
+  final space = '  ' * indent;
+
+  if (data is Map<String, dynamic>) {
+    data.forEach((key, value) {
+      if (value is Map || value is List) {
+        buffer.writeln("$space${_capitalize(key)}:");
+        buffer.write(_convertJsonToText(value, indent + 1));
+      } else {
+        buffer.writeln("$space${_capitalize(key)}: $value");
+      }
+    });
+  } else if (data is List) {
+    for (int i = 0; i < data.length; i++) {
+      buffer.writeln("${space}• Item ${i + 1}:");
+      buffer.write(_convertJsonToText(data[i], indent + 1));
+    }
+  } else {
+    buffer.writeln("$space$data");
+  }
+
+  // ✅ remove trailing newline before returning
+  return buffer.toString().trimRight();
+}
+
+String _capitalize(String text) {
+  if (text.isEmpty) return text;
+  return text[0].toUpperCase() + text.substring(1);
 }

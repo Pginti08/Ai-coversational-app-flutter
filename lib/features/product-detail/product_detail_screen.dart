@@ -9,6 +9,7 @@ import 'package:ai_fashion/core/widgets/app_button.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/product-detail/controller/product_detail_controller.dart';
+import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -71,66 +72,59 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       body: Stack(
         children: [
           // --- Background Content ---
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Use a dummy SVG loader for the example to work.
-              // In a real app, ensure your SVG asset is correctly configured.
-              IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: SvgPicture.asset(
-                  AssetConstants.backward,
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  icon: SvgPicture.asset(
+                    AssetConstants.backward,
+                  ),
                 ),
-              ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ValueListenableBuilder<double>(
-                    valueListenable: _sheetExtentNotifier,
-                    builder: (context, extent, child) {
-                      // Normalize the current extent from [_minSheetSize, _maxSheetSize] to [0.0, 1.0].
-                      final normalizedExtent = (extent - _minSheetSize) /
-                          (_maxSheetSize - _minSheetSize);
-                      // Clamp the value between 0 and 1 to prevent errors during overscroll.
-                      final clampedExtent = normalizedExtent.clamp(0.0, 1.0);
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: ValueListenableBuilder<double>(
+                      valueListenable: _sheetExtentNotifier,
+                      builder: (context, extent, child) {
+                        final normalizedExtent = (extent - _minSheetSize) /
+                            (_maxSheetSize - _minSheetSize);
+                        final clampedExtent = normalizedExtent.clamp(0.0, 1.0);
 
-                      // Linearly interpolate the image height based on the normalized extent.
-                      final imageHeight = lerpDouble(
-                          initialImageHeight, finalImageHeight, clampedExtent);
+                        final imageHeight = lerpDouble(initialImageHeight,
+                            finalImageHeight, clampedExtent);
 
-                      // Linearly interpolate the image width based on the normalized extent.
-                      final imageWidth = lerpDouble(
-                          initialImageWidth, finalImageWidth, clampedExtent);
-                      final imageBorderRadius = lerpDouble(initialBorderRadius,
-                          finalBorderRadius, clampedExtent);
+                        final imageWidth = lerpDouble(
+                            initialImageWidth, finalImageWidth, clampedExtent);
+                        final imageBorderRadius = lerpDouble(
+                            initialBorderRadius,
+                            finalBorderRadius,
+                            clampedExtent);
 
-                      return ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(imageBorderRadius ?? 0),
-                        // Use AnimatedContainer to smoothly animate height changes.
-                        child: AnimatedContainer(
-                          duration: const Duration(
-                              milliseconds:
-                                  10), // Fast duration for responsive feel
-                          curve: Curves.linear,
-                          height: imageHeight,
-                          width: imageWidth,
-                          // Set a width that decreases as the sheet opens
-
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: AppNetworkImage(
-                      imageUrl: controller.productDetail?.image ?? "",
-                      fit: BoxFit.cover,
+                        return ClipRRect(
+                          borderRadius:
+                              BorderRadius.circular(imageBorderRadius ?? 0),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 10),
+                            curve: Curves.linear,
+                            height: imageHeight,
+                            width: imageWidth,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: AppNetworkImage(
+                        imageUrl: controller.productDetail?.image ?? "",
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           // --- Draggable Bottom Sheet ---
@@ -314,9 +308,15 @@ ${controller.productDetail?.description ?? ""}''',
                                 ),
                                 hSizedBox8,
                                 AppButton(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Get.toNamed(Routes.quotationChat,
+                                        arguments: {
+                                          "productId":
+                                              controller.productDetail?.id
+                                        });
+                                  },
                                   textColor: AppColors.blackColor,
-                                  text: "Get a Quote",
+                                  text: "Get Quote",
                                 ),
                               ],
                             ),

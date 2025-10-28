@@ -60,8 +60,11 @@ class AssetConstants {
   static const tickCircleGreen = '${icons}tick-circle-green.svg';
   static const camera = '${icons}camera.svg';
   static const gallery = '${icons}gallery.svg';
+  static const logout = '${icons}logout.svg';
 
   ///__________________________________ gif __________________________________///
 
   static const star = '${animations}star.gif';
+
+  static const String rupeeSymbol = "₹";
 }

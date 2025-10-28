@@ -2,8 +2,10 @@ import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
+import 'package:ai_fashion/core/widgets/app_button.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
+import 'package:ai_fashion/features/chat/controller/chat_controller.dart';
 import 'package:ai_fashion/features/chat/models/chat_history_model.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +18,12 @@ import 'package:url_launcher/url_launcher.dart';
 class AiMessageTile extends StatefulWidget {
   const AiMessageTile({
     required this.message,
+    required this.chatController,
     super.key,
   });
 
   final Message message;
+  final ChatController chatController;
 
   @override
   State<AiMessageTile> createState() => _AiMessageTileState();
@@ -59,15 +63,54 @@ class _AiMessageTileState extends State<AiMessageTile> {
 
             // CASE 2: Exactly 1 outfit → image + message
             if (hasOutfits && widget.message.images!.length == 1) ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: AppNetworkImage(
-                  imageUrl: "${widget.message.images!.first.filename ?? ""}",
-                  borderRadius: BorderRadius.circular(12),
-                  fit: BoxFit.cover,
-                  width: 210,
-                  height: 315,
-                ),
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: AppNetworkImage(
+                      imageUrl:
+                          "${widget.message.images!.first.filename ?? ""}",
+                      borderRadius: BorderRadius.circular(12),
+                      fit: BoxFit.cover,
+                      width: 210,
+                      height: 315,
+                      onTap: () {
+                        Get.toNamed(Routes.remixedProduct, arguments: {
+                          "imageUrl":
+                              "${widget.message.images!.first.filename ?? ""}"
+                        });
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: AppButton(
+                      height: 36,
+                      width: 36,
+                      onTap: () {
+                        widget.chatController.userSelectedRemixOutfits.clear();
+                        widget.chatController.userSelectedRemixOutfits.value = [
+                          "${widget.message.images!.first.filename ?? ""}"
+                        ];
+                        widget.chatController.typeFocusNode.requestFocus();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              AssetConstants.magicpen,
+                              color: AppColors.whiteColor,
+                              width: 18,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
               hSizedBox10,
               GptMarkdown(

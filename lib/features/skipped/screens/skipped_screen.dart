@@ -119,6 +119,7 @@ class SkippedScreen extends StatelessWidget {
                                                   .image ??
                                               "",
                                           fit: BoxFit.cover,
+                                          isOpenImageViewer: true,
                                         ),
                                       ),
                                     );

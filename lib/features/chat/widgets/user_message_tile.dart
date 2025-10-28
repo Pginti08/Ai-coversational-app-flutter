@@ -6,8 +6,6 @@ import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
 import 'package:ai_fashion/features/chat/models/chat_history_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gpt_markdown/gpt_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class UserMessageTile extends StatelessWidget {
   const UserMessageTile({required this.message, super.key});
@@ -38,6 +36,7 @@ class UserMessageTile extends StatelessWidget {
                       fit: BoxFit.cover,
                       width: 80,
                       height: 80,
+                      isOpenImageViewer: true,
                     ),
                   ),
                 ),
@@ -64,15 +63,9 @@ class UserMessageTile extends StatelessWidget {
                         bottomLeft: Radius.circular(20),
                       ),
                     ),
-                    child: GptMarkdown(
+                    child: Text(
                       message.message ?? "",
                       style: style400S16.copyWith(letterSpacing: 0.32),
-                      onLinkTab: (url, title) {
-                        launchUrl(
-                          Uri.parse(url),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
                     ),
                   ),
                 ),

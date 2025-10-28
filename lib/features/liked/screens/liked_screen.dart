@@ -89,6 +89,7 @@ class LikedScreen extends StatelessWidget {
                                                 .image ??
                                             "",
                                         fit: BoxFit.cover,
+                                        isOpenImageViewer: true,
                                       ),
                                     ),
                                   ),

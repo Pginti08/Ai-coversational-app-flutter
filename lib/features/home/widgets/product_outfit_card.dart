@@ -15,11 +15,13 @@ class ProductOutfitCard extends StatefulWidget {
     required this.product,
     required this.isFirst,
     this.swipeProgress = 0,
+    this.onTap,
   });
 
   final Product product;
   final RxBool isFirst;
   final double swipeProgress;
+  final void Function()? onTap;
 
   @override
   State<ProductOutfitCard> createState() => _ProductOutfitCardState();
@@ -44,29 +46,34 @@ class _ProductOutfitCardState extends State<ProductOutfitCard> {
             child: AppNetworkImage(
               imageUrl: widget.product.image ?? "",
               fit: BoxFit.cover,
+              onTap: widget.onTap,
             ),
           ),
         ),
 
         Positioned.fill(
-            child: Container(
-                decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          color: widget.swipeProgress > 0
-              ? Colors.pink.withAlpha(30)
-              : widget.swipeProgress < 0
-                  ? Colors.white.withAlpha(30)
-                  : null,
-        ))),
+            child: IgnorePointer(
+          child: Container(
+              decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            color: widget.swipeProgress > 0
+                ? Colors.pink.withAlpha(30)
+                : widget.swipeProgress < 0
+                    ? Colors.white.withAlpha(30)
+                    : null,
+          )),
+        )),
         // ❤️ Heart icon on top-left
         if (widget.swipeProgress > 0)
           Positioned(
             top: 12,
             left: 12,
-            child: SvgPicture.asset(
-              AssetConstants.heart,
-              height: 80,
-              color: Colors.pink.withAlpha(100),
+            child: IgnorePointer(
+              child: SvgPicture.asset(
+                AssetConstants.heart,
+                height: 80,
+                color: Colors.pink.withAlpha(100),
+              ),
             ),
           ),
 
@@ -74,36 +81,41 @@ class _ProductOutfitCardState extends State<ProductOutfitCard> {
           Positioned(
             top: 12,
             right: 12,
-            child: SvgPicture.asset(
-              AssetConstants.previous,
-              height: 80,
-              color: Colors.white.withAlpha(200),
+            child: IgnorePointer(
+              child: SvgPicture.asset(
+                AssetConstants.previous,
+                height: 80,
+                color: Colors.white.withAlpha(200),
+              ),
             ),
           ),
 
         // 🏷️ Title on bottom blur
         if (widget.isFirst.value && isNotNullOrEmpty(widget.product.title))
-          Padding(
-            padding: const EdgeInsets.all(4),
-            child: CommonContainer(
-              blurStrength: 30,
-              enableBlur: true,
-              borderRadius: 100,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              borderColor: AppColors.whiteColor.withAlpha(20),
-              backgroundColor: AppColors.blackColor.withAlpha(70),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      widget.product.title ?? "",
-                      overflow: TextOverflow.ellipsis,
-                      style: style500S16.copyWith(letterSpacing: 0.32),
+          IgnorePointer(
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: CommonContainer(
+                blurStrength: 30,
+                enableBlur: true,
+                borderRadius: 100,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                borderColor: AppColors.whiteColor.withAlpha(20),
+                backgroundColor: AppColors.blackColor.withAlpha(70),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.product.title ?? "",
+                        overflow: TextOverflow.ellipsis,
+                        style: style500S16.copyWith(letterSpacing: 0.32),
+                      ),
                     ),
-                  ),
-                  // wSizedBox10,
-                  // horizontalStackedAvatars(widget.outfit.colors ?? []),
-                ],
+                    // wSizedBox10,
+                    // horizontalStackedAvatars(widget.outfit.colors ?? []),
+                  ],
+                ),
               ),
             ),
           )

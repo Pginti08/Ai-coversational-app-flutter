@@ -7,6 +7,7 @@ import 'package:ai_fashion/core/services/local_storage_service.dart';
 import 'package:ai_fashion/core/services/network_service.dart';
 import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/widgets/app_toast.dart';
+import 'package:ai_fashion/features/chat/models/brands_model.dart';
 import 'package:ai_fashion/features/chat/models/chat_history_model.dart';
 import 'package:ai_fashion/features/chat/models/sessions_model.dart';
 import 'package:dio/dio.dart' as dio;
@@ -23,6 +24,7 @@ class ChatController extends GetxController {
 
   final RxBool loader = false.obs;
   final RxBool uploadLoader = false.obs;
+  final RxBool brandLoader = false.obs;
 
   RxInt page = 1.obs;
   RxBool paginationLoading = false.obs;
@@ -40,6 +42,9 @@ class ChatController extends GetxController {
 
   // Chat messages list
   final RxList<Message> messages = <Message>[].obs;
+  final RxList<Brand> brands = <Brand>[].obs;
+
+  final RxBool isNewChat = true.obs;
 
   @override
   void onInit() {
@@ -57,6 +62,7 @@ class ChatController extends GetxController {
     } else {
       getSessionList();
     }
+    getBrandsList();
     _enableWakelock();
     manageScrollController();
   }
@@ -97,7 +103,7 @@ class ChatController extends GetxController {
             scrollController.position.pixels) {
           if (nextPageStop.isTrue &&
               paginationLoading.isFalse &&
-              currentSessionId != null) {
+              !isNewChat.value) {
             if (scrollController.hasClients) {
               scrollController.animateTo(
                 scrollController.position.maxScrollExtent + 100,
@@ -174,6 +180,9 @@ class ChatController extends GetxController {
                 chatHistoryModel.data?.total?.toString()) {
               nextPageStop.value = false;
             }
+            isNewChat.value = false;
+          } else {
+            isNewChat.value = true;
           }
         } else {
           loader.value = false;
@@ -191,7 +200,7 @@ class ChatController extends GetxController {
     loader.value = true;
 
     socket = IO.io(
-      "http://34.233.54.141:8000", // ✅ full URL
+      ApiConstants.chatURL,
       IO.OptionBuilder()
           .setTransports(['websocket']) // ✅ force WebSocket only
           .enableForceNew()
@@ -414,6 +423,25 @@ class ChatController extends GetxController {
       toast(e.toString());
     } finally {
       uploadLoader.value = false;
+    }
+  }
+
+  Future getBrandsList() async {
+    brandLoader.value = true;
+
+    var result = await NetworkClient.instance.callApi(
+      "${ApiConstants.getBrandList}?page=1&limit=100",
+      MethodType.get,
+      baseUrlType: BaseUrl.base,
+    );
+
+    if (result.isSuccess) {
+      brandLoader.value = false;
+      var brandsModel = BrandsModel.fromJson(result.data?.data);
+      brands.value = brandsModel.data?.brands ?? [];
+    } else {
+      brandLoader.value = false;
+      toast(result.error ?? "Failed to load data");
     }
   }
 

@@ -53,9 +53,12 @@ class NetworkClient {
         onError: (DioException e, handler) async {
           if (e.response != null) {
             // Handle 401 Unauthorized - Token Refresh
-            if (e.response?.statusCode == 401 &&
-                e.response?.data["detail"].toString().toLowerCase() ==
-                    "access token has expired") {
+            if ((e.response?.statusCode == 401 ||
+                    e.response?.statusCode == 403) &&
+                (e.response?.data["error"].toString().toLowerCase() ==
+                        "access token has expired" ||
+                    e.response?.data["error"].toString().toLowerCase() ==
+                        "invalid or expired token")) {
               // Skip refresh if it's the refresh endpoint itself
               if (e.requestOptions.path.contains(ApiConstants.refreshToken)) {
                 await _clearStorageAndLogout();

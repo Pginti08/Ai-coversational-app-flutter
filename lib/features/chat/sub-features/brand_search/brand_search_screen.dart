@@ -45,22 +45,29 @@ class _BrandSearchScreenState extends State<BrandSearchScreen> {
                   ),
                   Expanded(
                     child: AppTextField(
-                      autofocus: true,
-                      borderColor: Colors.transparent,
-                      fillColor: AppColors.grey2Color,
-                      hint: 'Search Brands',
-                      outsideMargin:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                      contentPadding: EdgeInsets.zero,
-                      borderRadius: 100,
-                      hintStyle: style400S14.copyWith(
-                        letterSpacing: 0.28,
-                        color: Color(0xFF999999),
-                      ),
-                      prefixIcon: SvgPicture.asset(
-                        AssetConstants.search,
-                      ),
-                    ),
+                        autofocus: true,
+                        borderColor: Colors.transparent,
+                        fillColor: AppColors.grey2Color,
+                        hint: 'Search Brands',
+                        outsideMargin:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        contentPadding: EdgeInsets.zero,
+                        borderRadius: 100,
+                        hintStyle: style400S14.copyWith(
+                          letterSpacing: 0.28,
+                          color: Color(0xFF999999),
+                        ),
+                        prefixIcon: SvgPicture.asset(
+                          AssetConstants.search,
+                        ),
+                        controller: controller.brandController,
+                        onChanged: (value) {
+                          if (value.isNotEmpty) {
+                            controller.searchBrandApi(value);
+                          } else {
+                            controller.searchBrands.value = [];
+                          }
+                        }),
                   ),
                   wSizedBox16,
                 ],
@@ -68,33 +75,34 @@ class _BrandSearchScreenState extends State<BrandSearchScreen> {
             ),
             hSizedBox10,
             Expanded(
-              child: GridView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1,
-                ),
-                itemCount: 20,
-                itemBuilder: (context, index) {
-                  return CommonContainer(
-                      onTap: () {
-                        Get.back();
-                        Get.find<ChatController>()
-                            .sendMessage(message: "Dresses by Zara");
-                        Get.find<ChatController>().showBrandContainer.value =
-                            false;
-                      },
-                      backgroundColor: AppColors.grey2Color,
-                      borderRadius: 10,
-                      child: AppNetworkImage(
-                        imageUrl:
-                            "https://i.pinimg.com/474x/af/84/6e/af846e8b9c2f4ecec25e6a13e0faa07e.jpg",
-                        fit: BoxFit.cover,
-                      ));
-                },
-              ),
+              child: Obx(() => GridView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 1,
+                    ),
+                    itemCount: controller.searchBrands.length,
+                    itemBuilder: (context, index) {
+                      return CommonContainer(
+                          onTap: () {
+                            Get.back();
+                            Get.find<ChatController>().sendMessage(
+                                message:
+                                    "Dresses by ${controller.searchBrands[index].name}");
+                            Get.find<ChatController>()
+                                .showBrandContainer
+                                .value = false;
+                          },
+                          backgroundColor: AppColors.grey2Color,
+                          borderRadius: 10,
+                          child: AppNetworkImage(
+                            imageUrl: controller.searchBrands[index].logo ?? "",
+                            fit: BoxFit.cover,
+                          ));
+                    },
+                  )),
             )
           ],
         ),

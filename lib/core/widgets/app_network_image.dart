@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:ai_fashion/core/constants/api_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/utils/common_utils.dart';
+import 'package:ai_fashion/core/widgets/image_viewer_screen.dart';
 import 'package:ai_fashion/core/widgets/shimmer_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AppNetworkImage extends StatelessWidget {
   const AppNetworkImage({
@@ -32,6 +34,7 @@ class AppNetworkImage extends StatelessWidget {
     this.borderWidth,
     this.blendMode,
     this.errorWidget,
+    this.isOpenImageViewer = false,
   });
   final String imageUrl;
   final BoxFit? fit;
@@ -55,6 +58,7 @@ class AppNetworkImage extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final BorderRadiusGeometry? borderRadius;
   final Widget? errorWidget;
+  final bool isOpenImageViewer;
 
   String get _fullImageUrl {
     if (imageUrl.isEmpty) return '';
@@ -71,7 +75,18 @@ class AppNetworkImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: isOpenImageViewer
+          ? () {
+              Get.to(
+                ImageViewerScreen(
+                  imageUrl: _fullImageUrl,
+                ),
+                opaque: false,
+                transition: Transition.fadeIn,
+                fullscreenDialog: true,
+              );
+            }
+          : onTap,
       child: ClipRRect(
         borderRadius: borderRadius ?? BorderRadius.zero,
         child: Container(

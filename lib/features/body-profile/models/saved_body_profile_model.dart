@@ -44,7 +44,7 @@ class SavedBodyProfile {
   String? id;
   String? name;
   double? height;
-  double? chest;
+  double? bust;
   double? waist;
   double? hips;
   double? shoulders;
@@ -57,7 +57,7 @@ class SavedBodyProfile {
     this.id,
     this.name,
     this.height,
-    this.chest,
+    this.bust,
     this.waist,
     this.hips,
     this.shoulders,
@@ -72,7 +72,7 @@ class SavedBodyProfile {
         id: json["id"],
         name: json["name"],
         height: double.tryParse(json["height"].toString()),
-        chest: double.tryParse(json["chest"].toString()),
+        bust: double.tryParse(json["bust"].toString()),
         waist: double.tryParse(json["waist"].toString()),
         hips: double.tryParse(json["hips"].toString()),
         shoulders: double.tryParse(json["shoulders"].toString()),
@@ -90,7 +90,7 @@ class SavedBodyProfile {
         "id": id,
         "name": name,
         "height": height,
-        "chest": chest,
+        "bust": bust,
         "waist": waist,
         "hips": hips,
         "shoulders": shoulders,

@@ -39,7 +39,6 @@ class AppColors {
     Color.fromARGB(25, 255, 255, 255),
   ];
   static const glassBorderGradient = [
-    Color.fromARGB(10, 255, 255, 255),
     Color.fromARGB(20, 255, 255, 255),
     Color.fromARGB(30, 255, 255, 255),
     Color.fromARGB(40, 255, 255, 255),

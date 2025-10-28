@@ -4,6 +4,7 @@ import 'package:ai_fashion/features/cart/screens/checkout_screen.dart';
 import 'package:ai_fashion/features/chat/screens/chat_screen.dart';
 import 'package:ai_fashion/features/chat/sub-features/brand_search/brand_search_screen.dart';
 import 'package:ai_fashion/features/chat/sub-features/card-deck/card_deck_screen.dart';
+import 'package:ai_fashion/features/chat/sub-features/remixed-product/remixed_product_screen.dart';
 import 'package:ai_fashion/features/edit-profile/screens/edit_profile_screen.dart';
 import 'package:ai_fashion/features/home/screens/home_screen.dart';
 import 'package:ai_fashion/features/liked/screens/liked_screen.dart';
@@ -13,6 +14,7 @@ import 'package:ai_fashion/features/orders-detail/screens/order_detail_screen.da
 import 'package:ai_fashion/features/orders/screens/orders_screen.dart';
 import 'package:ai_fashion/features/otp-verify/screens/otp_verify_screen.dart';
 import 'package:ai_fashion/features/product-detail/product_detail_screen.dart';
+import 'package:ai_fashion/features/quotation-chat/screens/quotation_chat_screen.dart';
 import 'package:ai_fashion/features/quotations/screens/quotations_screen.dart';
 import 'package:ai_fashion/features/saved-address/screens/saved_address_screen.dart';
 import 'package:ai_fashion/features/signup/screens/signup_screen.dart';
@@ -173,6 +175,20 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.editProfile,
       page: () => EditProfileScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.remixedProduct,
+      page: () => RemixedProductScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.quotationChat,
+      page: () => QuotationChatScreen(),
     ),
   ];
 }

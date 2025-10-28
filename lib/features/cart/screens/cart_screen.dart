@@ -5,12 +5,13 @@ import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_button.dart';
+import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/cart/controller/cart_controller.dart';
-import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -20,168 +21,259 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScaffold(
-      isEffect3: true,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16)
-            .copyWith(top: Platform.isAndroid ? 6 : 0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Obx(() => CustomScaffold(
+          isEffect3: true,
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16)
+                .copyWith(top: Platform.isAndroid ? 6 : 0),
+            child: Column(
               children: [
-                Text('Cart',
-                    textAlign: TextAlign.center,
-                    style: style700S28.copyWith(color: AppColors.textColor)),
-                IconButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  icon: SvgPicture.asset(AssetConstants.closeIcon),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Cart',
+                        textAlign: TextAlign.center,
+                        style:
+                            style700S28.copyWith(color: AppColors.textColor)),
+                    IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: SvgPicture.asset(AssetConstants.closeIcon),
+                    )
+                  ],
+                ),
+                Expanded(
+                  child: controller.isLoading.value
+                      ? Center(
+                          child: RotatingLoader(),
+                        )
+                      : ListView(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          controller: controller.scrollController,
+                          physics: const AlwaysScrollableScrollPhysics()
+                              .applyTo(const BouncingScrollPhysics()),
+                          children: [
+                              ListView.separated(
+                                physics: NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                shrinkWrap: true,
+                                itemCount: controller.cartList.length,
+                                separatorBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    child: Divider(
+                                      thickness: 0.5,
+                                      color: AppColors.grey2Color,
+                                    ),
+                                  );
+                                },
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      color: Colors.transparent,
+                                      child: Row(
+                                        children: [
+                                          AppNetworkImage(
+                                            width: 100,
+                                            height: 150,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            imageUrl: controller.cartList[index]
+                                                    .quotation?.dressImage ??
+                                                "",
+                                            fit: BoxFit.cover,
+                                          ),
+                                          wSizedBox10,
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  controller.cartList[index]
+                                                          .quotation?.title ??
+                                                      "-",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: style400S16.copyWith(
+                                                      letterSpacing: 0.32,
+                                                      color: AppColors
+                                                          .whiteTextColor),
+                                                ),
+                                                hSizedBox4,
+                                                Text(
+                                                  controller
+                                                          .cartList[index]
+                                                          .quotation
+                                                          ?.description ??
+                                                      "-",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 2,
+                                                  style: style400S12.copyWith(
+                                                      letterSpacing: 0.32,
+                                                      color: AppColors
+                                                          .whiteTextColor),
+                                                ),
+                                                hSizedBox10,
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Flexible(
+                                                      child: CommonContainer(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 8),
+                                                        borderRadius: 100,
+                                                        borderGradientColors:
+                                                            AppColors
+                                                                .glassBorderGradient,
+                                                        child: Text(
+                                                          (controller
+                                                                          .cartList[
+                                                                              index]
+                                                                          .quotation
+                                                                          ?.purchaseType
+                                                                          ?.toLowerCase() ==
+                                                                      "single"
+                                                                  ? "${controller.cartList[index].quotation?.bodyProfiles?.firstOrNull?.height?.toStringAsFixed(0) ?? '0'} ${(controller.cartList[index].quotation?.bodyProfiles?.firstOrNull?.heightUnit ?? "").toUpperCase()}  •  ${controller.cartList[index].quotation?.bodyProfiles?.firstOrNull?.bust?.toStringAsFixed(0) ?? '0'}” | ${controller.cartList[index].quotation?.bodyProfiles?.firstOrNull?.waist?.toStringAsFixed(0) ?? '0'}” | ${controller.cartList[index].quotation?.bodyProfiles?.firstOrNull?.hips?.toStringAsFixed(0) ?? '0'}” | ${controller.cartList[index].quotation?.bodyProfiles?.firstOrNull?.shoulders?.toStringAsFixed(0) ?? '0'}”"
+                                                                      .toUpperCase()
+                                                                  : controller
+                                                                              .cartList[
+                                                                                  index]
+                                                                              .quotation
+                                                                              ?.purchaseType
+                                                                              ?.toLowerCase() ==
+                                                                          "bulk"
+                                                                      ? (controller
+                                                                              .cartList[index]
+                                                                              .quotation
+                                                                              ?.bulkQuantities
+                                                                              ?.entries
+                                                                              .map((e) => '"${e.key}": ${e.value}')
+                                                                              .join(', ') ??
+                                                                          '')
+                                                                      : "")
+                                                              .toUpperCase(),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: style700S12
+                                                              .copyWith(
+                                                                  letterSpacing:
+                                                                      0.96,
+                                                                  color: Color(
+                                                                      0xFFCCCCCC)),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                hSizedBox16,
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        "${AssetConstants.rupeeSymbol}${controller.cartList[index].quotation?.price ?? "-"}",
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: style400S16.copyWith(
+                                                            letterSpacing: 0.32,
+                                                            color: AppColors
+                                                                .whiteTextColor),
+                                                      ),
+                                                    ),
+                                                    wSizedBox10,
+                                                    CommonContainer(
+                                                      onTap: () {
+                                                        controller
+                                                            .removeFromCartApi(
+                                                                controller
+                                                                    .cartList[
+                                                                        index]
+                                                                    .id);
+                                                      },
+                                                      isCircle: true,
+                                                      padding:
+                                                          EdgeInsets.all(10),
+                                                      borderGradientColors:
+                                                          AppColors
+                                                              .glassBorderGradient,
+                                                      child: SvgPicture.asset(
+                                                          AssetConstants
+                                                              .remove),
+                                                    )
+                                                  ],
+                                                ),
+                                                hSizedBox10,
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              if (controller.paginationLoading.value)
+                                Padding(
+                                  padding: EdgeInsets.all(8.w),
+                                  child: Center(
+                                    child: RotatingLoader(
+                                      size: 30,
+                                    ),
+                                  ),
+                                ),
+                            ]),
                 )
               ],
             ),
-            Expanded(
-              child: ListView.separated(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                itemCount: 3,
-                separatorBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Divider(
-                      thickness: 0.5,
-                      color: AppColors.grey2Color,
-                    ),
-                  );
-                },
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Row(
-                        children: [
-                          AppNetworkImage(
-                            width: 100,
-                            height: 150,
-                            borderRadius: BorderRadius.circular(12),
-                            imageUrl:
-                                "https://framerusercontent.com/images/ioTL88ZpHCWXDdmKwFbhBBMJfA.png",
-                            fit: BoxFit.cover,
-                          ),
-                          wSizedBox10,
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Midnight Bloom Striped Elegance",
-                                  overflow: TextOverflow.ellipsis,
-                                  style: style400S16.copyWith(
-                                      letterSpacing: 0.32,
-                                      color: AppColors.whiteTextColor),
-                                ),
-                                hSizedBox10,
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: CommonContainer(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 8),
-                                        borderRadius: 100,
-                                        borderGradientColors:
-                                            AppColors.glassBorderGradient,
-                                        child: Text(
-                                          "172 cm  •  32” | 24” | 36”"
-                                              .toUpperCase(),
-                                          overflow: TextOverflow.ellipsis,
-                                          style: style700S12.copyWith(
-                                              letterSpacing: 0.96,
-                                              color: Color(0xFFCCCCCC)),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                hSizedBox30,
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        "₹2,800/-",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: style400S16.copyWith(
-                                            letterSpacing: 0.32,
-                                            color: AppColors.whiteTextColor),
-                                      ),
-                                    ),
-                                    wSizedBox10,
-                                    CommonContainer(
-                                      onTap: () {},
-                                      isCircle: true,
-                                      padding: EdgeInsets.all(10),
-                                      borderGradientColors:
-                                          AppColors.glassBorderGradient,
-                                      child: SvgPicture.asset(
-                                          AssetConstants.remove),
-                                    )
-                                  ],
-                                ),
-                                hSizedBox14,
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            )
-          ],
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            children: [
-              Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "CART",
-                        overflow: TextOverflow.ellipsis,
-                        style: style700S12.copyWith(
-                            letterSpacing: 0.3962, color: Color(0xFFCCCCCC)),
-                      ),
-                      Text(
-                        "₹11,200/-",
-                        overflow: TextOverflow.ellipsis,
-                        style: style700S18.copyWith(
-                            color: AppColors.whiteTextColor),
-                      ),
-                    ],
-                  )),
-              wSizedBox12,
-              Expanded(
-                flex: 2,
-                child: AppButton(
-                  onTap: () {
-                    Get.toNamed(Routes.checkout);
-                  },
-                  text: "Proceed to Payment",
-                ),
-              )
-            ],
           ),
-        ),
-      ),
-    );
+          bottomNavigationBar: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "CART",
+                            overflow: TextOverflow.ellipsis,
+                            style: style700S12.copyWith(
+                                letterSpacing: 0.3962,
+                                color: Color(0xFFCCCCCC)),
+                          ),
+                          Text(
+                            "₹11,200/-",
+                            overflow: TextOverflow.ellipsis,
+                            style: style700S18.copyWith(
+                                color: AppColors.whiteTextColor),
+                          ),
+                        ],
+                      )),
+                  wSizedBox12,
+                  Expanded(
+                    flex: 2,
+                    child: AppButton(
+                      onTap: () {
+                        // Get.toNamed(Routes.checkout);
+                      },
+                      text: "Proceed to Payment",
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 }

@@ -163,7 +163,7 @@ class BodyProfileScreen extends StatelessWidget {
                                                       AppColors
                                                           .glassBorderGradient,
                                                   child: Text(
-                                                    "${controller.savedBodyProfileModel.value.data?[index].height?.toStringAsFixed(0) ?? '0'} ${(controller.savedBodyProfileModel.value.data?[index].unit ?? "").toUpperCase()}  •  ${controller.savedBodyProfileModel.value.data?[index].chest?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].waist?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].hips?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].shoulders?.toStringAsFixed(0) ?? '0'}”"
+                                                    "${controller.savedBodyProfileModel.value.data?[index].height?.toStringAsFixed(0) ?? '0'} ${(controller.savedBodyProfileModel.value.data?[index].unit ?? "").toUpperCase()}  •  ${controller.savedBodyProfileModel.value.data?[index].bust?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].waist?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].hips?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].shoulders?.toStringAsFixed(0) ?? '0'}”"
                                                         .toUpperCase(),
                                                     overflow:
                                                         TextOverflow.ellipsis,

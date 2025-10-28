@@ -159,6 +159,14 @@ class _UserMenuState extends State<UserMenu> {
                     },
                   ),
                   menuTiles(name: "Invite Friends", icon: AssetConstants.share),
+                  menuTiles(
+                    name: "Logout",
+                    icon: AssetConstants.logout,
+                    onTap: () async {
+                      await LocalStorageService.instance.clear();
+                      Get.offAllNamed(Routes.login);
+                    },
+                  ),
                 ],
               )),
               hSizedBox12,
@@ -210,7 +218,11 @@ class _UserMenuState extends State<UserMenu> {
         padding: EdgeInsets.symmetric(horizontal: 22, vertical: 16),
         child: Row(
           children: [
-            SvgPicture.asset(icon),
+            SvgPicture.asset(
+              icon,
+              height: 20,
+              colorFilter: ColorFilter.mode(Color(0xFFCCCCCC), BlendMode.srcIn),
+            ),
             wSizedBox8,
             Text(
               name,

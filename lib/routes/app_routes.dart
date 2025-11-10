@@ -26,4 +26,5 @@ abstract class Routes {
   static const String editProfile = '/edit-profile';
   static const String remixedProduct = '/remixed-product';
   static const String quotationChat = '/quotation-chat';
+  static const String inviteFriend = '/invite-friend';
 }

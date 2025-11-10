@@ -35,7 +35,7 @@ class SavedAddressScreen extends StatelessWidget {
                   children: [
                     Text('Saved addresses'.toUpperCase(),
                         textAlign: TextAlign.center,
-                        style: style700S12.copyWith(
+                        style: style700S16.copyWith(
                             letterSpacing: 0.96, color: Color(0xFFCCCCCC))),
                   ],
                 ),
@@ -72,7 +72,11 @@ class SavedAddressScreen extends StatelessWidget {
                           barrierColor: AppColors.blackColor.withAlpha(100),
                           blurStrength: 30,
                           isCloseButton: true,
-                          child: AddAddressBottomSheet(),
+                          child: AddAddressBottomSheet(
+                            onSuccess: () {
+                              controller.getSavedAddress();
+                            },
+                          ),
                         );
                       },
                       child: Row(
@@ -201,8 +205,13 @@ class SavedAddressScreen extends StatelessWidget {
                                                   blurStrength: 30,
                                                   isCloseButton: true,
                                                   child: AddAddressBottomSheet(
-                                                      isEdit: true,
-                                                      savedAddress: address),
+                                                    isEdit: true,
+                                                    savedAddress: address,
+                                                    onSuccess: () {
+                                                      controller
+                                                          .getSavedAddress();
+                                                    },
+                                                  ),
                                                 );
                                               },
                                               child: SvgPicture.asset(

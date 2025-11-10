@@ -5,14 +5,12 @@ import 'package:ai_fashion/core/services/local_storage_service.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/core/widgets/app_button.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/home/controller/home_controller.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -158,7 +156,13 @@ class _UserMenuState extends State<UserMenu> {
                       Get.toNamed(Routes.skipped);
                     },
                   ),
-                  menuTiles(name: "Invite Friends", icon: AssetConstants.share),
+                  menuTiles(
+                    name: "Invite Friends",
+                    icon: AssetConstants.share,
+                    onTap: () {
+                      Get.toNamed(Routes.inviteFriend);
+                    },
+                  ),
                   menuTiles(
                     name: "Logout",
                     icon: AssetConstants.logout,
@@ -170,34 +174,34 @@ class _UserMenuState extends State<UserMenu> {
                 ],
               )),
               hSizedBox12,
-              Divider(
-                thickness: 0.5,
-                color: AppColors.dividerColor,
-              ),
-              hSizedBox12,
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.w),
-                child: Column(
-                  children: [
-                    AppButton(
-                      onTap: () {
-                        widget.controller.toggleDrawer();
-                        Get.toNamed(Routes.myDesigns);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(AssetConstants.colorfilter),
-                          wSizedBox6,
-                          Text("My Designs",
-                              style: style700S16.copyWith(
-                                  color: AppColors.blackColor)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Divider(
+              //   thickness: 0.5,
+              //   color: AppColors.dividerColor,
+              // ),
+              // hSizedBox12,
+              // Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 12.w),
+              //   child: Column(
+              //     children: [
+              //       AppButton(
+              //         onTap: () {
+              //           widget.controller.toggleDrawer();
+              //           Get.toNamed(Routes.myDesigns);
+              //         },
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             SvgPicture.asset(AssetConstants.colorfilter),
+              //             wSizedBox6,
+              //             Text("My Designs",
+              //                 style: style700S16.copyWith(
+              //                     color: AppColors.blackColor)),
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               if (Platform.isAndroid) hSizedBox10,
             ],
           ),

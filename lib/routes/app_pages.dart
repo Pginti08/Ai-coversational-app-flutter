@@ -1,12 +1,13 @@
 import 'package:ai_fashion/features/body-profile/screens/body_profile_screen.dart';
 import 'package:ai_fashion/features/cart/screens/cart_screen.dart';
-import 'package:ai_fashion/features/cart/screens/checkout_screen.dart';
 import 'package:ai_fashion/features/chat/screens/chat_screen.dart';
 import 'package:ai_fashion/features/chat/sub-features/brand_search/brand_search_screen.dart';
 import 'package:ai_fashion/features/chat/sub-features/card-deck/card_deck_screen.dart';
 import 'package:ai_fashion/features/chat/sub-features/remixed-product/remixed_product_screen.dart';
+import 'package:ai_fashion/features/checkout/screens/checkout_screen.dart';
 import 'package:ai_fashion/features/edit-profile/screens/edit_profile_screen.dart';
 import 'package:ai_fashion/features/home/screens/home_screen.dart';
+import 'package:ai_fashion/features/invite-friend/screens/invite_friend_screen.dart';
 import 'package:ai_fashion/features/liked/screens/liked_screen.dart';
 import 'package:ai_fashion/features/login/screens/login_screen.dart';
 import 'package:ai_fashion/features/my-designs/screens/my_designs_screen.dart';
@@ -189,6 +190,13 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.quotationChat,
       page: () => QuotationChatScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.inviteFriend,
+      page: () => InviteFriendScreen(),
     ),
   ];
 }

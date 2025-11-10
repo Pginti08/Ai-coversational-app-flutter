@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CartController extends GetxController {
-  RxString selectedAddress = "".obs;
   final RxBool isLoading = false.obs;
   RxInt page = 1.obs;
   RxBool paginationLoading = false.obs;
   RxBool nextPageStop = true.obs;
 
   final RxList<Cart> cartList = <Cart>[].obs;
+  final Rx<CartModel> cartModel = CartModel().obs;
 
   final ScrollController scrollController = ScrollController();
 
@@ -48,26 +48,26 @@ class CartController extends GetxController {
     try {
       if (isInitial) {
         cartList.value = [];
+        cartModel.value = CartModel();
         page.value = 1;
         nextPageStop.value = true;
         isLoading.value = true;
       }
       if (nextPageStop.isTrue) {
         var result = await NetworkClient.instance.callApi(
-          "${ApiConstants.cart}?page=${page.value}&limit=20",
+          "${ApiConstants.cart}?page=${page.value}&limit=100",
           baseUrlType: BaseUrl.base,
           MethodType.get,
         );
         if (result.isSuccess) {
           isLoading.value = false;
           paginationLoading.value = false;
-
-          var cartModel = CartModel.fromJson(result.data?.data);
-          cartList.value += cartModel.data?.items ?? [];
+          cartModel.value = CartModel.fromJson(result.data?.data);
+          cartList.value += cartModel.value.data?.items ?? [];
           page.value = page.value + 1;
           if (cartList.isNotEmpty) {
             if (cartList.length.toString() ==
-                cartModel.data?.total?.toString()) {
+                cartModel.value.data?.total?.toString()) {
               nextPageStop.value = false;
             }
           }

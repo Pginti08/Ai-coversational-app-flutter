@@ -77,7 +77,7 @@ class Quotation {
   String? material;
   String? color;
   String? specialRequests;
-  int? price;
+  double? price;
   String? currency;
   String? note;
   String? title;
@@ -91,6 +91,7 @@ class Quotation {
   Map<String, dynamic>? bulkQuantities;
   int? totalQuantity;
   dynamic product;
+  bool? hasNewMessage;
 
   Quotation({
     this.id,
@@ -116,6 +117,7 @@ class Quotation {
     this.bulkQuantities,
     this.totalQuantity,
     this.product,
+    this.hasNewMessage,
   });
 
   factory Quotation.fromJson(Map<String, dynamic> json) => Quotation(
@@ -131,7 +133,7 @@ class Quotation {
         material: json["material"],
         color: json["color"],
         specialRequests: json["specialRequests"],
-        price: json["price"],
+        price: double.tryParse(json["price"].toString()),
         currency: json["currency"],
         note: json["note"],
         title: json["title"],
@@ -153,6 +155,7 @@ class Quotation {
             : Map<String, dynamic>.from(json["bulkQuantities"]),
         totalQuantity: json["totalQuantity"],
         product: json["product"],
+        hasNewMessage: json["hasNewMessage"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -181,6 +184,7 @@ class Quotation {
         "bulkQuantities": bulkQuantities ?? {},
         "totalQuantity": totalQuantity,
         "product": product,
+        "hasNewMessage": hasNewMessage,
       };
 }
 

@@ -108,6 +108,15 @@ String jsonToReadableText(String jsonString, {int indent = 0}) {
   }
 }
 
+String bulkQuantitiesToReadableText(Map<String, dynamic>? bulkQuantities) {
+  if (bulkQuantities == null || bulkQuantities.isEmpty) return "-";
+
+  final sizes = bulkQuantities['sizes'];
+  if (sizes == null || sizes is! Map || sizes.isEmpty) return "-";
+
+  return (sizes).entries.map((e) => "${e.key}: ${e.value}").join(", ");
+}
+
 String _convertJsonToText(dynamic data, int indent) {
   final buffer = StringBuffer();
   final space = '  ' * indent;

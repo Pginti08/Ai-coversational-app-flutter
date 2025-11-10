@@ -7,7 +7,6 @@ import 'package:ai_fashion/core/services/network_service.dart';
 import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/widgets/app_toast.dart';
 import 'package:ai_fashion/features/quotation-chat/models/analyze_dress_model.dart';
-import 'package:ai_fashion/features/quotation-chat/models/final_quotation_model.dart';
 import 'package:ai_fashion/features/quotation-chat/models/quotation_chat_history_model.dart';
 import 'package:ai_fashion/features/quotation-chat/widgets/chat_actions_buttons.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +17,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 class QuotationChatController extends GetxController {
   String imageUrl = "";
   String productId = "";
+  String status = "";
   final RxBool isDrawerOpen = false.obs;
   final typeFocusNode = FocusNode();
   final ScrollController scrollController = ScrollController();
@@ -47,8 +47,7 @@ class QuotationChatController extends GetxController {
   final RxList<Option> buttonOptions = <Option>[].obs;
   final RxBool showBodyProfile = false.obs;
   final RxBool showBulkQuantity = false.obs;
-  final Rxn<FinalQuotationModel> finalQuotationModel =
-      Rxn<FinalQuotationModel>();
+  final Rxn<CardDetail> cardDetailModel = Rxn<CardDetail>();
 
   @override
   void onInit() {
@@ -60,6 +59,9 @@ class QuotationChatController extends GetxController {
       }
       if (Get.arguments["imageUrl"] != null) {
         imageUrl = Get.arguments["imageUrl"];
+      }
+      if (Get.arguments["status"] != null) {
+        status = Get.arguments["status"];
       }
     }
     analyzeDress(imageUrl);
@@ -186,12 +188,16 @@ class QuotationChatController extends GetxController {
     } catch (e) {
       loader.value = false;
       paginationLoading.value = false;
+      toast(e.toString());
     }
   }
 
   void connectSocket() {
     loader.value = true;
-
+    if (isNullOrEmpty(status) || status.toLowerCase() == "draft") {
+      isThinking.value = true;
+      thinkingMessage.value = "Analyzing...";
+    }
     socket = IO.io(
       ApiConstants.chatURL,
       IO.OptionBuilder()
@@ -260,7 +266,7 @@ class QuotationChatController extends GetxController {
         final showBulkQuantityForm = data['show_bulk_quantity_form'];
         final finalQuotationCardDetail =
             isNotNullOrEmpty(data["quotation_card"])
-                ? FinalQuotationModel.fromJson(data['quotation_card'])
+                ? CardDetail.fromJson(data['quotation_card'])
                 : null;
 
         // Insert new messages at the beginning (newest first)
@@ -282,7 +288,7 @@ class QuotationChatController extends GetxController {
 
         showBodyProfile.value = showBodyProfileForm ?? false;
         showBulkQuantity.value = showBulkQuantityForm ?? false;
-        finalQuotationModel.value = finalQuotationCardDetail;
+        cardDetailModel.value = finalQuotationCardDetail;
       } else {
         toast(data.toString());
       }
@@ -303,7 +309,7 @@ class QuotationChatController extends GetxController {
     buttonOptions.clear();
     showBodyProfile.value = false;
     showBulkQuantity.value = false;
-    finalQuotationModel.value = null;
+    cardDetailModel.value = null;
     FocusManager.instance.primaryFocus?.unfocus();
     messages.insert(
       0,

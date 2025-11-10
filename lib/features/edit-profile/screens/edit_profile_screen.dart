@@ -12,6 +12,7 @@ import 'package:ai_fashion/core/widgets/custom_image_picker_cropper.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/edit-profile/controller/edit_profile_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -33,13 +34,16 @@ class EditProfileScreen extends StatelessWidget {
           child: Column(
             children: [
               Stack(
+                clipBehavior: Clip.none,
                 alignment: Alignment.center,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Edit Profile',
-                          textAlign: TextAlign.center, style: style400S18),
+                      Text('Edit Profile'.toUpperCase(),
+                          textAlign: TextAlign.center,
+                          style: style700S14.copyWith(
+                              letterSpacing: 0.96, color: Color(0xFFCCCCCC))),
                     ],
                   ),
                   Positioned(
@@ -168,6 +172,18 @@ class EditProfileScreen extends StatelessWidget {
                         readOnly: true,
                         hintStyle:
                             style400S16.copyWith(color: Color(0xFF444444)),
+                        maxLength: 10,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        prefixIcon: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('🇮🇳+91', style: style400S16),
+                            hSizedBox2,
+                          ],
+                        ),
                       ),
                       hSizedBox16,
                       Obx(() => AppTextField(
@@ -200,7 +216,7 @@ class EditProfileScreen extends StatelessWidget {
         bottomNavigationBar: SafeArea(
           top: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
                 Expanded(

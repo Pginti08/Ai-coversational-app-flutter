@@ -1,4 +1,3 @@
-import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
@@ -10,7 +9,6 @@ import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -77,17 +75,11 @@ class _SignupScreenState extends State<SignupScreen> {
                   maxLength: 10,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  prefixIcon: Row(
+                  prefixIcon: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('🇮🇳+91', style: style400S14),
-                      wSizedBox4,
-                      Transform.rotate(
-                          angle: 3.14159 * 1.5,
-                          child: SvgPicture.asset(
-                            AssetConstants.backward,
-                            width: 16,
-                          )),
+                      Text('🇮🇳+91', style: style400S16),
+                      hSizedBox2,
                     ],
                   ),
                   errorText: controller.mobileError.value.isEmpty

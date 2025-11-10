@@ -8,6 +8,7 @@ import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/app_text_field.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/quotation-chat/controller/quotation_chat_controller.dart';
+import 'package:ai_fashion/features/quotation-chat/models/quotation_chat_history_model.dart';
 import 'package:ai_fashion/features/quotation-chat/widgets/chat_actions_buttons.dart';
 import 'package:ai_fashion/features/quotation-chat/widgets/final_quotation_card.dart';
 import 'package:ai_fashion/features/quotation-chat/widgets/quotation_ai_message_tile.dart';
@@ -84,14 +85,17 @@ class _QuotationChatScreenState extends State<QuotationChatScreen> {
                         },
                         icon: SvgPicture.asset(AssetConstants.backward)),
                     Expanded(
-                      child: Text(
-                        controller.analyzeDressModel.value.analysis?.title ??
-                            "",
-                        maxLines: 2,
-                        style: style400S16.copyWith(
-                            color: AppColors.whiteTextColor,
-                            letterSpacing: 0.32,
-                            overflow: TextOverflow.ellipsis),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Text(
+                          controller.analyzeDressModel.value.analysis?.title ??
+                              "",
+                          maxLines: 2,
+                          style: style400S16.copyWith(
+                              color: AppColors.whiteTextColor,
+                              letterSpacing: 0.32,
+                              overflow: TextOverflow.ellipsis),
+                        ),
                       ),
                     )
                   ],
@@ -114,7 +118,7 @@ class _QuotationChatScreenState extends State<QuotationChatScreen> {
                           : (controller.buttonOptions.isNotEmpty ? 1 : 0) +
                               (controller.showBodyProfile.value ? 1 : 0) +
                               (controller.showBulkQuantity.value ? 1 : 0) +
-                              (controller.finalQuotationModel.value != null
+                              (controller.cardDetailModel.value != null
                                   ? 1
                                   : 0)),
                   itemBuilder: (context, index) {
@@ -204,7 +208,7 @@ class _QuotationChatScreenState extends State<QuotationChatScreen> {
 
 // Handle final quotation card (only show when NOT thinking)
                     if (!controller.isThinking.value &&
-                        controller.finalQuotationModel.value != null &&
+                        controller.cardDetailModel.value != null &&
                         index ==
                             (controller.buttonOptions.isNotEmpty ? 1 : 0) +
                                 (controller.showBodyProfile.value ? 1 : 0) +
@@ -212,7 +216,9 @@ class _QuotationChatScreenState extends State<QuotationChatScreen> {
                       return Padding(
                         padding: EdgeInsets.only(bottom: 16),
                         child: FinalQuotationCard(
-                          quotation: controller.finalQuotationModel.value!,
+                          quotation:
+                              controller.cardDetailModel.value ?? CardDetail(),
+                          updatedBySupport: CardDetail(),
                         ),
                       );
                     }
@@ -225,7 +231,7 @@ class _QuotationChatScreenState extends State<QuotationChatScreen> {
                       if (controller.buttonOptions.isNotEmpty) messageIndex--;
                       if (controller.showBodyProfile.value) messageIndex--;
                       if (controller.showBulkQuantity.value) messageIndex--;
-                      if (controller.finalQuotationModel.value != null)
+                      if (controller.cardDetailModel.value != null)
                         messageIndex--;
                     }
 

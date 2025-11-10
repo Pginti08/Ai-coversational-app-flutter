@@ -2,13 +2,11 @@ import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/features/quotation-chat/models/final_quotation_model.dart';
 import 'package:ai_fashion/features/quotation-chat/models/quotation_chat_history_model.dart';
 import 'package:ai_fashion/features/quotation-chat/widgets/final_quotation_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class QuotationAiMessageTile extends StatefulWidget {
@@ -24,6 +22,20 @@ class QuotationAiMessageTile extends StatefulWidget {
 }
 
 class _QuotationAiMessageTileState extends State<QuotationAiMessageTile> {
+  late Message currentMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    currentMessage = widget.message;
+  }
+
+  void _updateMessage(Message updatedMessage) {
+    setState(() {
+      currentMessage = updatedMessage;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -40,29 +52,18 @@ class _QuotationAiMessageTileState extends State<QuotationAiMessageTile> {
               width: 20,
             ),
             hSizedBox10,
-            (widget.message.messageType == "card" &&
-                    widget.message.message == "quotation_card" &&
-                    isNotNullOrEmpty(widget.message.cardDetail))
+            (currentMessage.messageType == "card" &&
+                    currentMessage.message == "quotation_card" &&
+                    isNotNullOrEmpty(currentMessage.cardDetail))
                 ? FinalQuotationCard(
-                    quotation: FinalQuotationModel(
-                    quotationNumber: widget.message.cardDetail?.quotationNumber,
-                    dressImageUrl: widget.message.cardDetail?.dressImageUrl,
-                    date: DateFormat("MMMM dd, yyyy")
-                        .format(widget.message.cardDetail!.date!),
-                    color: widget.message.cardDetail?.color,
-                    material: widget.message.cardDetail?.material,
-                    type: widget.message.cardDetail?.purchaseType,
-                    measurements: widget.message.cardDetail?.sizeMeasurement ??
-                        widget.message.cardDetail?.bulkQuantities.toString(),
-                    specialRequests: widget.message.cardDetail?.specialRequests,
-                    quantity: widget.message.cardDetail?.quantity,
-                    price:
-                        "${AssetConstants.rupeeSymbol}${widget.message.cardDetail?.price.toString()}/pc",
-                    status: widget.message.cardDetail?.status,
-                    quotationId: widget.message.quotationId,
-                  ))
+                    quotation: currentMessage.cardDetail ?? CardDetail(),
+                    updatedBySupport:
+                        currentMessage.updatedBySupport ?? CardDetail(),
+                    message: currentMessage,
+                    onMessageUpdate: _updateMessage,
+                  )
                 : GptMarkdown(
-                    widget.message.message ?? "",
+                    currentMessage.message ?? "",
                     style: style400S16.copyWith(letterSpacing: 0.32),
                     onLinkTab: (url, title) {
                       launchUrl(Uri.parse(url),

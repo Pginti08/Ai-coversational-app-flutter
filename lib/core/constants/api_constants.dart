@@ -52,6 +52,9 @@ class ApiConstants {
   static const String analyzeDress = '/quotations/analyze-dress';
   static const String bodyMeasurementsAnalyze = '/body-measurements/analyze';
   static const String cart = '/cart';
+  static const String modificationRequest = '/modification-request';
+  static const String inviteFriend = '/user/invite-friend';
+  static const String orders = '/orders';
 
   // Headers
   static const Map<String, String> headers = {

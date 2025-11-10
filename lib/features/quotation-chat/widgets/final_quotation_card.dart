@@ -1,4 +1,5 @@
 import 'package:ai_fashion/core/constants/api_constants.dart';
+import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/services/network_service.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
@@ -8,7 +9,7 @@ import 'package:ai_fashion/core/widgets/app_button.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/app_toast.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
-import 'package:ai_fashion/features/quotation-chat/models/final_quotation_model.dart';
+import 'package:ai_fashion/features/quotation-chat/models/quotation_chat_history_model.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,13 +18,20 @@ class FinalQuotationCard extends StatelessWidget {
   FinalQuotationCard({
     super.key,
     required this.quotation,
+    this.message,
+    required this.updatedBySupport,
+    this.onMessageUpdate, // Add callback
   });
 
-  final FinalQuotationModel quotation;
+  final CardDetail updatedBySupport;
+  final CardDetail quotation;
+  final Message? message;
 
-  RxBool isLoading = false.obs;
+  final Function(Message)? onMessageUpdate; // Add callback parameter
 
-  Future<void> addToCartApi(String quotationId) async {
+  final RxBool isLoading = false.obs;
+
+  Future<void> addToCartApi(String quotationCardId) async {
     try {
       isLoading.value = true;
 
@@ -31,12 +39,45 @@ class FinalQuotationCard extends StatelessWidget {
           "${ApiConstants.cart}", MethodType.post,
           baseUrlType: BaseUrl.base,
           params: {
-            "quotationId": quotationId,
+            "quotationCardId": quotationCardId,
           });
 
       if (result.isSuccess) {
+        toast("Product added to cart successfully", type: ToastType.success);
         Get.until((route) => Get.currentRoute == Routes.home);
         Get.toNamed(Routes.cart);
+      } else {
+        toast(result.error.toString());
+      }
+    } catch (e) {
+      toast(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> modificationRequest(
+      String quotationCardId, String action) async {
+    try {
+      isLoading.value = true;
+
+      var result = await NetworkClient.instance.callApi(
+          "/quotations/$quotationCardId${ApiConstants.modificationRequest}",
+          MethodType.patch,
+          baseUrlType: BaseUrl.base,
+          params: {"action": action, "reason": action});
+
+      if (result.isSuccess) {
+        // Update the message using the callback
+        if (isNotNullOrEmpty(result.data?.data["data"])) {
+          if (message != null && onMessageUpdate != null) {
+            final updatedMessage = message!.copyWith(
+              cardDetail: CardDetail.fromJson(result.data?.data["data"]),
+              updatedBySupport: CardDetail(),
+            );
+            onMessageUpdate!(updatedMessage);
+          }
+        }
       } else {
         toast(result.error.toString());
       }
@@ -83,7 +124,7 @@ class FinalQuotationCard extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  (quotation.date ?? '').toUpperCase(),
+                  (quotation.date ?? "-").toUpperCase(),
                   style: style700S10.copyWith(
                     letterSpacing: 0.80,
                     color: Color(0xFF666666),
@@ -108,19 +149,30 @@ class FinalQuotationCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildInfoRow('COLOR', quotation.color ?? '-'),
+                          _buildInfoRow('COLOR', quotation.color ?? '-',
+                              updatedBySupport.color),
                           hSizedBox16,
                           // Material
-                          _buildInfoRow('MATERIAL', quotation.material ?? '-'),
+                          _buildInfoRow('MATERIAL', quotation.material ?? '-',
+                              updatedBySupport.material),
                           hSizedBox16,
 
                           // Size/Measurement
                           _buildInfoRow(
                               'SIZE/MEASUREMENT',
-                              isJson(quotation.measurements)
-                                  ? jsonToReadableText(
-                                      quotation.measurements ?? "")
-                                  : (quotation.measurements ?? "")),
+                              isNotNullOrEmpty(quotation.sizeMeasurement)
+                                  ? quotation.sizeMeasurement!
+                                  : isNotNullOrEmpty(quotation.bulkQuantities)
+                                      ? bulkQuantitiesToReadableText(
+                                          quotation.bulkQuantities)
+                                      : "-",
+                              isNotNullOrEmpty(updatedBySupport.sizeMeasurement)
+                                  ? updatedBySupport.sizeMeasurement!
+                                  : isNotNullOrEmpty(
+                                          updatedBySupport.bulkQuantities)
+                                      ? bulkQuantitiesToReadableText(
+                                          updatedBySupport.bulkQuantities)
+                                      : "")
                         ],
                       ),
                     ),
@@ -129,7 +181,7 @@ class FinalQuotationCard extends StatelessWidget {
                       width: 85,
                       height: 130,
                       borderRadius: BorderRadius.circular(12),
-                      imageUrl: quotation.dressImageUrl ?? '',
+                      imageUrl: quotation.dressImage ?? '',
                       fit: BoxFit.cover,
                     ),
                   ],
@@ -138,31 +190,81 @@ class FinalQuotationCard extends StatelessWidget {
 
                 // Special Requests
                 _buildInfoRow(
-                    'SPECIAL REQUESTS', quotation.specialRequests ?? '-'),
+                    'SPECIAL REQUESTS',
+                    quotation.specialRequests ?? '-',
+                    updatedBySupport.specialRequests),
                 hSizedBox16,
                 Row(
                   children: [
-                    _buildInfoRow('QUANTITY', quotation.quantity ?? '-'),
+                    _buildInfoRow(
+                      'QUANTITY',
+                      isNotNullOrEmpty(quotation.quantity)
+                          ? quotation.quantity.toString()
+                          : "",
+                      isNotNullOrEmpty(updatedBySupport.quantity)
+                          ? updatedBySupport.quantity.toString()
+                          : "",
+                    ),
                     wSizedBox10,
                     _buildInfoRow(
-                      'PRICE',
-                      quotation.price ?? '-',
-                    ),
+                        'PRICE',
+                        "${AssetConstants.rupeeSymbol}${quotation.price?.toStringAsFixed(0) ?? '-'}/pc",
+                        isNotNullOrEmpty(updatedBySupport.price)
+                            ? "${AssetConstants.rupeeSymbol}${updatedBySupport.price?.toStringAsFixed(0) ?? '-'}/pc"
+                            : ""),
                   ],
                 ),
                 hSizedBox24,
                 // Place Order Button
-                Obx(() => AppButton(
-                      text: quotation.status?.toLowerCase() == "finalized"
-                          ? 'Add To Cart'
-                          : "Pending",
-                      isDisabled:
-                          quotation.status?.toLowerCase() != "finalized",
-                      onTap: () {
-                        addToCartApi(quotation.quotationId ?? "");
-                      },
-                      isLoading: isLoading.value,
-                    )),
+                Obx(() => quotation.status == "MODIFICATION_REQUESTED"
+                    ? isLoading.value
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                height: 28,
+                                width: 28,
+                                child: CircularProgressIndicator(
+                                  color: AppColors.secondaryColor,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Row(
+                            children: [
+                              Expanded(
+                                child: AppButton(
+                                  text: "CANCEL",
+                                  isOutlined: true,
+                                  textColor: AppColors.whiteColor,
+                                  onTap: () {
+                                    modificationRequest(
+                                        message?.id ?? "", "CANCEL");
+                                  },
+                                ),
+                              ),
+                              wSizedBox10,
+                              Expanded(
+                                child: AppButton(
+                                  text: "ACCEPT",
+                                  onTap: () {
+                                    modificationRequest(
+                                        message?.id ?? "", "ACCEPT");
+                                  },
+                                ),
+                              )
+                            ],
+                          )
+                    : AppButton(
+                        text: quotation.status == "FINALIZED"
+                            ? 'Add To Cart'
+                            : quotation.status?.replaceAll("_", " "),
+                        isDisabled: quotation.status != "FINALIZED",
+                        onTap: () {
+                          addToCartApi(message?.id ?? "");
+                        },
+                        isLoading: isLoading.value,
+                      )),
               ],
             ),
           )
@@ -171,7 +273,7 @@ class FinalQuotationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String value, String? newValue) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -179,14 +281,33 @@ class FinalQuotationCard extends StatelessWidget {
           label,
           style: style700S10.copyWith(
             letterSpacing: 0.80,
-            color: Color(0xFF666666),
+            color: const Color(0xFF666666),
           ),
         ),
         Text(
           value,
           style: style400S14.copyWith(
-              color: AppColors.whiteColor, letterSpacing: 0.28),
+            color: AppColors.whiteColor,
+            letterSpacing: 0.28,
+          ),
         ),
+        if (isNotNullOrEmpty(newValue)) ...[
+          Text(
+            newValue!,
+            style: style400S14.copyWith(
+              color: Colors.amberAccent, // highlight new value
+              letterSpacing: 0.28,
+            ),
+          ),
+          Text(
+            "(Requested Update)",
+            style: style700S10.copyWith(
+              color: Colors.orange,
+              fontStyle: FontStyle.italic,
+              letterSpacing: 0.6,
+            ),
+          ),
+        ],
       ],
     );
   }

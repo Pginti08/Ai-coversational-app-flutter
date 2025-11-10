@@ -12,7 +12,6 @@ import 'package:ai_fashion/core/widgets/app_toast.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/chat/controller/chat_controller.dart';
 import 'package:ai_fashion/features/chat/models/sessions_model.dart';
-import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -182,22 +181,22 @@ class _PastConversationState extends State<PastConversation> {
                           ],
                         ),
                       ),
-                      hSizedBox12,
-                      AppButton(
-                        onTap: () {
-                          Get.toNamed(Routes.myDesigns);
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(AssetConstants.colorfilter),
-                            wSizedBox6,
-                            Text("My Designs",
-                                style: style700S16.copyWith(
-                                    color: AppColors.blackColor)),
-                          ],
-                        ),
-                      ),
+                      // hSizedBox12,
+                      // AppButton(
+                      //   onTap: () {
+                      //     Get.toNamed(Routes.myDesigns);
+                      //   },
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       SvgPicture.asset(AssetConstants.colorfilter),
+                      //       wSizedBox6,
+                      //       Text("My Designs",
+                      //           style: style700S16.copyWith(
+                      //               color: AppColors.blackColor)),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

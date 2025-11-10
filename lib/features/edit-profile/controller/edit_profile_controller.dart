@@ -28,7 +28,7 @@ class EditProfileController extends GetxController {
     nameController.text =
         LocalStorageService.instance.userInfo.value.data?.name ?? "";
     mobileNoController.text =
-        "${LocalStorageService.instance.userInfo.value.data?.countryCode ?? ""} ${LocalStorageService.instance.userInfo.value.data?.phone ?? ""} ";
+        "${LocalStorageService.instance.userInfo.value.data?.phone ?? ""} ";
     bioController.text =
         LocalStorageService.instance.userInfo.value.data?.bio ?? "";
     super.onInit();

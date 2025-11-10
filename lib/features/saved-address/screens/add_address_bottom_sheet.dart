@@ -9,7 +9,6 @@ import 'package:ai_fashion/core/widgets/app_button.dart';
 import 'package:ai_fashion/core/widgets/app_text_field.dart';
 import 'package:ai_fashion/core/widgets/app_toast.dart';
 import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
-import 'package:ai_fashion/features/saved-address/controller/saved_address_controller.dart';
 import 'package:ai_fashion/features/saved-address/models/saved_address_model.dart';
 import 'package:ai_fashion/features/saved-address/screens/city_list_bottom_sheet.dart';
 import 'package:ai_fashion/features/saved-address/screens/state_list_bottom_sheet.dart';
@@ -20,9 +19,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class AddAddressBottomSheet extends StatefulWidget {
-  AddAddressBottomSheet({super.key, this.isEdit = false, this.savedAddress});
   final bool isEdit;
   final SavedAddress? savedAddress;
+  final VoidCallback? onSuccess; // ✅ Add callback
+
+  const AddAddressBottomSheet({
+    super.key,
+    this.isEdit = false,
+    this.savedAddress,
+    this.onSuccess,
+  });
 
   @override
   State<AddAddressBottomSheet> createState() => _AddAddressBottomSheetState();
@@ -117,8 +123,10 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
         if (Get.isBottomSheetOpen ?? false) {
           Get.back();
         }
-        if (Get.isRegistered<SavedAddressController>()) {
-          Get.find<SavedAddressController>().getSavedAddress();
+        widget.onSuccess?.call(); // ✅ trigger success callback
+
+        if (Get.isBottomSheetOpen ?? false) {
+          Get.back();
         }
       } else {
         toast(result.error.toString());
@@ -176,7 +184,13 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                       hintStyle: style400S16.copyWith(color: Color(0xFF444444)),
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      prefixIcon: Text('+91', style: style400S16),
+                      prefixIcon: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('🇮🇳+91', style: style400S16),
+                          hSizedBox2,
+                        ],
+                      ),
                       errorText:
                           mobileError.value.isEmpty ? null : mobileError.value,
                       onChanged: (value) {

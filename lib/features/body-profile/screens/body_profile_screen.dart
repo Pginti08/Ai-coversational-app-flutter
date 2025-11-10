@@ -35,7 +35,7 @@ class BodyProfileScreen extends StatelessWidget {
                   children: [
                     Text('Body Profiles'.toUpperCase(),
                         textAlign: TextAlign.center,
-                        style: style700S12.copyWith(
+                        style: style700S14.copyWith(
                             letterSpacing: 0.96, color: Color(0xFFCCCCCC))),
                   ],
                 ),

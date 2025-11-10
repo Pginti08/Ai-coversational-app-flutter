@@ -111,6 +111,7 @@ class Message {
   String? messageType;
   DateTime? createdAt;
   CardDetail? cardDetail;
+  CardDetail? updatedBySupport;
 
   Message({
     this.id,
@@ -120,6 +121,7 @@ class Message {
     this.messageType,
     this.createdAt,
     this.cardDetail,
+    this.updatedBySupport,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) => Message(
@@ -134,6 +136,9 @@ class Message {
         cardDetail: json["cardDetail"] == null
             ? null
             : CardDetail.fromJson(json["cardDetail"]),
+        updatedBySupport: json["updatedBySupport"] == null
+            ? null
+            : CardDetail.fromJson(json["updatedBySupport"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -144,6 +149,7 @@ class Message {
         "messageType": messageType,
         "createdAt": createdAt?.toIso8601String(),
         "cardDetail": cardDetail?.toJson(),
+        "updatedBySupport": updatedBySupport?.toJson(),
       };
 
   Message copyWith({
@@ -154,6 +160,7 @@ class Message {
     String? messageType,
     DateTime? createdAt,
     CardDetail? cardDetail,
+    CardDetail? updatedBySupport,
   }) =>
       Message(
         id: id ?? this.id,
@@ -163,18 +170,19 @@ class Message {
         messageType: messageType ?? this.messageType,
         createdAt: createdAt ?? this.createdAt,
         cardDetail: cardDetail ?? this.cardDetail,
+        updatedBySupport: updatedBySupport ?? this.updatedBySupport,
       );
 }
 
 class CardDetail {
   String? quotationNumber;
-  DateTime? date;
+  String? date;
   String? color;
   String? material;
   String? sizeMeasurement;
   String? specialRequests;
-  String? dressImageUrl;
-  int? price;
+  String? dressImage;
+  double? price;
   String? currency;
   String? status;
   String? purchaseType;
@@ -188,7 +196,7 @@ class CardDetail {
     this.material,
     this.sizeMeasurement,
     this.specialRequests,
-    this.dressImageUrl,
+    this.dressImage,
     this.price,
     this.currency,
     this.status,
@@ -198,46 +206,46 @@ class CardDetail {
   });
 
   factory CardDetail.fromJson(Map<String, dynamic> json) => CardDetail(
-        quotationNumber: json["quotation_number"],
-        date: json["date"] == null ? null : DateTime.parse(json["date"]),
+        quotationNumber: json["quotationNumber"],
+        date: json["date"],
         color: json["color"],
         material: json["material"],
-        sizeMeasurement: json["size_measurement"],
-        specialRequests: json["special_requests"],
-        dressImageUrl: json["dress_image_url"],
-        price: json["price"],
+        sizeMeasurement: json["sizeMeasurement"],
+        specialRequests: json["specialRequests"],
+        dressImage: json["dressImage"],
+        price: double.tryParse(json["price"].toString()),
         currency: json["currency"],
         status: json["status"],
-        purchaseType: json["purchase_type"],
+        purchaseType: json["purchaseType"],
         quantity: json["quantity"],
         bulkQuantities: json["bulkQuantities"],
       );
 
   Map<String, dynamic> toJson() => {
-        "quotation_number": quotationNumber,
-        "date": date?.toIso8601String(),
+        "quotationNumber": quotationNumber,
+        "date": date,
         "color": color,
         "material": material,
-        "size_measurement": sizeMeasurement,
-        "special_requests": specialRequests,
-        "dress_image_url": dressImageUrl,
+        "sizeMeasurement": sizeMeasurement,
+        "specialRequests": specialRequests,
+        "dressImage": dressImage,
         "price": price,
         "currency": currency,
         "status": status,
-        "purchase_type": purchaseType,
+        "purchaseType": purchaseType,
         "quantity": quantity,
         "bulkQuantities": bulkQuantities,
       };
 
   CardDetail copyWith({
     String? quotationNumber,
-    DateTime? date,
+    String? date,
     String? color,
     String? material,
     String? sizeMeasurement,
     String? specialRequests,
-    String? dressImageUrl,
-    int? price,
+    String? dressImage,
+    double? price,
     String? currency,
     String? status,
     String? purchaseType,
@@ -251,7 +259,7 @@ class CardDetail {
         material: material ?? this.material,
         sizeMeasurement: sizeMeasurement ?? this.sizeMeasurement,
         specialRequests: specialRequests ?? this.specialRequests,
-        dressImageUrl: dressImageUrl ?? this.dressImageUrl,
+        dressImage: dressImage ?? this.dressImage,
         price: price ?? this.price,
         currency: currency ?? this.currency,
         status: status ?? this.status,

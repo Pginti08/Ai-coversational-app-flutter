@@ -33,6 +33,19 @@ class UserDetailModel {
         "message": message,
         "data": data?.toJson(),
       };
+
+  // ✅ copyWith method
+  UserDetailModel copyWith({
+    bool? success,
+    String? message,
+    Data? data,
+  }) {
+    return UserDetailModel(
+      success: success ?? this.success,
+      message: message ?? this.message,
+      data: data ?? this.data,
+    );
+  }
 }
 
 class Data {
@@ -43,6 +56,7 @@ class Data {
   String? role;
   String? image;
   String? bio;
+  bool? hasSeenGuide;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -54,6 +68,7 @@ class Data {
     this.role,
     this.image,
     this.bio,
+    this.hasSeenGuide,
     this.createdAt,
     this.updatedAt,
   });
@@ -66,6 +81,7 @@ class Data {
         role: json["role"],
         image: json["image"],
         bio: json["bio"],
+        hasSeenGuide: json["hasSeenGuide"],
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),
@@ -82,7 +98,35 @@ class Data {
         "role": role,
         "image": image,
         "bio": bio,
+        "hasSeenGuide": hasSeenGuide,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
       };
+
+  // ✅ copyWith method
+  Data copyWith({
+    String? id,
+    String? name,
+    String? countryCode,
+    String? phone,
+    String? role,
+    String? image,
+    String? bio,
+    bool? hasSeenGuide,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return Data(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      countryCode: countryCode ?? this.countryCode,
+      phone: phone ?? this.phone,
+      role: role ?? this.role,
+      image: image ?? this.image,
+      bio: bio ?? this.bio,
+      hasSeenGuide: hasSeenGuide ?? this.hasSeenGuide,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

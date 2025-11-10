@@ -55,6 +55,7 @@ class ApiConstants {
   static const String modificationRequest = '/modification-request';
   static const String inviteFriend = '/user/invite-friend';
   static const String orders = '/orders';
+  static const String guideSeen = '/user/guide-seen';
 
   // Headers
   static const Map<String, String> headers = {

@@ -4,6 +4,7 @@ import 'package:ai_fashion/core/services/network_service.dart';
 import 'package:ai_fashion/core/widgets/app_toast.dart';
 import 'package:ai_fashion/features/home/models/product_list_model.dart';
 import 'package:ai_fashion/features/home/models/user_detail_model.dart';
+import 'package:ai_fashion/features/home/screens/home_screen.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
@@ -11,6 +12,10 @@ class HomeController extends GetxController {
   final RxBool isLoading = false.obs;
   // isPaginating for background "load more" actions.
   final RxBool isPaginating = false.obs;
+
+  var currentGuideStep = GuideStep.none.obs;
+  // 3. Keep track of the user's guide status
+  var hasSeenGuide = true.obs;
 
   RxString userName =
       (LocalStorageService.instance.userInfo.value.data?.name ?? "").obs;
@@ -51,12 +56,44 @@ class HomeController extends GetxController {
             LocalStorageService.instance.userInfo.value.data?.name ?? "";
         userImage.value =
             LocalStorageService.instance.userInfo.value.data?.image ?? "";
+        checkUserGuideStatus();
       } else {
         toast(result.error.toString());
       }
     } catch (e) {
       toast(e.toString());
     } finally {}
+  }
+
+  void checkUserGuideStatus() {
+    // Get the status from your local storage or user model
+    // This is just an example, adapt it to your actual service
+    final userHasSeenGuide =
+        LocalStorageService.instance.userInfo.value.data?.hasSeenGuide ?? true;
+    hasSeenGuide.value = userHasSeenGuide;
+
+    if (!userHasSeenGuide) {
+      // Start the guide at the first step
+      currentGuideStep.value = GuideStep.dragDown;
+    } else {
+      currentGuideStep.value = GuideStep.done;
+    }
+  }
+
+  Future<void> markGuideSeen() async {
+    try {
+      var result = await NetworkClient.instance.callApi(
+        "${ApiConstants.guideSeen}",
+        MethodType.patch,
+        baseUrlType: BaseUrl.base,
+      );
+      if (result.isSuccess) {
+        LocalStorageService.instance.setUserInfo(
+            LocalStorageService.instance.userInfo.value.copyWith(
+                data: LocalStorageService.instance.userInfo.value.data
+                    ?.copyWith(hasSeenGuide: true)));
+      }
+    } catch (e) {}
   }
 
   Future<void> getSuggestedProducts({bool isLoadMore = false}) async {
@@ -110,8 +147,7 @@ class HomeController extends GetxController {
         MethodType.post,
         baseUrlType: BaseUrl.base,
       );
-    } catch (e) {
-    } finally {}
+    } catch (e) {}
   }
 
   Future<void> skipProduct(String productId) async {
@@ -121,7 +157,6 @@ class HomeController extends GetxController {
         MethodType.post,
         baseUrlType: BaseUrl.base,
       );
-    } catch (e) {
-    } finally {}
+    } catch (e) {}
   }
 }

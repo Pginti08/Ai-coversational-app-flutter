@@ -49,6 +49,7 @@ class InviteFriendController extends GetxController {
           params: {
             "name": nameController.text.trim(),
             "phone": mobileNoController.text.trim(),
+            "code": "+91",
             "email": emailController.text.trim(),
           });
       if (result.isSuccess) {

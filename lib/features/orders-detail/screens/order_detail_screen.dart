@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:ai_fashion/core/constants/asset_constants.dart';
 import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:ai_fashion/core/theme/app_styles.dart';
@@ -127,14 +125,13 @@ class OrderDetailScreen extends StatelessWidget {
                                                                 ?.purchaseType
                                                                 ?.toLowerCase() ==
                                                             "bulk"
-                                                        ? bulkQuantitiesToReadableText(
-                                                            jsonDecode(controller
-                                                                    .orderDetailModel
-                                                                    .value
-                                                                    .quotationCard
-                                                                    ?.sizeMeasurement ??
-                                                                ""))
-                                                        : "",
+                                                        ? bulkQuantitiesToReadableText(controller
+                                                                .orderDetailModel
+                                                                .value
+                                                                .quotationCard
+                                                                ?.bulkQuantities ??
+                                                            "")
+                                                        : "-",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: style700S12.copyWith(
                                                     letterSpacing: 0.96,
@@ -381,50 +378,59 @@ class OrderDetailScreen extends StatelessWidget {
                                         ],
                                       ),
                                       hSizedBox14,
-                                      AppButton(
-                                        onTap: () {
-                                          if (controller.orderDetailModel.value
-                                                  .order?.orderStatus !=
-                                              "PENDING_PAYMENT") {}
-                                        },
-                                        textColor: AppColors.whiteColor,
-                                        backgroundColor:
-                                            AppColors.whiteColor.withAlpha(5),
-                                        gradientBorderColors:
-                                            AppColors.glassBorderGradient,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(
-                                              AssetConstants.invoice,
-                                              colorFilter: ColorFilter.mode(
-                                                  controller
-                                                              .orderDetailModel
-                                                              .value
-                                                              .order
-                                                              ?.orderStatus !=
-                                                          "PENDING_PAYMENT"
-                                                      ? Color(0xFFCCCCCC)
-                                                      : Color(0xFF525252),
-                                                  BlendMode.srcIn),
+                                      Obx(() => AppButton(
+                                            onTap: () {
+                                              if (controller
+                                                      .orderDetailModel
+                                                      .value
+                                                      .order
+                                                      ?.orderStatus !=
+                                                  "PENDING_PAYMENT") {
+                                                controller.downloadPdf();
+                                              }
+                                            },
+                                            textColor: AppColors.whiteColor,
+                                            loaderColor: AppColors.whiteColor,
+                                            backgroundColor: AppColors
+                                                .whiteColor
+                                                .withAlpha(5),
+                                            gradientBorderColors:
+                                                AppColors.glassBorderGradient,
+                                            isLoading:
+                                                controller.isLoading2.value,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SvgPicture.asset(
+                                                  AssetConstants.invoice,
+                                                  colorFilter: ColorFilter.mode(
+                                                      controller
+                                                                  .orderDetailModel
+                                                                  .value
+                                                                  .order
+                                                                  ?.orderStatus !=
+                                                              "PENDING_PAYMENT"
+                                                          ? Color(0xFFCCCCCC)
+                                                          : Color(0xFF525252),
+                                                      BlendMode.srcIn),
+                                                ),
+                                                wSizedBox4,
+                                                Text(
+                                                  "Download Invoice",
+                                                  style: style700S16.copyWith(
+                                                      color: controller
+                                                                  .orderDetailModel
+                                                                  .value
+                                                                  .order
+                                                                  ?.orderStatus !=
+                                                              "PENDING_PAYMENT"
+                                                          ? Color(0xFFCCCCCC)
+                                                          : Color(0xFF525252)),
+                                                )
+                                              ],
                                             ),
-                                            wSizedBox4,
-                                            Text(
-                                              "Download Invoice",
-                                              style: style700S16.copyWith(
-                                                  color: controller
-                                                              .orderDetailModel
-                                                              .value
-                                                              .order
-                                                              ?.orderStatus !=
-                                                          "PENDING_PAYMENT"
-                                                      ? Color(0xFFCCCCCC)
-                                                      : Color(0xFF525252)),
-                                            )
-                                          ],
-                                        ),
-                                      ),
+                                          )),
                                     ],
                                   ),
                                 )

@@ -175,6 +175,7 @@ class QuotationCard {
   String? quotationNumber;
   String? purchaseType;
   String? sizeMeasurement;
+  dynamic bulkQuantities;
 
   QuotationCard({
     this.title,
@@ -184,6 +185,7 @@ class QuotationCard {
     this.quotationNumber,
     this.purchaseType,
     this.sizeMeasurement,
+    this.bulkQuantities,
   });
 
   factory QuotationCard.fromJson(Map<String, dynamic> json) => QuotationCard(
@@ -194,6 +196,7 @@ class QuotationCard {
         quotationNumber: json["quotationNumber"],
         purchaseType: json["purchaseType"],
         sizeMeasurement: json["sizeMeasurement"],
+        bulkQuantities: json["bulkQuantities"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -204,5 +207,6 @@ class QuotationCard {
         "quotationNumber": quotationNumber,
         "purchaseType": purchaseType,
         "sizeMeasurement": sizeMeasurement,
+        "bulkQuantities": bulkQuantities,
       };
 }

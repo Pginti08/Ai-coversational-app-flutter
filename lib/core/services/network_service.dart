@@ -97,26 +97,29 @@ class NetworkClient {
 
   // Getter to expose Dio instance
   Dio get dio => _dio;
-
   Future<Result<dioClient.Response<dynamic>>> callApi(
     String endpoint,
     String method, {
     required BaseUrl baseUrlType,
     dynamic params,
     Map<String, dynamic>? headers,
+    ResponseType? responseType, // Add this parameter
   }) async {
     final fullUrl = _getBaseUrl(baseUrlType) + endpoint;
 
-    // Retrieve access token from storage
     final accessToken = await _getAccessToken();
 
-    // Merge headers with the access token, if available
     final mergedHeaders = {
       if (accessToken != null) 'Authorization': 'Bearer $accessToken',
       ...?headers,
     };
 
-    final options = Options(method: method, headers: mergedHeaders);
+    final options = Options(
+      method: method,
+      headers: mergedHeaders,
+      responseType: responseType ??
+          ResponseType.json, // Use provided type or default to JSON
+    );
 
     try {
       final response = await _dio.request(

@@ -60,7 +60,7 @@ class OtpVerify extends StatelessWidget {
                               hSizedBox50,
                               hSizedBox50,
                               Text(
-                                "we’ve sent a 4-digit code ",
+                                "we’ve sent a 6-digit code ",
                                 style: style600S20.copyWith(
                                     color: AppColors.textColor),
                               ),

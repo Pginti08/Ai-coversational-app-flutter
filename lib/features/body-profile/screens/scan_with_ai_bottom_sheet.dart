@@ -280,7 +280,7 @@ class ScanWithAiBottomSheet extends StatelessWidget {
                         sideImage.value != null) {
                       bodyMeasurementsAnalyzeApi(context);
                     } else {
-                      toast('Please select all required images');
+                      toast('Please upload all required images');
                     }
                   },
                 )),

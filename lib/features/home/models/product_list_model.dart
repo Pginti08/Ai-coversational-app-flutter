@@ -39,7 +39,8 @@ class Product {
   String? userId;
   String? title;
   String? image;
-  double? price;
+  double? minPrice;
+  double? maxPrice;
   String? description;
   String? currency;
   DateTime? createdAt;
@@ -53,7 +54,8 @@ class Product {
     this.userId,
     this.title,
     this.image,
-    this.price,
+    this.minPrice,
+    this.maxPrice,
     this.description,
     this.currency,
     this.createdAt,
@@ -68,7 +70,8 @@ class Product {
         userId: json["userId"],
         title: json["title"],
         image: json["image"],
-        price: double.tryParse(json["price"].toString()),
+        minPrice: double.tryParse(json["minPrice"].toString()),
+        maxPrice: double.tryParse(json["maxPrice"].toString()),
         description: json["description"],
         currency: json["currency"],
         createdAt: json["createdAt"] == null
@@ -87,7 +90,8 @@ class Product {
         "userId": userId,
         "title": title,
         "image": image,
-        "price": price,
+        "minPrice": minPrice,
+        "maxPrice": maxPrice,
         "description": description,
         "currency": currency,
         "createdAt": createdAt?.toIso8601String(),

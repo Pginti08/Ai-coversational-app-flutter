@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 
 class QuotationsController extends GetxController {
   final RxBool isLoading = false.obs;
+  final RxBool isLoading2 = false.obs;
+
   RxInt page = 1.obs;
   RxBool paginationLoading = false.obs;
   RxBool nextPageStop = true.obs;
@@ -80,6 +82,30 @@ class QuotationsController extends GetxController {
       isLoading.value = false;
       paginationLoading.value = false;
       toast(e.toString());
+    }
+  }
+
+  Future<void> deleteQuotation(String? id) async {
+    try {
+      isLoading2.value = true;
+      var result = await NetworkClient.instance.callApi(
+        "${ApiConstants.quotations}/$id",
+        MethodType.delete,
+        baseUrlType: BaseUrl.base,
+      );
+
+      if (result.isSuccess) {
+        if (Get.isDialogOpen ?? false) {
+          Get.back();
+        }
+        getQuotationListApi();
+      } else {
+        toast(result.error.toString());
+      }
+    } catch (e) {
+      toast(e.toString());
+    } finally {
+      isLoading2.value = false;
     }
   }
 }

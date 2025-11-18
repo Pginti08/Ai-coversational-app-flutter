@@ -62,7 +62,7 @@ class BlurDialog {
                             ),
                         decoration: BoxDecoration(
                           color: backgroundColor ??
-                              AppColors.blackColor.withAlpha(100),
+                              AppColors.blackColor.withAlpha(150),
                           borderRadius: BorderRadius.circular(borderRadius),
                           border: GradientBoxBorder(
                             gradient: LinearGradient(
@@ -84,7 +84,7 @@ class BlurDialog {
           ),
         ),
       ),
-      barrierColor: overlayColor ?? AppColors.blackColor.withAlpha(15),
+      barrierColor: overlayColor ?? AppColors.blackColor.withAlpha(100),
     );
   }
 }

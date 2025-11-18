@@ -62,13 +62,15 @@ class _QuotationAiMessageTileState extends State<QuotationAiMessageTile> {
                     message: currentMessage,
                     onMessageUpdate: _updateMessage,
                   )
-                : GptMarkdown(
-                    currentMessage.message ?? "",
-                    style: style400S16.copyWith(letterSpacing: 0.32),
-                    onLinkTab: (url, title) {
-                      launchUrl(Uri.parse(url),
-                          mode: LaunchMode.externalApplication);
-                    },
+                : SelectionArea(
+                    child: GptMarkdown(
+                      currentMessage.message ?? "",
+                      style: style400S16.copyWith(letterSpacing: 0.32),
+                      onLinkTab: (url, title) {
+                        launchUrl(Uri.parse(url),
+                            mode: LaunchMode.externalApplication);
+                      },
+                    ),
                   ),
           ],
         ),

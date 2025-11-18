@@ -73,6 +73,23 @@ Future<void> imagePicker(
   }
 }
 
+Future<void> imagePickerMultiple(
+  int? limit,
+  Function(List<File> files) selectedImages,
+) async {
+  try {
+    final List<XFile> pickedFiles =
+        await ImagePicker().pickMultiImage(imageQuality: 30, limit: limit ?? 4);
+
+    if (pickedFiles.isNotEmpty) {
+      final files = pickedFiles.map((e) => File(e.path)).toList();
+      selectedImages(files);
+    }
+  } catch (e) {
+    debugPrint("Multiple image pick error: $e");
+  }
+}
+
 Future<void> capturePhoto(
   Function(File file) capturedImage,
 ) async {

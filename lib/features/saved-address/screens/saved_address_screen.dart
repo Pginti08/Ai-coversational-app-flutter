@@ -6,6 +6,7 @@ import 'package:ai_fashion/core/widgets/app_button.dart';
 import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
+import 'package:ai_fashion/core/widgets/common_dialog.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/saved-address/controller/saved_address_controller.dart';
 import 'package:ai_fashion/features/saved-address/screens/add_address_bottom_sheet.dart';
@@ -130,6 +131,8 @@ class SavedAddressScreen extends StatelessWidget {
                                       var address = controller
                                           .savedAddressModel.value.data?[index];
                                       return Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
                                         children: [
                                           Expanded(
                                             child: Column(
@@ -181,41 +184,78 @@ class SavedAddressScreen extends StatelessWidget {
                                               ],
                                             ),
                                           ),
-                                          CommonContainer(
-                                              isCircle: true,
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              onTap: () {
-                                                BlurBottomSheet().show<void>(
-                                                  height:
-                                                      MediaQuery.sizeOf(context)
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              CommonContainer(
+                                                  isCircle: true,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  onTap: () {
+                                                    BlurBottomSheet()
+                                                        .show<void>(
+                                                      height: MediaQuery.sizeOf(
+                                                                  context)
                                                               .height *
                                                           0.9,
-                                                  context: context,
-                                                  borderColor: AppColors
-                                                      .whiteColor
-                                                      .withAlpha(
-                                                    40,
-                                                  ),
+                                                      context: context,
+                                                      borderColor: AppColors
+                                                          .whiteColor
+                                                          .withAlpha(
+                                                        40,
+                                                      ),
+                                                      backgroundColor: AppColors
+                                                          .scaffoldColor,
+                                                      barrierColor: AppColors
+                                                          .blackColor
+                                                          .withAlpha(100),
+                                                      blurStrength: 30,
+                                                      isCloseButton: true,
+                                                      child:
+                                                          AddAddressBottomSheet(
+                                                        isEdit: true,
+                                                        savedAddress: address,
+                                                        onSuccess: () {
+                                                          controller
+                                                              .getSavedAddress();
+                                                        },
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: SvgPicture.asset(
+                                                      AssetConstants.edit)),
+                                              hSizedBox10,
+                                              CommonContainer(
+                                                  isCircle: true,
+                                                  borderGradientColors:
+                                                      AppColors
+                                                          .glassBorderGradient,
+                                                  padding: EdgeInsets.all(8),
                                                   backgroundColor:
-                                                      AppColors.scaffoldColor,
-                                                  barrierColor: AppColors
-                                                      .blackColor
-                                                      .withAlpha(100),
-                                                  blurStrength: 30,
-                                                  isCloseButton: true,
-                                                  child: AddAddressBottomSheet(
-                                                    isEdit: true,
-                                                    savedAddress: address,
-                                                    onSuccess: () {
-                                                      controller
-                                                          .getSavedAddress();
-                                                    },
-                                                  ),
-                                                );
-                                              },
-                                              child: SvgPicture.asset(
-                                                  AssetConstants.edit))
+                                                      Colors.transparent,
+                                                  onTap: () {
+                                                    commonDialog(
+                                                        title:
+                                                            "Delete Saved Address?",
+                                                        description:
+                                                            "Are you sure you want to delete this permanently?",
+                                                        successButtonTitle:
+                                                            "Delete",
+                                                        cancelButtonTitle:
+                                                            "Cancel",
+                                                        onSuccess: () {
+                                                          controller
+                                                              .deleteSavedAddress(
+                                                                  address?.id);
+                                                        },
+                                                        isLoading: controller
+                                                            .isLoading2);
+                                                  },
+                                                  child: SvgPicture.asset(
+                                                      AssetConstants.remove))
+                                            ],
+                                          )
                                         ],
                                       );
                                     },

@@ -9,6 +9,7 @@ import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/app_text_field.dart';
+import 'package:ai_fashion/core/widgets/app_toast.dart';
 import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
@@ -244,7 +245,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 height: controller.showBrandContainer.value
                     ? 200.h
                     : controller.userSelectedRemixOutfits.isNotEmpty ||
-                            isNotNullOrEmpty(controller.uploadImage.value)
+                            isNotNullOrEmpty(controller.uploadImage)
                         ? 160.h
                         : 100.h,
               )
@@ -387,8 +388,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             end: Alignment.centerRight,
                             colors: controller
                                         .userSelectedRemixOutfits.isNotEmpty ||
-                                    isNotNullOrEmpty(
-                                        controller.uploadImage.value)
+                                    isNotNullOrEmpty(controller.uploadImage)
                                 ? AppColors.colorGradient
                                 : AppColors.glassBorderGradient,
                           ),
@@ -446,8 +446,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 controller
                                                     .userSelectedRemixOutfits
                                                     .clear();
-                                                controller.uploadImage.value =
-                                                    "";
                                               },
                                               child: SvgPicture.asset(
                                                 AssetConstants.closeCircleIcon,
@@ -458,71 +456,74 @@ class _ChatScreenState extends State<ChatScreen> {
                                       ),
                                     ],
                                   )
-                                : isNotNullOrEmpty(controller.uploadImage.value)
-                                    ? Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Stack(
-                                            clipBehavior: Clip.none,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                        vertical: 8.0)
-                                                    .copyWith(right: 10),
-                                                child: CardDeckWidget(
-                                                  maxCards: 1,
-                                                  items: [
-                                                    controller.uploadImage.value
-                                                  ].obs,
-                                                  itemBuilder: (imageUrl) =>
-                                                      ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            4),
-                                                    child: AppNetworkImage(
-                                                      imageUrl: "$imageUrl",
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              4),
-                                                      fit: BoxFit.cover,
-                                                      width: 50,
-                                                      height: 50,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                right: 0,
-                                                top: 0,
-                                                child: CommonContainer(
-                                                  isCircle: true,
-                                                  width: 24,
-                                                  height: 24,
-                                                  backgroundColor:
-                                                      Color(0xFF797877),
-                                                  onTap: () {
-                                                    controller
-                                                        .userSelectedRemixOutfits
-                                                        .clear();
-                                                    controller
-                                                        .uploadImage.value = "";
-                                                  },
-                                                  child: SvgPicture.asset(
-                                                    AssetConstants
-                                                        .closeCircleIcon,
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ],
+                                : controller.uploadLoader.value
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(12),
+                                        child: RotatingLoader(
+                                          size: 30,
+                                        ),
                                       )
-                                    : controller.uploadLoader.value
-                                        ? Padding(
-                                            padding: const EdgeInsets.all(12),
-                                            child: RotatingLoader(
-                                              size: 30,
+                                    : isNotNullOrEmpty(controller.uploadImage)
+                                        ? Container(
+                                            height: 70,
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount:
+                                                  controller.uploadImage.length,
+                                              itemBuilder: (context, index) {
+                                                final imageUrl = controller
+                                                    .uploadImage[index];
+
+                                                return Stack(
+                                                  clipBehavior: Clip.none,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                              vertical: 8.0)
+                                                          .copyWith(right: 10),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4),
+                                                        child: AppNetworkImage(
+                                                          imageUrl: imageUrl,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(4),
+                                                          fit: BoxFit.cover,
+                                                          width: 50,
+                                                          height: 50,
+                                                        ),
+                                                      ),
+                                                    ),
+
+                                                    /// ❌ Delete Button
+                                                    Positioned(
+                                                      right: 0,
+                                                      top: 0,
+                                                      child: CommonContainer(
+                                                        isCircle: true,
+                                                        width: 24,
+                                                        height: 24,
+                                                        backgroundColor:
+                                                            const Color(
+                                                                0xFF797877),
+                                                        onTap: () {
+                                                          controller.uploadImage
+                                                              .removeAt(index);
+                                                          controller
+                                                              .update(); // if GetX controller
+                                                        },
+                                                        child: SvgPicture.asset(
+                                                          AssetConstants
+                                                              .closeCircleIcon,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
                                             ),
                                           )
                                         : SizedBox.shrink(),
@@ -546,7 +547,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 );
                                 _textController.clear();
                                 controller.userSelectedRemixOutfits.clear();
-                                controller.uploadImage.value = "";
+                                controller.uploadImage.clear();
                               }
                             },
                           ),
@@ -563,8 +564,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                     enableBlur: true,
                                     isCircle: true,
                                     onTap: () async {
-                                      final File? pickedImage =
-                                          await BlurBottomSheet().show<File?>(
+                                      final List<File>? pickedImage =
+                                          await BlurBottomSheet()
+                                              .show<List<File>?>(
                                         height:
                                             MediaQuery.sizeOf(context).height *
                                                 0.2,
@@ -577,11 +579,18 @@ class _ChatScreenState extends State<ChatScreen> {
                                             AppColors.blackColor.withAlpha(50),
                                         blurStrength: 30,
                                         isCloseButton: true,
-                                        child:
-                                            const UploadImageTypeBottomSheet(),
+                                        child: UploadImageTypeBottomSheet(
+                                          uploadedImages:
+                                              controller.uploadImage,
+                                        ),
                                       );
                                       if (pickedImage != null) {
-                                        controller.imageUploadApi(pickedImage);
+                                        if (controller.uploadImage.length < 4) {
+                                          controller.uploadMultipleImages(
+                                              pickedImage);
+                                        } else {
+                                          toast("Maximum 4 images allowed.");
+                                        }
                                       }
                                     },
                                     padding: EdgeInsets.all(4),
@@ -627,7 +636,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           _textController.clear();
                                           controller.userSelectedRemixOutfits
                                               .clear();
-                                          controller.uploadImage.value = "";
+                                          controller.uploadImage.clear();
                                         }
                                       },
                                       child: SvgPicture.asset(

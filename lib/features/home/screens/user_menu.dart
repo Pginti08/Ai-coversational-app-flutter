@@ -7,6 +7,7 @@ import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
+import 'package:ai_fashion/core/widgets/common_dialog.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/home/controller/home_controller.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
@@ -166,9 +167,19 @@ class _UserMenuState extends State<UserMenu> {
                   menuTiles(
                     name: "Logout",
                     icon: AssetConstants.logout,
+                    isToggle: false,
                     onTap: () async {
-                      await LocalStorageService.instance.clear();
-                      Get.offAllNamed(Routes.login);
+                      commonDialog(
+                        title: "Logout",
+                        description: "Are you sure you want to logout?",
+                        successButtonTitle: "Logout",
+                        cancelButtonTitle: "Cancel",
+                        onSuccess: () async {
+                          Get.back();
+                          await LocalStorageService.instance.clear();
+                          Get.offAllNamed(Routes.login);
+                        },
+                      );
                     },
                   ),
                 ],
@@ -211,10 +222,15 @@ class _UserMenuState extends State<UserMenu> {
   }
 
   Widget menuTiles(
-      {required String icon, required String name, void Function()? onTap}) {
+      {required String icon,
+      required String name,
+      void Function()? onTap,
+      bool isToggle = true}) {
     return GestureDetector(
       onTap: () {
-        widget.controller.toggleDrawer();
+        if (isToggle) {
+          widget.controller.toggleDrawer();
+        }
         onTap?.call();
       },
       child: Container(

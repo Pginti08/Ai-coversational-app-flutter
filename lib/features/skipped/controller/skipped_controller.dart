@@ -84,4 +84,19 @@ class SkippedController extends GetxController {
       toast(e.toString());
     }
   }
+
+  Future<void> likedProduct(String? productId) async {
+    try {
+      var result = await NetworkClient.instance.callApi(
+        "/product/$productId/like",
+        MethodType.post,
+        baseUrlType: BaseUrl.base,
+      );
+      if (result.isSuccess) {
+        getSkipProductListApi();
+      } else {
+        toast(result.error.toString());
+      }
+    } catch (e) {}
+  }
 }

@@ -2,6 +2,7 @@ import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
+import 'package:ai_fashion/core/widgets/image_viewer_screen.dart';
 import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
 import 'package:ai_fashion/features/chat/models/chat_history_model.dart';
 import 'package:flutter/material.dart';
@@ -25,18 +26,29 @@ class UserMessageTile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                CardDeckWidget(
-                  maxCards: 4,
-                  items: refImages.toList().obs,
-                  itemBuilder: (imageUrl) => ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: AppNetworkImage(
-                      imageUrl: "$imageUrl",
+                GestureDetector(
+                  onTap: () {
+                    Get.to(
+                      ImageViewerScreen(
+                        imageUrls: refImages.toList().obs,
+                      ),
+                      opaque: false,
+                      transition: Transition.fadeIn,
+                      fullscreenDialog: true,
+                    );
+                  },
+                  child: CardDeckWidget(
+                    maxCards: 4,
+                    items: refImages.toList().obs,
+                    itemBuilder: (imageUrl) => ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      fit: BoxFit.cover,
-                      width: 80,
-                      height: 80,
-                      isOpenImageViewer: true,
+                      child: AppNetworkImage(
+                        imageUrl: "$imageUrl",
+                        borderRadius: BorderRadius.circular(8),
+                        fit: BoxFit.cover,
+                        width: 80,
+                        height: 80,
+                      ),
                     ),
                   ),
                 ),

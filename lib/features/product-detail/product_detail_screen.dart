@@ -294,15 +294,42 @@ ${controller.productDetail?.description ?? ""}''',
                                 Text.rich(
                                   TextSpan(
                                     children: [
-                                      TextSpan(
-                                        text: indianRupeeAmountConversion(
-                                            controller.productDetail?.price,
-                                            decimalDigits: 0),
-                                        style: style600S20.copyWith(
-                                          color: AppColors.whiteTextColor,
-                                          letterSpacing: 0.42,
+                                      if (isNotNullOrEmpty(controller
+                                              .productDetail?.minPrice) ||
+                                          int.tryParse(controller
+                                                  .productDetail!.minPrice!
+                                                  .toString()) !=
+                                              0)
+                                        TextSpan(
+                                          text:
+                                              "${AssetConstants.rupeeSymbol}${controller.productDetail?.minPrice?.toStringAsFixed(0) ?? "-"}",
+                                          style: style600S20.copyWith(
+                                            color: AppColors.whiteTextColor,
+                                            letterSpacing: 0.42,
+                                          ),
                                         ),
-                                      ),
+                                      if (isNotNullOrEmpty(controller
+                                              .productDetail?.maxPrice) ||
+                                          int.tryParse(controller
+                                                  .productDetail!.maxPrice!
+                                                  .toString()) !=
+                                              0) ...[
+                                        TextSpan(
+                                          text: " to ",
+                                          style: style400S16.copyWith(
+                                            color: AppColors.hintTextColor,
+                                            letterSpacing: 0.42,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "${AssetConstants.rupeeSymbol}${controller.productDetail?.maxPrice?.toStringAsFixed(0) ?? "-"}",
+                                          style: style600S20.copyWith(
+                                            color: AppColors.whiteTextColor,
+                                            letterSpacing: 0.42,
+                                          ),
+                                        ),
+                                      ],
                                     ],
                                   ),
                                 ),

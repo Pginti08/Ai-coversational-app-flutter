@@ -36,7 +36,10 @@ class _RemixedProductScreenState extends State<RemixedProductScreen> {
                   onPressed: () {
                     Get.back();
                   },
-                  icon: SvgPicture.asset(AssetConstants.closeIcon)),
+                  icon: SvgPicture.asset(
+                    AssetConstants.closeIcon,
+                    height: 30,
+                  )),
             ),
             hSizedBox10,
             Expanded(

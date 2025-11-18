@@ -79,7 +79,7 @@ class AppNetworkImage extends StatelessWidget {
           ? () {
               Get.to(
                 ImageViewerScreen(
-                  imageUrl: _fullImageUrl,
+                  imageUrls: [_fullImageUrl],
                 ),
                 opaque: false,
                 transition: Transition.fadeIn,

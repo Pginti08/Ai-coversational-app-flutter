@@ -6,6 +6,7 @@ import 'package:ai_fashion/core/widgets/app_button.dart';
 import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
+import 'package:ai_fashion/core/widgets/common_dialog.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/body-profile/controller/body_profile_controller.dart';
 import 'package:ai_fashion/features/body-profile/screens/body_profile_type_bottom_sheet.dart';
@@ -125,6 +126,8 @@ class BodyProfileScreen extends StatelessWidget {
                                         children: [
                                           Expanded(
                                             child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
@@ -153,7 +156,7 @@ class BodyProfileScreen extends StatelessWidget {
                                                     ),
                                                   ],
                                                 ),
-                                                hSizedBox10,
+                                                hSizedBox16,
                                                 CommonContainer(
                                                   padding: EdgeInsets.symmetric(
                                                       horizontal: 10,
@@ -176,36 +179,77 @@ class BodyProfileScreen extends StatelessWidget {
                                               ],
                                             ),
                                           ),
-                                          IconButton(
-                                              onPressed: () {
-                                                BlurBottomSheet().show<void>(
-                                                  height:
-                                                      MediaQuery.sizeOf(context)
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              IconButton(
+                                                  onPressed: () {
+                                                    BlurBottomSheet()
+                                                        .show<void>(
+                                                      height: MediaQuery.sizeOf(
+                                                                  context)
                                                               .height *
                                                           0.7,
-                                                  context: context,
-                                                  borderColor: AppColors
-                                                      .whiteColor
-                                                      .withAlpha(
-                                                    40,
-                                                  ),
+                                                      context: context,
+                                                      borderColor: AppColors
+                                                          .whiteColor
+                                                          .withAlpha(
+                                                        40,
+                                                      ),
+                                                      backgroundColor: AppColors
+                                                          .scaffoldColor,
+                                                      barrierColor: AppColors
+                                                          .blackColor
+                                                          .withAlpha(50),
+                                                      blurStrength: 30,
+                                                      isCloseButton: true,
+                                                      child: ScannedManuallyBottomSheet(
+                                                          isEdit: true,
+                                                          savedBodyProfile:
+                                                              controller
+                                                                  .savedBodyProfileModel
+                                                                  .value
+                                                                  .data?[index]),
+                                                    );
+                                                  },
+                                                  icon: SvgPicture.asset(
+                                                      AssetConstants.edit)),
+                                              CommonContainer(
+                                                  isCircle: true,
+                                                  borderGradientColors:
+                                                      AppColors
+                                                          .glassBorderGradient,
+                                                  padding: EdgeInsets.all(8),
                                                   backgroundColor:
-                                                      AppColors.scaffoldColor,
-                                                  barrierColor: AppColors
-                                                      .blackColor
-                                                      .withAlpha(50),
-                                                  blurStrength: 30,
-                                                  isCloseButton: true,
-                                                  child: ScannedManuallyBottomSheet(
-                                                      isEdit: true,
-                                                      savedBodyProfile: controller
-                                                          .savedBodyProfileModel
-                                                          .value
-                                                          .data?[index]),
-                                                );
-                                              },
-                                              icon: SvgPicture.asset(
-                                                  AssetConstants.edit))
+                                                      Colors.transparent,
+                                                  onTap: () {
+                                                    commonDialog(
+                                                        title:
+                                                            "Delete Saved Body Profile?",
+                                                        description:
+                                                            "Are you sure you want to delete this permanently?",
+                                                        successButtonTitle:
+                                                            "Delete",
+                                                        cancelButtonTitle:
+                                                            "Cancel",
+                                                        onSuccess: () {
+                                                          controller
+                                                              .deleteSavedBodyProfile(
+                                                                  controller
+                                                                      .savedBodyProfileModel
+                                                                      .value
+                                                                      .data?[
+                                                                          index]
+                                                                      .id);
+                                                        },
+                                                        isLoading: controller
+                                                            .isLoading2);
+                                                  },
+                                                  child: SvgPicture.asset(
+                                                      AssetConstants.remove))
+                                            ],
+                                          )
                                         ],
                                       );
                                     },

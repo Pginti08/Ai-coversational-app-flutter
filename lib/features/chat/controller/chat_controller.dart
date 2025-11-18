@@ -38,7 +38,7 @@ class ChatController extends GetxController {
   String? currentSessionId;
 
   RxList<String> userSelectedRemixOutfits = <String>[].obs;
-  RxString uploadImage = "".obs;
+  RxList<String> uploadImage = <String>[].obs;
 
   // Chat messages list
   final RxList<Message> messages = <Message>[].obs;
@@ -336,8 +336,8 @@ class ChatController extends GetxController {
           sessionId: currentSessionId,
           refImage: isNotNullOrEmpty(userSelectedRemixOutfits)
               ? userSelectedRemixOutfits.toList()
-              : isNotNullOrEmpty(uploadImage.value)
-                  ? [uploadImage.value]
+              : isNotNullOrEmpty(uploadImage)
+                  ? uploadImage.toList()
                   : null),
     );
 
@@ -345,8 +345,7 @@ class ChatController extends GetxController {
       "prompt": message,
       "reference_filename":
           isNotNullOrEmpty(refImages) ? refImages : null, // ✅ send the copy too
-      "uploaded_reference":
-          isNotNullOrEmpty(uploadImage.value) ? [uploadImage.value] : null,
+      "uploaded_reference": isNotNullOrEmpty(uploadImage) ? uploadImage : null,
       "session_id": currentSessionId,
     });
 
@@ -354,14 +353,13 @@ class ChatController extends GetxController {
       "prompt": message,
       "reference_filename":
           isNotNullOrEmpty(refImages) ? refImages : null, // ✅ send the copy too
-      "uploaded_reference":
-          isNotNullOrEmpty(uploadImage.value) ? [uploadImage.value] : null,
+      "uploaded_reference": isNotNullOrEmpty(uploadImage) ? uploadImage : null,
       "session_id": currentSessionId,
     }.toString());
 
     // Now safe to clear
     userSelectedRemixOutfits.clear();
-    uploadImage.value = "";
+    uploadImage.clear();
   }
 
   /// Join existing session
@@ -396,6 +394,33 @@ class ChatController extends GetxController {
     nextPageStop.value = true;
   }
 
+  Future<void> uploadMultipleImages(List<File> files) async {
+    // Limit: max 4 images allowed
+    int available = 4 - uploadImage.length;
+
+    if (available <= 0) {
+      toast("You can upload max 4 images.");
+      return;
+    }
+
+    // Only take allowed number of images
+    final limitedFiles = files.take(available).toList();
+
+    uploadLoader.value = true; // Show loader during full batch upload
+
+    try {
+      for (var file in limitedFiles) {
+        await imageUploadApi(file); // Upload each file 1 by 1
+      }
+
+      if (files.length > available) {
+        toast("Only $available more images allowed.");
+      }
+    } finally {
+      uploadLoader.value = false;
+    }
+  }
+
   Future<void> imageUploadApi(File imageFile) async {
     try {
       uploadLoader.value = true;
@@ -415,7 +440,7 @@ class ChatController extends GetxController {
         if (result.data != null &&
             result.data?.data != null &&
             result.data?.data["url"] != null)
-          uploadImage.value = "${result.data?.data["filename"].toString()}";
+          uploadImage.add("${result.data?.data["filename"].toString()}");
       } else {
         toast(result.error.toString());
       }

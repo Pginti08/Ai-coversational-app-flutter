@@ -6,6 +6,7 @@ import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
+import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/core/widgets/shimmer_utils.dart';
 import 'package:ai_fashion/features/skipped/controller/skipped_controller.dart';
@@ -102,26 +103,58 @@ class SkippedScreen extends StatelessWidget {
                                           crossAxisSpacing: 12),
                                   itemCount: controller.skipProductsList.length,
                                   itemBuilder: (context, index) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: Colors.white.withAlpha(10),
-                                          strokeAlign:
-                                              BorderSide.strokeAlignOutside,
+                                    return Stack(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            border: Border.all(
+                                              color: Colors.white.withAlpha(10),
+                                              strokeAlign:
+                                                  BorderSide.strokeAlignOutside,
+                                            ),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            child: AppNetworkImage(
+                                              imageUrl: controller
+                                                      .skipProductsList[index]
+                                                      .image ??
+                                                  "",
+                                              fit: BoxFit.cover,
+                                              isOpenImageViewer: true,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: AppNetworkImage(
-                                          imageUrl: controller
-                                                  .skipProductsList[index]
-                                                  .image ??
-                                              "",
-                                          fit: BoxFit.cover,
-                                          isOpenImageViewer: true,
-                                        ),
-                                      ),
+                                        Positioned(
+                                          top: 10,
+                                          right: 10,
+                                          child: CommonContainer(
+                                            onTap: () {
+                                              controller.likedProduct(controller
+                                                  .skipProductsList[index].id);
+                                            },
+                                            isCircle: true,
+                                            borderGradientColors: [
+                                              Color.fromARGB(20, 0, 0, 0),
+                                              Color.fromARGB(30, 0, 0, 0),
+                                              Color.fromARGB(40, 0, 0, 0),
+                                            ],
+                                            gradientColors: [
+                                              Color.fromARGB(10, 0, 0, 0),
+                                              Color.fromARGB(20, 0, 0, 0),
+                                              Color.fromARGB(30, 0, 0, 0),
+                                            ],
+                                            padding: EdgeInsets.all(8),
+                                            child: SvgPicture.asset(
+                                              AssetConstants.heart2,
+                                              color: AppColors.whiteColor,
+                                            ),
+                                          ),
+                                        )
+                                      ],
                                     );
                                   },
                                 ),

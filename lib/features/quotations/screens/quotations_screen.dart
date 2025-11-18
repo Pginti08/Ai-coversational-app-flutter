@@ -8,6 +8,7 @@ import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_loader.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
 import 'package:ai_fashion/core/widgets/common_container.dart';
+import 'package:ai_fashion/core/widgets/common_dialog.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/quotations/controller/quotations_controller.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
@@ -152,22 +153,10 @@ class QuotationsScreen extends StatelessWidget {
                                                               CrossAxisAlignment
                                                                   .start,
                                                           children: [
-                                                            Text(
-                                                              controller
-                                                                      .quotationList[
-                                                                          index]
-                                                                      .title ??
-                                                                  "",
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: style400S16.copyWith(
-                                                                  letterSpacing:
-                                                                      0.32,
-                                                                  color: AppColors
-                                                                      .whiteTextColor),
-                                                            ),
                                                             Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
                                                               children: [
                                                                 Expanded(
                                                                   child: Column(
@@ -176,45 +165,93 @@ class QuotationsScreen extends StatelessWidget {
                                                                             .start,
                                                                     children: [
                                                                       Text(
-                                                                        "${AssetConstants.rupeeSymbol} ${controller.quotationList[index].price?.toStringAsFixed(0) ?? 0}",
+                                                                        controller.quotationList[index].title ??
+                                                                            "",
                                                                         overflow:
                                                                             TextOverflow.ellipsis,
-                                                                        style: style400S14.copyWith(
+                                                                        style: style400S16.copyWith(
                                                                             letterSpacing:
-                                                                                0.28,
+                                                                                0.32,
                                                                             color:
-                                                                                Color(0xFFCCCCCC)),
+                                                                                AppColors.whiteTextColor),
                                                                       ),
-                                                                      hSizedBox6,
-                                                                      Text(
-                                                                          controller.quotationList[index].status?.replaceAll("_", " ") ??
-                                                                              "-",
-                                                                          style: style400S10.copyWith(
-                                                                              color: controller.quotationList[index].status == "DRAFT"
-                                                                                  ? AppColors.greyTextColor
-                                                                                  : controller.quotationList[index].status == "QUOTATION_FINALIZED"
-                                                                                      ? AppColors.greenColor
-                                                                                      : AppColors.yellowColor)),
+                                                                      Row(
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child:
+                                                                                Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Text(
+                                                                                  "${AssetConstants.rupeeSymbol} ${controller.quotationList[index].price?.toStringAsFixed(0) ?? 0}",
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  style: style400S14.copyWith(letterSpacing: 0.28, color: Color(0xFFCCCCCC)),
+                                                                                ),
+                                                                                hSizedBox6,
+                                                                                Text(controller.quotationList[index].status?.replaceAll("_", " ") ?? "-",
+                                                                                    style: style400S10.copyWith(
+                                                                                        color: controller.quotationList[index].status == "DRAFT"
+                                                                                            ? AppColors.greyTextColor
+                                                                                            : controller.quotationList[index].status == "QUOTATION_FINALIZED"
+                                                                                                ? AppColors.greenColor
+                                                                                                : AppColors.yellowColor)),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          if (controller.quotationList[index].hasNewMessage ==
+                                                                              true) ...[
+                                                                            wSizedBox10,
+                                                                            Container(
+                                                                              width: 10,
+                                                                              height: 10,
+                                                                              decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.greenColor),
+                                                                            ),
+                                                                            wSizedBox10,
+                                                                          ],
+                                                                        ],
+                                                                      ),
                                                                     ],
                                                                   ),
                                                                 ),
                                                                 if (controller
                                                                         .quotationList[
                                                                             index]
-                                                                        .hasNewMessage ==
-                                                                    true) ...[
-                                                                  wSizedBox10,
-                                                                  Container(
-                                                                    width: 10,
-                                                                    height: 10,
-                                                                    decoration: BoxDecoration(
-                                                                        shape: BoxShape
-                                                                            .circle,
-                                                                        color: AppColors
-                                                                            .greenColor),
-                                                                  ),
-                                                                  wSizedBox10,
-                                                                ],
+                                                                        .status
+                                                                        ?.toLowerCase() ==
+                                                                    "draft")
+                                                                  CommonContainer(
+                                                                      isCircle:
+                                                                          true,
+                                                                      borderGradientColors:
+                                                                          AppColors
+                                                                              .glassBorderGradient,
+                                                                      padding:
+                                                                          EdgeInsets.all(
+                                                                              8),
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      onTap:
+                                                                          () {
+                                                                        commonDialog(
+                                                                            title:
+                                                                                "Delete Draft Quotation",
+                                                                            description:
+                                                                                "Are you sure you want to delete this permanently?",
+                                                                            successButtonTitle:
+                                                                                "Delete",
+                                                                            cancelButtonTitle:
+                                                                                "Cancel",
+                                                                            onSuccess:
+                                                                                () {
+                                                                              controller.deleteQuotation(controller.quotationList[index].id);
+                                                                            },
+                                                                            isLoading:
+                                                                                controller.isLoading2);
+                                                                      },
+                                                                      child: SvgPicture.asset(
+                                                                          AssetConstants
+                                                                              .remove))
                                                               ],
                                                             ),
                                                             hSizedBox6,

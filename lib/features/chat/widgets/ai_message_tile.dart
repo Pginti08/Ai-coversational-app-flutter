@@ -52,13 +52,15 @@ class _AiMessageTileState extends State<AiMessageTile> {
 
             // CASE 1: No outfits → just message
             if (!hasOutfits)
-              GptMarkdown(
-                widget.message.message ?? "",
-                style: style400S16.copyWith(letterSpacing: 0.32),
-                onLinkTab: (url, title) {
-                  launchUrl(Uri.parse(url),
-                      mode: LaunchMode.externalApplication);
-                },
+              SelectionArea(
+                child: GptMarkdown(
+                  widget.message.message ?? "",
+                  style: style400S16.copyWith(letterSpacing: 0.32),
+                  onLinkTab: (url, title) {
+                    launchUrl(Uri.parse(url),
+                        mode: LaunchMode.externalApplication);
+                  },
+                ),
               ),
 
             // CASE 2: Exactly 1 outfit → image + message

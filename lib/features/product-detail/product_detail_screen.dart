@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:ai_fashion/core/constants/asset_constants.dart';
@@ -7,6 +8,7 @@ import 'package:ai_fashion/core/utils/common_utils.dart';
 import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:ai_fashion/core/widgets/app_button.dart';
 import 'package:ai_fashion/core/widgets/app_network_image.dart';
+import 'package:ai_fashion/core/widgets/app_toast.dart';
 import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
 import 'package:ai_fashion/features/product-detail/controller/product_detail_controller.dart';
 import 'package:ai_fashion/routes/app_pages.dart';
@@ -14,6 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   const ProductDetailScreen({super.key});
@@ -51,6 +56,88 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     super.dispose();
   }
 
+  // Method to download image and return file path
+  Future<String?> _downloadImage(String imageUrl) async {
+    try {
+      final response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode == 200) {
+        final documentDirectory = await getTemporaryDirectory();
+        final file = File('${documentDirectory.path}/shared_product_image.jpg');
+        await file.writeAsBytes(response.bodyBytes);
+        return file.path;
+      }
+    } catch (e) {
+      print('Error downloading image: $e');
+    }
+    return null;
+  }
+
+  Future<void> _shareProduct() async {
+    try {
+      // 1. Setup Data
+      final imageUrl = controller.productDetail?.image ?? "";
+      final productTitle = controller.productDetail?.title ?? '-';
+      final productId = controller.productDetail?.id ?? '';
+      final userName = controller.productDetail?.userName ?? '-';
+
+      // 2. Create Link
+      final String customLink = 'https://yourapp.com/product/$productId';
+
+      // 3. Create Message
+      final String shareMessage = '''
+✨ *${productTitle.toUpperCase()}* ✨
+
+Check out this stunning outfit on Fashion App! 👗✨
+
+Designed by: $userName
+
+🔥 Discover unique fashion pieces
+💎 Connect with top designers
+🛍️ Get instant quotes
+
+Download Fashion App now and elevate your style! 
+
+👉 $customLink
+
+#FashionApp #StyleInspiration #FashionFinds #OOTD
+''';
+
+      final String shareSubject =
+          '✨ ${productTitle.toUpperCase()} - Fashion App';
+
+      // 4. Prepare Files (if image exists)
+      List<XFile> filesToShare = [];
+
+      if (imageUrl.isNotEmpty) {
+        final String? imagePath = await _downloadImage(imageUrl);
+        if (imagePath != null && imagePath.isNotEmpty) {
+          filesToShare.add(XFile(imagePath));
+        }
+      }
+
+      // 5. Handle iPad Position (Optional but recommended)
+      // iPad requires a source rect to anchor the share popup
+      final box = context.findRenderObject() as RenderBox?;
+      final Rect? shareOrigin =
+          box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+
+      // 6. Execute Share using the NEW API
+      // "Share.share" and "Share.shareXFiles" are replaced by "SharePlus.instance.share"
+      // using a "ShareParams" object.
+      await SharePlus.instance.share(
+        ShareParams(
+          text: shareMessage,
+          subject: shareSubject,
+          files: filesToShare, // Can be empty for text-only share
+          sharePositionOrigin: shareOrigin, // Crucial for iPad
+        ),
+      );
+    } catch (e) {
+      debugPrint('Error sharing: $e');
+      toast('Error sharing: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
@@ -76,14 +163,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  icon: SvgPicture.asset(
-                    AssetConstants.backward,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: SvgPicture.asset(
+                        AssetConstants.backward,
+                        height: 32,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: _shareProduct,
+                      icon: SvgPicture.asset(
+                        AssetConstants.share,
+                        height: 24,
+                      ),
+                    ),
+                  ],
                 ),
+                hSizedBox6,
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),

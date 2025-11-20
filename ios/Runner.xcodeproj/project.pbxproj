@@ -511,7 +511,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion Demo";
+				FLAVOR_APP_NAME = "Vousvous Demo";
 				FLUTTER_TARGET = lib/main_demo.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -520,7 +520,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -544,7 +544,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -614,7 +614,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion Demo";
+				FLAVOR_APP_NAME = "Vousvous Demo";
 				FLUTTER_TARGET = lib/main_demo.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -623,7 +623,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -646,7 +646,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -712,7 +712,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion Demo";
+				FLAVOR_APP_NAME = "Vousvous Demo";
 				FLUTTER_TARGET = lib/main_demo.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -721,7 +721,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -743,7 +743,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -814,7 +814,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion";
+				FLAVOR_APP_NAME = "Vousvous";
 				FLUTTER_TARGET = lib/main_producation.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -823,7 +823,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -847,7 +847,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -917,7 +917,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion";
+				FLAVOR_APP_NAME = "Vousvous";
 				FLUTTER_TARGET = lib/main_producation.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -926,7 +926,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -949,7 +949,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -1015,7 +1015,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion";
+				FLAVOR_APP_NAME = "Vousvous";
 				FLUTTER_TARGET = lib/main_producation.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1024,7 +1024,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1046,7 +1046,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -1117,7 +1117,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion Dev";
+				FLAVOR_APP_NAME = "Vousvous Dev";
 				FLUTTER_TARGET = lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1126,7 +1126,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1150,7 +1150,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1218,7 +1218,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion Dev";
+				FLAVOR_APP_NAME = "Vousvous Dev";
 				FLUTTER_TARGET = lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1227,7 +1227,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1250,7 +1250,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -1318,7 +1318,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion Dev";
+				FLAVOR_APP_NAME = "Vousvous Dev";
 				FLUTTER_TARGET = lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1327,7 +1327,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1350,7 +1350,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -1421,7 +1421,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion Staging";
+				FLAVOR_APP_NAME = "Vousvous Staging";
 				FLUTTER_TARGET = lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1430,7 +1430,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.stg;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.stg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1454,7 +1454,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1524,7 +1524,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion Staging";
+				FLAVOR_APP_NAME = "Vousvous Staging";
 				FLUTTER_TARGET = lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1533,7 +1533,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.stg;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.stg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1556,7 +1556,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -1622,7 +1622,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "AI Fashion Staging";
+				FLAVOR_APP_NAME = "Vousvous Staging";
 				FLUTTER_TARGET = lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1631,7 +1631,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PACKAGE_CONFIG = .dart_tool/package_config.json;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.stg;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.stg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1654,7 +1654,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.aifashion.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vrozart.vousvous.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";

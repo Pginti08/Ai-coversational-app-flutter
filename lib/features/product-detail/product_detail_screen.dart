@@ -81,7 +81,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       final userName = controller.productDetail?.userName ?? '-';
 
       // 2. Create Link
-      final String customLink = 'https://yourapp.com/product/$productId';
+      final String customLink = 'https://vousvousapp.com/product/$productId';
 
       // 3. Create Message
       final String shareMessage = '''

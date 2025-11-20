@@ -1,13 +1,13 @@
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/constants/asset_constants.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/widgets/app_loader.dart';
-import 'package:ai_fashion/core/widgets/common_container.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/widgets/app_loader.dart';
+import 'package:vousvous/core/widgets/common_container.dart';
 
 class ImageViewerScreen extends StatefulWidget {
   final List<String> imageUrls;

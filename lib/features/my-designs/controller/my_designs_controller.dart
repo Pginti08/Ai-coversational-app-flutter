@@ -1,8 +1,8 @@
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/features/home/models/outfit_card_model.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/features/home/models/outfit_card_model.dart';
 
 class MyDesignsController extends GetxController {
   var currentCarouselIndex = 0.obs;

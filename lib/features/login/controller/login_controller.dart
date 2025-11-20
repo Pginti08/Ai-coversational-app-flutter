@@ -1,10 +1,10 @@
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/services/network_service.dart';
-import 'package:ai_fashion/core/utils/validators.dart';
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/utils/validators.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/routes/app_pages.dart';
 
 class LoginController extends GetxController {
   final RxBool isLoading = false.obs;

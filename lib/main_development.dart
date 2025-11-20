@@ -1,5 +1,5 @@
-import 'package:ai_fashion/core/constants/flavors.dart';
-import 'package:ai_fashion/main.dart';
+import 'package:vousvous/core/constants/flavors.dart';
+import 'package:vousvous/main.dart';
 
 void main() {
   bootstrap(() => const App(), FlavorType.development);

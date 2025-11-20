@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
 
 Future<void> imagePickerCropper(
   Function(File file) selectedImage,

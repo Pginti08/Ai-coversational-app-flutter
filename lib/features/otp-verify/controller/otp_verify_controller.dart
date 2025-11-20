@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/constants/storage_constants.dart';
-import 'package:ai_fashion/core/services/local_storage_service.dart';
-import 'package:ai_fashion/core/services/network_service.dart';
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/features/otp-verify/models/verify_otp_model.dart';
-import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/constants/storage_constants.dart';
+import 'package:vousvous/core/services/local_storage_service.dart';
+import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/features/otp-verify/models/verify_otp_model.dart';
+import 'package:vousvous/routes/app_pages.dart';
 
 class OtpVerifyController extends GetxController {
   final RxBool isLoading = false.obs;

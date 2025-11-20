@@ -1,7 +1,7 @@
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
-import 'package:ai_fashion/features/quotation-chat/models/quotation_chat_history_model.dart';
 import 'package:flutter/material.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart';
 
 class QuotationUserMessageTile extends StatelessWidget {
   const QuotationUserMessageTile({required this.message, super.key});

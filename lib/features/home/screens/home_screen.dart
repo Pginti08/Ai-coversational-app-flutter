@@ -1,24 +1,24 @@
 import 'dart:ui';
 
-import 'package:ai_fashion/core/constants/asset_constants.dart';
-import 'package:ai_fashion/core/services/haptic_service.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/core/widgets/app_loader.dart';
-import 'package:ai_fashion/core/widgets/app_network_image.dart';
-import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
-import 'package:ai_fashion/core/widgets/shimmer_utils.dart';
-import 'package:ai_fashion/features/home/controller/home_controller.dart';
-import 'package:ai_fashion/features/home/screens/start_creating_drag_bottom.dart';
-import 'package:ai_fashion/features/home/screens/user_menu.dart';
-import 'package:ai_fashion/features/home/widgets/product_outfit_card.dart';
-import 'package:ai_fashion/features/home/widgets/top_progress_bar.dart';
-import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/services/haptic_service.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/app_loader.dart';
+import 'package:vousvous/core/widgets/app_network_image.dart';
+import 'package:vousvous/core/widgets/custom_scaffold.dart';
+import 'package:vousvous/core/widgets/shimmer_utils.dart';
+import 'package:vousvous/features/home/controller/home_controller.dart';
+import 'package:vousvous/features/home/screens/start_creating_drag_bottom.dart';
+import 'package:vousvous/features/home/screens/user_menu.dart';
+import 'package:vousvous/features/home/widgets/product_outfit_card.dart';
+import 'package:vousvous/features/home/widgets/top_progress_bar.dart';
+import 'package:vousvous/routes/app_pages.dart';
 
 enum ThumbSelection { skip, shuffle, favorite, none }
 

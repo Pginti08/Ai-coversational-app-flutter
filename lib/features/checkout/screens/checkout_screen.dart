@@ -1,22 +1,22 @@
-import 'package:ai_fashion/core/constants/asset_constants.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/core/widgets/app_button.dart';
-import 'package:ai_fashion/core/widgets/app_loader.dart';
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
-import 'package:ai_fashion/core/widgets/common_container.dart';
-import 'package:ai_fashion/core/widgets/custom_radio.dart';
-import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
-import 'package:ai_fashion/features/cart/controller/cart_controller.dart';
-import 'package:ai_fashion/features/checkout/controller/checkout_controller.dart';
-import 'package:ai_fashion/features/saved-address/models/saved_address_model.dart';
-import 'package:ai_fashion/features/saved-address/screens/add_address_bottom_sheet.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
+import 'package:vousvous/core/widgets/app_loader.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/core/widgets/blur_bottom_sheet.dart';
+import 'package:vousvous/core/widgets/common_container.dart';
+import 'package:vousvous/core/widgets/custom_radio.dart';
+import 'package:vousvous/core/widgets/custom_scaffold.dart';
+import 'package:vousvous/features/cart/controller/cart_controller.dart';
+import 'package:vousvous/features/checkout/controller/checkout_controller.dart';
+import 'package:vousvous/features/saved-address/models/saved_address_model.dart';
+import 'package:vousvous/features/saved-address/screens/add_address_bottom_sheet.dart';
 
 class CheckoutScreen extends StatelessWidget {
   CheckoutScreen({super.key});

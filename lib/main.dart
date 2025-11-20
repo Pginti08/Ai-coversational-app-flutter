@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:ai_fashion/core/constants/flavors.dart';
-import 'package:ai_fashion/core/constants/storage_constants.dart';
-import 'package:ai_fashion/core/services/local_storage_service.dart';
-import 'package:ai_fashion/core/theme/app_theme.dart';
-import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:toastification/toastification.dart';
+import 'package:vousvous/core/constants/flavors.dart';
+import 'package:vousvous/core/constants/storage_constants.dart';
+import 'package:vousvous/core/services/local_storage_service.dart';
+import 'package:vousvous/core/theme/app_theme.dart';
+import 'package:vousvous/routes/app_pages.dart';
 
 Future<void> bootstrap(
   FutureOr<Widget> Function() builder,

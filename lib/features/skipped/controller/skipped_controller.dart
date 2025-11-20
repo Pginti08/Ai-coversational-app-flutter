@@ -1,10 +1,10 @@
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/services/network_service.dart';
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/features/home/models/product_list_model.dart';
-import 'package:ai_fashion/features/skipped/models/skip_product_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/features/home/models/product_list_model.dart';
+import 'package:vousvous/features/skipped/models/skip_product_list_model.dart';
 
 class SkippedController extends GetxController {
   final RxBool isLoading = false.obs;

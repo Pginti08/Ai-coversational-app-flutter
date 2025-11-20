@@ -1,11 +1,11 @@
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/services/network_service.dart';
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/features/home/models/product_list_model.dart';
-import 'package:ai_fashion/features/liked/models/liked_product_list_model.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/features/home/models/product_list_model.dart';
+import 'package:vousvous/features/liked/models/liked_product_list_model.dart';
 
 class LikedController extends GetxController {
   var currentCarouselIndex = 0.obs;
@@ -71,7 +71,7 @@ class LikedController extends GetxController {
   }
 
   // Method to add current carousel item to remix products
-  void addToRemix(CarouselSliderController carouselController) {
+  void addToRemix() {
     if (likedProductsList.isNotEmpty &&
         currentCarouselIndex.value < likedProductsList.length) {
       final currentProduct = likedProductsList[currentCarouselIndex.value];
@@ -96,6 +96,34 @@ class LikedController extends GetxController {
           curve: Curves.easeInOut,
         );
       }
+    }
+  }
+
+  void removeFromRemix() {
+    if (likedProductsList.isNotEmpty &&
+        currentCarouselIndex.value < likedProductsList.length) {
+      final currentProduct = likedProductsList[currentCarouselIndex.value];
+
+      // Check if product is in remix
+      if (remixProducts.any((product) => product.id == currentProduct.id)) {
+        remixProducts.removeWhere((product) => product.id == currentProduct.id);
+      } else {
+        toast("Not in Remix");
+      }
+
+      // Move to next item safely
+      if (currentCarouselIndex.value < likedProductsList.length - 1) {
+        currentCarouselIndex.value++;
+      } else if (currentCarouselIndex.value > 0) {
+        // If it's last item, move to previous
+        currentCarouselIndex.value--;
+      }
+
+      carouselController.animateToPage(
+        currentCarouselIndex.value,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 

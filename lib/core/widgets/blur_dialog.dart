@@ -1,10 +1,10 @@
 import 'dart:ui';
 
-import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
 
 class BlurDialog {
   // Alternative method with more explicit sizing control

@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:ai_fashion/features/home/models/product_list_model.dart';
+import 'package:vousvous/features/home/models/product_list_model.dart';
 
 SkipProductListModel skipProductListModelFromJson(String str) =>
     SkipProductListModel.fromJson(json.decode(str));

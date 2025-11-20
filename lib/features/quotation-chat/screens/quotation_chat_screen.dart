@@ -1,27 +1,27 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:ai_fashion/core/constants/asset_constants.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/widgets/app_loader.dart';
-import 'package:ai_fashion/core/widgets/app_text_field.dart';
-import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
-import 'package:ai_fashion/features/quotation-chat/controller/quotation_chat_controller.dart';
-import 'package:ai_fashion/features/quotation-chat/models/quotation_chat_history_model.dart';
-import 'package:ai_fashion/features/quotation-chat/widgets/chat_actions_buttons.dart';
-import 'package:ai_fashion/features/quotation-chat/widgets/final_quotation_card.dart';
-import 'package:ai_fashion/features/quotation-chat/widgets/quotation_ai_message_tile.dart';
-import 'package:ai_fashion/features/quotation-chat/widgets/quotation_ai_typing_tile.dart';
-import 'package:ai_fashion/features/quotation-chat/widgets/quotation_user_message_tile.dart';
-import 'package:ai_fashion/features/quotation-chat/widgets/show_body_profile_widget.dart';
-import 'package:ai_fashion/features/quotation-chat/widgets/show_bulk_quantity_widget.dart';
-import 'package:ai_fashion/features/quotations/controller/quotations_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/widgets/app_loader.dart';
+import 'package:vousvous/core/widgets/app_text_field.dart';
+import 'package:vousvous/core/widgets/custom_scaffold.dart';
+import 'package:vousvous/features/quotation-chat/controller/quotation_chat_controller.dart';
+import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart';
+import 'package:vousvous/features/quotation-chat/widgets/chat_actions_buttons.dart';
+import 'package:vousvous/features/quotation-chat/widgets/final_quotation_card.dart';
+import 'package:vousvous/features/quotation-chat/widgets/quotation_ai_message_tile.dart';
+import 'package:vousvous/features/quotation-chat/widgets/quotation_ai_typing_tile.dart';
+import 'package:vousvous/features/quotation-chat/widgets/quotation_user_message_tile.dart';
+import 'package:vousvous/features/quotation-chat/widgets/show_body_profile_widget.dart';
+import 'package:vousvous/features/quotation-chat/widgets/show_bulk_quantity_widget.dart';
+import 'package:vousvous/features/quotations/controller/quotations_controller.dart';
 
 class QuotationChatScreen extends StatefulWidget {
   QuotationChatScreen({super.key});

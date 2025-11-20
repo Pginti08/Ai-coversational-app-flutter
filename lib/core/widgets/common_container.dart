@@ -1,8 +1,8 @@
 import 'dart:ui' as ui;
 
-import 'package:ai_fashion/core/services/haptic_service.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/gradient_borders.dart';
+import 'package:vousvous/core/services/haptic_service.dart';
 
 class CommonContainer extends StatelessWidget {
   final double? height;

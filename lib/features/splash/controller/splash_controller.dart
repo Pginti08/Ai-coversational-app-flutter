@@ -1,8 +1,8 @@
-import 'package:ai_fashion/core/constants/storage_constants.dart';
-import 'package:ai_fashion/core/services/local_storage_service.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
-import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/storage_constants.dart';
+import 'package:vousvous/core/services/local_storage_service.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/routes/app_pages.dart';
 
 class SplashController extends GetxController {
   RxBool loader = false.obs;

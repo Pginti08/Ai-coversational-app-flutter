@@ -50,6 +50,7 @@ class AssetConstants {
   static const personalCard = '${icons}personalcard.svg';
   static const truck = '${icons}truck.svg';
   static const remove = '${icons}remove.svg';
+  static const minus = '${icons}minus.svg';
   static const tickCircle = '${icons}tick-circle.svg';
   static const aiChat = '${icons}ai-chat.svg';
   static const invoice = '${icons}invoice.svg';

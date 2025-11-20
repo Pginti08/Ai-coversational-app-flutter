@@ -1,6 +1,6 @@
-import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
 
 Widget shimmer({
   required Widget child,

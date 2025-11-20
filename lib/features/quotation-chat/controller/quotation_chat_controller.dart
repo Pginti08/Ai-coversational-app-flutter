@@ -1,17 +1,17 @@
 import 'dart:developer' show log;
 
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/constants/storage_constants.dart';
-import 'package:ai_fashion/core/services/local_storage_service.dart';
-import 'package:ai_fashion/core/services/network_service.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/features/quotation-chat/models/analyze_dress_model.dart';
-import 'package:ai_fashion/features/quotation-chat/models/quotation_chat_history_model.dart';
-import 'package:ai_fashion/features/quotation-chat/widgets/chat_actions_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/constants/storage_constants.dart';
+import 'package:vousvous/core/services/local_storage_service.dart';
+import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/features/quotation-chat/models/analyze_dress_model.dart';
+import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart';
+import 'package:vousvous/features/quotation-chat/widgets/chat_actions_buttons.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class QuotationChatController extends GetxController {

@@ -1,6 +1,6 @@
-import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
 
 class AppTheme {
   static ThemeData darkTheme = ThemeData(

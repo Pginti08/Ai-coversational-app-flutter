@@ -1,8 +1,8 @@
-import 'package:ai_fashion/core/services/haptic_service.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:vousvous/core/services/haptic_service.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
 
 class AppButton extends StatefulWidget {
   const AppButton({

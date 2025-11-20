@@ -1,6 +1,6 @@
-import 'package:ai_fashion/core/constants/asset_constants.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
 
 class CustomScaffold extends StatefulWidget {
   final Widget body;

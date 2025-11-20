@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/services/local_storage_service.dart';
-import 'package:ai_fashion/core/services/network_service.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
-import 'package:ai_fashion/core/utils/validators.dart';
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/features/home/controller/home_controller.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/services/local_storage_service.dart';
+import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/validators.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/features/home/controller/home_controller.dart';
 
 class EditProfileController extends GetxController {
   final RxBool isLoading = false.obs;

@@ -1,8 +1,8 @@
 import 'dart:ui';
 
-import 'package:ai_fashion/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
 
 class TopProgressBar extends StatefulWidget {
   final int value;

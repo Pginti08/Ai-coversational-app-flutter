@@ -1,6 +1,6 @@
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/widgets/shimmer_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/widgets/shimmer_utils.dart';
 
 class TypingIndicator extends StatefulWidget {
   const TypingIndicator({

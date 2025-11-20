@@ -1,14 +1,14 @@
-import 'package:ai_fashion/core/constants/asset_constants.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/core/widgets/app_button.dart';
-import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
-import 'package:ai_fashion/features/body-profile/screens/scan_with_ai_bottom_sheet.dart';
-import 'package:ai_fashion/features/body-profile/screens/scanned_manually_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
+import 'package:vousvous/core/widgets/blur_bottom_sheet.dart';
+import 'package:vousvous/features/body-profile/screens/scan_with_ai_bottom_sheet.dart';
+import 'package:vousvous/features/body-profile/screens/scanned_manually_bottom_sheet.dart';
 
 class BodyProfileTypeBottomSheet extends StatelessWidget {
   const BodyProfileTypeBottomSheet({super.key});

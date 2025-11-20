@@ -29,7 +29,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.vrozart.aifashion"
+    namespace "com.vrozartVousvous"
     compileSdkVersion 36
     ndkVersion "28.0.12433566"
 
@@ -48,7 +48,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.vrozart.aifashion"
+        applicationId "com.vrozartVousvous"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 28
@@ -79,22 +79,22 @@ android {
         production {
             dimension "default"
             applicationIdSuffix ""
-            manifestPlaceholders = [appName: "AI Fashion"]
+            manifestPlaceholders = [appName: "Vousvous"]
         }
         staging {
             dimension "default"
             applicationIdSuffix ".stg"
-            manifestPlaceholders = [appName: "AI Fashion Staging"]
+            manifestPlaceholders = [appName: "Vousvous Staging"]
         }
         development {
             dimension "default"
             applicationIdSuffix ".dev"
-            manifestPlaceholders = [appName: "AI Fashion Dev"]
+            manifestPlaceholders = [appName: "Vousvous Dev"]
         }
         demo {
             dimension "default"
             applicationIdSuffix ".demo"
-            manifestPlaceholders = [appName: "AI Fashion Demo"]
+            manifestPlaceholders = [appName: "Vousvous Demo"]
         }
     }
 

@@ -1,10 +1,10 @@
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
-import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
 
 class AppTextField extends StatelessWidget {
   const AppTextField({

@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:ai_fashion/features/home/models/product_list_model.dart';
+import 'package:vousvous/features/home/models/product_list_model.dart';
 
 LikedProductListModel likedProductListModelFromJson(String str) =>
     LikedProductListModel.fromJson(json.decode(str));

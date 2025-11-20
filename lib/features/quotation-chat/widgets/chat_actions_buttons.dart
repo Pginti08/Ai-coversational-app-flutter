@@ -1,6 +1,6 @@
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/widgets/app_button.dart';
 import 'package:flutter/material.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
 
 class ChatActionsButtons extends StatelessWidget {
   const ChatActionsButtons({

@@ -1,8 +1,8 @@
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/services/network_service.dart';
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/features/body-profile/models/saved_body_profile_model.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/features/body-profile/models/saved_body_profile_model.dart';
 
 class BodyProfileController extends GetxController {
   final RxBool isLoading = false.obs;

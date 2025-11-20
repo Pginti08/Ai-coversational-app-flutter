@@ -1,13 +1,13 @@
-import 'package:ai_fashion/core/constants/asset_constants.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
-import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/features/quotation-chat/models/quotation_chat_history_model.dart';
-import 'package:ai_fashion/features/quotation-chat/widgets/final_quotation_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart';
+import 'package:vousvous/features/quotation-chat/widgets/final_quotation_card.dart';
 
 class QuotationAiMessageTile extends StatefulWidget {
   const QuotationAiMessageTile({

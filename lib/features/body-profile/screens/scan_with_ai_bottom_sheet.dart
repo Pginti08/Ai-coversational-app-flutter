@@ -1,25 +1,25 @@
 import 'dart:io';
 
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/constants/asset_constants.dart';
-import 'package:ai_fashion/core/services/network_service.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
-import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/core/widgets/app_button.dart';
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/core/widgets/blur_bottom_sheet.dart';
-import 'package:ai_fashion/core/widgets/bullet_point_list.dart';
-import 'package:ai_fashion/core/widgets/custom_image_picker_cropper.dart';
-import 'package:ai_fashion/features/body-profile/models/ai_body_profile_detect_model.dart';
-import 'package:ai_fashion/features/body-profile/models/saved_body_profile_model.dart';
-import 'package:ai_fashion/features/body-profile/screens/scanned_manually_bottom_sheet.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/core/widgets/blur_bottom_sheet.dart';
+import 'package:vousvous/core/widgets/bullet_point_list.dart';
+import 'package:vousvous/core/widgets/custom_image_picker_cropper.dart';
+import 'package:vousvous/features/body-profile/models/ai_body_profile_detect_model.dart';
+import 'package:vousvous/features/body-profile/models/saved_body_profile_model.dart';
+import 'package:vousvous/features/body-profile/screens/scanned_manually_bottom_sheet.dart';
 
 class ScanWithAiBottomSheet extends StatelessWidget {
   ScanWithAiBottomSheet({super.key, this.onSave});

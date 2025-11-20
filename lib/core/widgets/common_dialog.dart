@@ -1,10 +1,10 @@
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/widgets/app_button.dart';
-import 'package:ai_fashion/core/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
+import 'package:vousvous/core/widgets/blur_dialog.dart';
 
 void commonDialog({
   required String title,

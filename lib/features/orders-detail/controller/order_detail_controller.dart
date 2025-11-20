@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/services/network_service.dart';
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/features/orders-detail/models/order_detail_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_file_saver/flutter_file_saver.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/features/orders-detail/models/order_detail_model.dart';
 
 class OrderDetailController extends GetxController {
   final RxBool isLoading = false.obs;

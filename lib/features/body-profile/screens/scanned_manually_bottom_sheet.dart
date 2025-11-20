@@ -1,22 +1,22 @@
 import 'dart:convert';
 
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/services/network_service.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
-import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/core/utils/validators.dart';
-import 'package:ai_fashion/core/widgets/app_button.dart';
-import 'package:ai_fashion/core/widgets/app_text_field.dart';
-import 'package:ai_fashion/core/widgets/app_toast.dart';
-import 'package:ai_fashion/core/widgets/common_container.dart';
-import 'package:ai_fashion/features/body-profile/controller/body_profile_controller.dart';
-import 'package:ai_fashion/features/body-profile/models/saved_body_profile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/utils/validators.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
+import 'package:vousvous/core/widgets/app_text_field.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/core/widgets/common_container.dart';
+import 'package:vousvous/features/body-profile/controller/body_profile_controller.dart';
+import 'package:vousvous/features/body-profile/models/saved_body_profile_model.dart';
 
 class ScannedManuallyBottomSheet extends StatefulWidget {
   ScannedManuallyBottomSheet(

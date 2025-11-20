@@ -1,23 +1,23 @@
 import 'dart:io';
 
-import 'package:ai_fashion/core/constants/asset_constants.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/core/widgets/animated_curved_bar_indicator.dart';
-import 'package:ai_fashion/core/widgets/app_button.dart';
-import 'package:ai_fashion/core/widgets/app_loader.dart';
-import 'package:ai_fashion/core/widgets/app_network_image.dart';
-import 'package:ai_fashion/core/widgets/common_container.dart';
-import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
-import 'package:ai_fashion/core/widgets/stacked_card_widget.dart';
-import 'package:ai_fashion/features/liked/controller/liked_controller.dart';
-import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/animated_curved_bar_indicator.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
+import 'package:vousvous/core/widgets/app_loader.dart';
+import 'package:vousvous/core/widgets/app_network_image.dart';
+import 'package:vousvous/core/widgets/common_container.dart';
+import 'package:vousvous/core/widgets/custom_scaffold.dart';
+import 'package:vousvous/core/widgets/stacked_card_widget.dart';
+import 'package:vousvous/features/liked/controller/liked_controller.dart';
+import 'package:vousvous/routes/app_pages.dart';
 
 class LikedScreen extends StatelessWidget {
   LikedScreen({super.key});
@@ -181,8 +181,7 @@ class LikedScreen extends StatelessWidget {
                                 height: 52,
                                 width: 170.w,
                                 onTap: () {
-                                  controller.addToRemix(
-                                      controller.carouselController);
+                                  controller.addToRemix();
                                 },
                                 gradientBorderColors: AppColors.colorGradient,
                                 isOutlined: true,
@@ -224,23 +223,44 @@ class LikedScreen extends StatelessWidget {
                                     ),
                                   ),
                                   wSizedBox12,
-                                  CommonContainer(
-                                    onTap: () {
-                                      controller.addToRemix(
-                                          controller.carouselController);
-                                    },
-                                    enableBlur: true,
-                                    padding: EdgeInsets.all(10),
-                                    isCircle: true,
-                                    height: 52,
-                                    width: 52,
-                                    borderGradientColors:
-                                        AppColors.colorGradient,
-                                    child: SvgPicture.asset(
-                                      AssetConstants.add,
-                                      height: 28,
-                                    ),
-                                  ),
+                                  (controller.remixProducts.any((product) =>
+                                          product.id ==
+                                          controller
+                                              .likedProductsList[controller
+                                                  .currentCarouselIndex.value]
+                                              .id))
+                                      ? CommonContainer(
+                                          onTap: () {
+                                            controller.removeFromRemix();
+                                          },
+                                          enableBlur: true,
+                                          padding: EdgeInsets.all(10),
+                                          isCircle: true,
+                                          height: 52,
+                                          width: 52,
+                                          borderGradientColors:
+                                              AppColors.colorGradient,
+                                          child: SvgPicture.asset(
+                                            AssetConstants.minus,
+                                            height: 28,
+                                          ),
+                                        )
+                                      : CommonContainer(
+                                          onTap: () {
+                                            controller.addToRemix();
+                                          },
+                                          enableBlur: true,
+                                          padding: EdgeInsets.all(10),
+                                          isCircle: true,
+                                          height: 52,
+                                          width: 52,
+                                          borderGradientColors:
+                                              AppColors.colorGradient,
+                                          child: SvgPicture.asset(
+                                            AssetConstants.add,
+                                            height: 28,
+                                          ),
+                                        ),
                                   wSizedBox12,
                                   AppButton(
                                     height: 52,

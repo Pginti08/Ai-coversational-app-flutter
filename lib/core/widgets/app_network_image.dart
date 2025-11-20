@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:ai_fashion/core/constants/api_constants.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
-import 'package:ai_fashion/core/widgets/image_viewer_screen.dart';
-import 'package:ai_fashion/core/widgets/shimmer_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/widgets/image_viewer_screen.dart';
+import 'package:vousvous/core/widgets/shimmer_utils.dart';
 
 class AppNetworkImage extends StatelessWidget {
   const AppNetworkImage({

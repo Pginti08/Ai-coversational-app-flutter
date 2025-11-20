@@ -1,7 +1,7 @@
-import 'package:ai_fashion/core/constants/state_cities.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/sizedbox.dart';
 import 'package:flutter/material.dart';
+import 'package:vousvous/core/constants/state_cities.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
 
 class StateListBottomSheet extends StatelessWidget {
   StateListBottomSheet({super.key});

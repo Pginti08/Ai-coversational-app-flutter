@@ -1,19 +1,19 @@
 import 'dart:io';
 
-import 'package:ai_fashion/core/constants/asset_constants.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/core/widgets/app_loader.dart';
-import 'package:ai_fashion/core/widgets/app_network_image.dart';
-import 'package:ai_fashion/core/widgets/common_container.dart';
-import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
-import 'package:ai_fashion/core/widgets/shimmer_utils.dart';
-import 'package:ai_fashion/features/skipped/controller/skipped_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/app_loader.dart';
+import 'package:vousvous/core/widgets/app_network_image.dart';
+import 'package:vousvous/core/widgets/common_container.dart';
+import 'package:vousvous/core/widgets/custom_scaffold.dart';
+import 'package:vousvous/core/widgets/shimmer_utils.dart';
+import 'package:vousvous/features/skipped/controller/skipped_controller.dart';
 
 class SkippedScreen extends StatelessWidget {
   SkippedScreen({super.key});

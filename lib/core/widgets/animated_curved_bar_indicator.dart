@@ -1,10 +1,10 @@
 import 'dart:ui';
 
-import 'package:ai_fashion/core/services/haptic_service.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/widgets/lower_clippath.dart';
-import 'package:ai_fashion/core/widgets/upper_clippath.dart';
 import 'package:flutter/material.dart';
+import 'package:vousvous/core/services/haptic_service.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/widgets/lower_clippath.dart';
+import 'package:vousvous/core/widgets/upper_clippath.dart';
 
 class AnimatedCurvedBarIndicator extends StatefulWidget {
   final int currentIndex;

@@ -1,13 +1,13 @@
-import 'package:ai_fashion/core/constants/asset_constants.dart';
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/common_utils.dart';
-import 'package:ai_fashion/core/widgets/app_network_image.dart';
-import 'package:ai_fashion/core/widgets/common_container.dart';
-import 'package:ai_fashion/features/home/models/product_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/widgets/app_network_image.dart';
+import 'package:vousvous/core/widgets/common_container.dart';
+import 'package:vousvous/features/home/models/product_list_model.dart';
 
 class ProductOutfitCard extends StatefulWidget {
   const ProductOutfitCard({

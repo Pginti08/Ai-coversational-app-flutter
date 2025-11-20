@@ -1,5 +1,5 @@
-import 'package:ai_fashion/main.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:vousvous/main.dart';
 
 void main() {
   group('App', () {

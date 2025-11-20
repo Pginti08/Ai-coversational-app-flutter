@@ -1,5 +1,5 @@
-import 'package:ai_fashion/features/home/models/product_list_model.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/features/home/models/product_list_model.dart';
 
 class ProductDetailController extends GetxController {
   Product? productDetail;

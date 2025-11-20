@@ -1,15 +1,16 @@
-import 'package:ai_fashion/core/theme/app_colors.dart';
-import 'package:ai_fashion/core/theme/app_styles.dart';
-import 'package:ai_fashion/core/utils/sizedbox.dart';
-import 'package:ai_fashion/core/widgets/app_button.dart';
-import 'package:ai_fashion/core/widgets/app_text_field.dart';
-import 'package:ai_fashion/core/widgets/custom_scaffold.dart';
-import 'package:ai_fashion/features/login/controller/login_controller.dart';
-import 'package:ai_fashion/routes/app_pages.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
+import 'package:vousvous/core/widgets/app_text_field.dart';
+import 'package:vousvous/core/widgets/custom_scaffold.dart';
+import 'package:vousvous/features/login/controller/login_controller.dart';
+import 'package:vousvous/routes/app_pages.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -119,10 +120,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       isLoading: controller.isLoading.value,
                     )),
                 hSizedBox24,
-                Text(
-                  "By signing in, you agree to our Terms & Privacy Policy.",
-                  style: style400S12.copyWith(
-                      letterSpacing: 0.24, color: Color(0xFFCCCCCC)),
+                RichText(
+                  text: TextSpan(
+                    style: style400S12.copyWith(
+                      letterSpacing: 0.24,
+                      color: const Color(0xFFCCCCCC),
+                    ),
+                    children: [
+                      const TextSpan(text: "By signing in, you agree to our "),
+                      TextSpan(
+                        text: "Terms & Privacy Policy",
+                        style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            launchUrl(Uri.parse("https://google.com"),
+                                mode: LaunchMode.externalApplication);
+                          },
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),

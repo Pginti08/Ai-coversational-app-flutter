@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:ai_fashion/core/constants/storage_constants.dart';
-import 'package:ai_fashion/features/home/models/user_detail_model.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vousvous/core/constants/storage_constants.dart';
+import 'package:vousvous/features/home/models/user_detail_model.dart';
 
 class LocalStorageService {
   factory LocalStorageService() {

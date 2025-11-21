@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
 
 bool isNullOrEmpty(dynamic val) {
   final value = val.toString();
@@ -150,4 +151,16 @@ String _convertJsonToText(dynamic data, int indent) {
 String _capitalize(String text) {
   if (text.isEmpty) return text;
   return text[0].toUpperCase() + text.substring(1);
+}
+
+String fullImageUrl(String imageUrl) {
+  if (imageUrl.isEmpty) return '';
+
+  // Check if URL already has a protocol
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
+  }
+
+  // Otherwise, prepend the base URL
+  return '${ApiConstants.imageURL}$imageUrl';
 }

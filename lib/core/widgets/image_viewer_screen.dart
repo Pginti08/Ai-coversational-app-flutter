@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
 
@@ -56,18 +56,6 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
         curve: Curves.easeInOut,
       );
     }
-  }
-
-  String fullImageUrl(imageUrl) {
-    if (imageUrl.isEmpty) return '';
-
-    // Check if URL already has a protocol
-    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-      return imageUrl;
-    }
-
-    // Otherwise, prepend the base URL
-    return '${ApiConstants.imageURL}$imageUrl';
   }
 
   @override

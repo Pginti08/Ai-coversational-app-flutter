@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:toastification/toastification.dart';
 import 'package:vousvous/core/constants/flavors.dart';
 import 'package:vousvous/core/constants/storage_constants.dart';
+import 'package:vousvous/core/services/app_link_service.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/theme/app_theme.dart';
 import 'package:vousvous/routes/app_pages.dart';
@@ -35,8 +36,27 @@ Future<void> bootstrap(
   runApp(await builder());
 }
 
-class App extends StatelessWidget {
-  const App({super.key});
+class App extends StatefulWidget {
+  App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  final DeepLinkHandler _deepLinkHandler = DeepLinkHandler();
+
+  @override
+  void initState() {
+    super.initState();
+    _deepLinkHandler.initDeepLinks();
+  }
+
+  @override
+  void dispose() {
+    _deepLinkHandler.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

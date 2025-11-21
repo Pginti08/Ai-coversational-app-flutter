@@ -19,6 +19,7 @@ import 'package:vousvous/features/product-detail/product_detail_screen.dart';
 import 'package:vousvous/features/quotation-chat/screens/quotation_chat_screen.dart';
 import 'package:vousvous/features/quotations/screens/quotations_screen.dart';
 import 'package:vousvous/features/saved-address/screens/saved_address_screen.dart';
+import 'package:vousvous/features/share-preview/screens/share_preview_screen.dart';
 import 'package:vousvous/features/signup/screens/signup_screen.dart';
 import 'package:vousvous/features/skipped/screens/skipped_screen.dart';
 import 'package:vousvous/features/splash/screens/splash_screen.dart';
@@ -197,6 +198,13 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.inviteFriend,
       page: () => InviteFriendScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.sharePreview,
+      page: () => SharePreviewScreen(),
     ),
   ];
 }

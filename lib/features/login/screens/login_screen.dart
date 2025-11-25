@@ -76,13 +76,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         }
                       },
                     )),
-                hSizedBox16,
-                Text(
-                  "Lorem Ipsum is simply dummy text of the printing nd typesetting industry. Lorem Ipsum has been the industry's",
-                  style: style400S12.copyWith(
-                    color: const Color(0xFF747474),
-                  ),
-                ),
+                // hSizedBox16,
+                // Text(
+                //   "Lorem Ipsum is simply dummy text of the printing nd typesetting industry. Lorem Ipsum has been the industry's",
+                //   style: style400S12.copyWith(
+                //     color: const Color(0xFF747474),
+                //   ),
+                // ),
                 hSizedBox30,
                 Padding(
                   padding: const EdgeInsets.all(16),

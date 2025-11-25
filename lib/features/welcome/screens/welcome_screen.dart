@@ -27,12 +27,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     WelcomePage(
       title: "Change your perspective in style",
       description:
-          "Change the quality of your vibe & appearance with ‘App Name’ now!",
+          "Change the quality of your vibe & appearance with ‘Vousvous’ now!",
       image: AssetConstants.welcome1,
     ),
     WelcomePage(
       title: "Let’s Vibe with Fashion",
-      description: "Change the quality of your appearance with “app name” now!",
+      description:
+          "Change the quality of your appearance with “‘Vousvous’” now!",
       image: AssetConstants.welcome2,
     ),
   ];

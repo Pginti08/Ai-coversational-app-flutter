@@ -3,32 +3,32 @@ import 'package:vousvous/core/constants/flavors.dart';
 
 class ApiConstants {
   static String baseURL = Flavor.getFlavor == FlavorType.development
-      ? 'http://13.235.114.164:3000'
+      ? 'https://devapi.vousvous.com'
       : Flavor.getFlavor == FlavorType.staging
           ? 'http://13.235.114.164:3000'
           : Flavor.getFlavor == FlavorType.demo
               ? 'http://13.235.114.164:3000'
               : Flavor.getFlavor == FlavorType.production
-                  ? 'https://devapi.vousvous.com'
+                  ? 'https://api.vousvous.com'
                   : '';
   static String chatURL = Flavor.getFlavor == FlavorType.development
-      ? 'http://34.233.54.141:8000'
+      ? 'https://devai.vousvous.com'
       : Flavor.getFlavor == FlavorType.staging
           ? 'http://34.233.54.141:8000'
           : Flavor.getFlavor == FlavorType.demo
               ? 'http://34.233.54.141:8000'
               : Flavor.getFlavor == FlavorType.production
-                  ? 'devai.vousvous.com'
+                  ? 'https://ai.vousvous.com'
                   : '';
 
   static String imageURL = Flavor.getFlavor == FlavorType.development
-      ? 'http://34.233.54.141:8000/uploads/'
+      ? 'https://devai.vousvous.com/uploads/'
       : Flavor.getFlavor == FlavorType.staging
           ? 'http://34.233.54.141:8000/uploads/'
           : Flavor.getFlavor == FlavorType.demo
               ? 'http://34.233.54.141:8000/uploads/'
               : Flavor.getFlavor == FlavorType.production
-                  ? 'devai.vousvous.com/uploads/'
+                  ? 'https://ai.vousvous.com/uploads/'
                   : '';
 
   // Auth endpoints

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/features/splash/controller/splash_controller.dart';
 
@@ -106,15 +106,12 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ),
                 ),
-
-                // Center logo text
-                Center(
-                  child: Text("Logo",
-                      style: GoogleFonts.redressed(
-                        color: AppColors.whiteTextColor,
-                        fontSize: 80,
-                        fontWeight: FontWeight.w400,
-                      )),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.sizeOf(context).width * 0.2),
+                  child: Center(
+                    child: Image.asset(AssetConstants.logo),
+                  ),
                 ),
               ],
             ),

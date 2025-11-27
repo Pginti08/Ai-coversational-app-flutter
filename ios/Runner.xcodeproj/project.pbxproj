@@ -814,8 +814,8 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "Vousvous";
-				FLUTTER_TARGET = lib/main_producation.dart;
+				FLAVOR_APP_NAME = Vousvous;
+				FLUTTER_TARGET = lib/main_production.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -917,8 +917,8 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "Vousvous";
-				FLUTTER_TARGET = lib/main_producation.dart;
+				FLAVOR_APP_NAME = Vousvous;
+				FLUTTER_TARGET = lib/main_production.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1015,8 +1015,8 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = R28WAZZSN8;
 				ENABLE_BITCODE = NO;
-				FLAVOR_APP_NAME = "Vousvous";
-				FLUTTER_TARGET = lib/main_producation.dart;
+				FLAVOR_APP_NAME = Vousvous;
+				FLUTTER_TARGET = lib/main_production.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -10,6 +10,7 @@ import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/blur_scaffold.dart';
+import 'package:vousvous/features/quotation-chat/controller/quotation_chat_controller.dart';
 import 'package:vousvous/features/share-preview/controller/share_preview_controller.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
@@ -84,7 +85,8 @@ class _SharePreviewScreenState extends State<SharePreviewScreen> {
                           padding: const EdgeInsets.all(15),
                           child: SvgPicture.asset(
                             AssetConstants.heart,
-                            height: 24,
+                            height: 28,
+                            color: AppColors.whiteColor,
                           ),
                         ),
                       ),
@@ -94,8 +96,20 @@ class _SharePreviewScreenState extends State<SharePreviewScreen> {
                       height: 52,
                       width: 170,
                       onTap: () {
-                        Get.toNamed(Routes.quotationChat, arguments: {
-                          "imageUrl": controller.imageUrl,
+                        // Remove QuotationChat controller from memory (Good practice)
+                        if (Get.isRegistered<QuotationChatController>()) {
+                          Get.delete<QuotationChatController>();
+                        }
+
+// Pop any previous instances of the page from the history stack
+                        Get.until((route) =>
+                            route.settings.name != Routes.quotationChat);
+
+// 🚀 CRITICAL CHANGE: Use Get.offNamed()
+// This replaces the current page in the stack with the new one.
+                        Get.offNamed(Routes.quotationChat, arguments: {
+                          "productId": controller.productId,
+                          "imageUrl": controller.imageUrl.split('/').last,
                         });
                       },
                       gradientBorderColors: AppColors.colorGradient,

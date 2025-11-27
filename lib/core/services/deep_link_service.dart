@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/storage_constants.dart';
+import 'package:vousvous/core/services/local_storage_service.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 class DeepLinkHandler {
@@ -33,16 +36,20 @@ class DeepLinkHandler {
 
     // Check if it's the share path
     if (uri.path == '/share') {
-      final imageUrl = uri.queryParameters['imageUrl'];
-      final productId = uri.queryParameters['productId'];
+      if (isNotNullOrEmpty(LocalStorageService.instance
+          .getString(StorageConstants.accessToken))) {
+        final imageUrl = uri.queryParameters['imageUrl'];
+        final productId = uri.queryParameters['productId'];
 
-      if (productId != null) {
-        // Navigate to your share screen
-        navigateToShareScreen(productId: productId);
-      } else if (imageUrl != null) {
-        // Navigate to your share screen
-        navigateToShareScreen(imageUrl: imageUrl);
+        if (productId != null || imageUrl != null) {
+          // Navigate to your share screen
+          navigateToShareScreen(imageUrl: imageUrl, productId: productId);
+        }
       }
+    } else {
+      Get.offAllNamed(Routes.signup, arguments: {
+        "fromInvitePost": true,
+      });
     }
   }
 

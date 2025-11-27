@@ -15,6 +15,16 @@ class SignupController extends GetxController {
   final RxString nameError = ''.obs;
   final RxString mobileError = ''.obs;
 
+  bool fromInvitePost = false;
+
+  @override
+  void onInit() {
+    if (Get.arguments != null && Get.arguments["fromInvitePost"] != null) {
+      fromInvitePost = Get.arguments["fromInvitePost"];
+    }
+    super.onInit();
+  }
+
   void validateAndSignUp() {
     final error1 = validateCommonField(nameController.text.trim(), "name");
 
@@ -37,7 +47,8 @@ class SignupController extends GetxController {
           params: {
             "name": nameController.text.trim(),
             "phone": mobileNumber,
-            "code": countryCode.value
+            "code": countryCode.value,
+            "fromInvitePost": fromInvitePost,
           });
 
       if (result.isSuccess) {

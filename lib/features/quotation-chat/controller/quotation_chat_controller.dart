@@ -124,8 +124,8 @@ class QuotationChatController extends GetxController {
           "${ApiConstants.analyzeDress}", MethodType.post,
           baseUrlType: BaseUrl.chat,
           params: {
-            "image_path": imageUrl,
-            "product_id": productId,
+            if (isNotNullOrEmpty(productId)) "product_id": productId,
+            if (isNullOrEmpty(productId)) "image_path": imageUrl,
           });
 
       if (result.isSuccess) {

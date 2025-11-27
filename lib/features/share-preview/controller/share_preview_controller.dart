@@ -30,6 +30,7 @@ class SharePreviewController extends GetxController {
       );
       if (result.isSuccess) {
         Get.offAllNamed(Routes.liked);
+        toast("Product Liked Successfully", type: ToastType.success);
       } else {
         toast(result.error.toString());
       }

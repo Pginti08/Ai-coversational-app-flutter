@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:toastification/toastification.dart';
 import 'package:vousvous/core/constants/flavors.dart';
 import 'package:vousvous/core/constants/storage_constants.dart';
-import 'package:vousvous/core/services/app_link_service.dart';
+import 'package:vousvous/core/services/deep_link_service.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/theme/app_theme.dart';
 import 'package:vousvous/routes/app_pages.dart';

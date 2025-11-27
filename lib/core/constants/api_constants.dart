@@ -18,7 +18,7 @@ class ApiConstants {
           : Flavor.getFlavor == FlavorType.demo
               ? 'http://34.233.54.141:8000'
               : Flavor.getFlavor == FlavorType.production
-                  ? 'https://ai.vousvous.com'
+                  ? 'https://aiservices.vousvous.com'
                   : '';
 
   static String imageURL = Flavor.getFlavor == FlavorType.development
@@ -28,7 +28,7 @@ class ApiConstants {
           : Flavor.getFlavor == FlavorType.demo
               ? 'http://34.233.54.141:8000/uploads/'
               : Flavor.getFlavor == FlavorType.production
-                  ? 'https://ai.vousvous.com/uploads/'
+                  ? 'https://aiservices.vousvous.com/uploads/'
                   : '';
 
   // Auth endpoints

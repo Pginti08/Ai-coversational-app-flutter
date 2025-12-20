@@ -769,10 +769,22 @@ class _HomeScreenState extends State<HomeScreen>
     final screenSize = MediaQuery.sizeOf(context);
     final topPadding = MediaQuery.paddingOf(context).top;
 
+    // Fallback for drawer icon position if key context is null
+    final double defaultDrawerIconTop = topPadding + 6;
+    final double defaultDrawerIconLeft = 4.5;
+    final Size defaultDrawerIconSize = const Size(43, 43);
+
+    final renderBox =
+        _drawerIconKey.currentContext?.findRenderObject() as RenderBox?;
+    final offset = renderBox?.localToGlobal(Offset.zero);
+    final size = renderBox?.size ?? defaultDrawerIconSize;
+
     switch (step) {
       case GuideStep.dragDown:
         return _GuideInfo(
-          highlightRect: Rect.zero,
+          // Highlight near the top of the screen
+          highlightRect: Rect.fromLTWH(
+              screenSize.width / 4, topPadding, screenSize.width / 2, 80),
           guideWidget: Positioned(
             top: topPadding + 90,
             left: 0,
@@ -791,29 +803,27 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         );
 
-      // NEW: Thumb Left Guide Step
+      // NEW: Thumb Left Guide Step (Target: Skipped Button)
       case GuideStep.thumbLeft:
+        final skipArea = Rect.fromLTWH(
+          20, // Padding from the left of the screen
+          topPadding + 30,
+          (screenSize.width - 40) / 3,
+          150,
+        );
         return _GuideInfo(
-          highlightRect: Rect.zero,
+          highlightRect: skipArea,
           guideWidget: Positioned(
             top: topPadding + 160,
             left: 0,
             right: 0,
-            child: Column(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.arrow_back_rounded,
-                        color: Colors.white, size: 40),
-                    SizedBox(width: 8),
-                    Icon(Icons.touch_app_rounded,
-                        color: Colors.white, size: 32),
-                  ],
-                ),
-                SizedBox(height: 8),
+                Icon(Icons.arrow_back_rounded, color: Colors.white, size: 30),
+                wSizedBox12,
                 Text(
-                  "Move your thumb LEFT\nto select 'Skipped'",
+                  "Move thumb left to **SKIP**",
                   textAlign: TextAlign.center,
                   style: style600S16.copyWith(color: Colors.white, height: 1.3),
                 ),
@@ -822,122 +832,118 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         );
 
-      // NEW: Thumb Right Guide Step
+      // NEW: Thumb Right Guide Step (Target: Liked Button)
       case GuideStep.thumbRight:
+        final likedArea = Rect.fromLTWH(
+          screenSize.width * 2 / 3, // Start of the rightmost third
+          topPadding + 30,
+          (screenSize.width - 40) / 3,
+          150,
+        );
         return _GuideInfo(
-          highlightRect: Rect.zero,
+          highlightRect: likedArea,
           guideWidget: Positioned(
             top: topPadding + 160,
             left: 0,
             right: 0,
-            child: Column(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.touch_app_rounded,
-                        color: Colors.white, size: 32),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward_rounded,
-                        color: Colors.white, size: 40),
-                  ],
-                ),
-                SizedBox(height: 8),
                 Text(
-                  "Now move your thumb RIGHT\nto select 'Liked'",
+                  "Move thumb right to **LIKE**",
                   textAlign: TextAlign.center,
                   style: style600S16.copyWith(color: Colors.white, height: 1.3),
                 ),
+                wSizedBox12,
+                Icon(Icons.arrow_forward_rounded,
+                    color: Colors.white, size: 30),
               ],
             ),
           ),
         );
 
+      // Swipe Right Guide Step (Target: Card Swiper Area)
       case GuideStep.swipeRight:
+        // Highlight the center card area
+        final cardRect = Rect.fromLTWH(
+          16,
+          topPadding + 100,
+          screenSize.width - 32,
+          screenSize.height - topPadding - 300,
+        );
         return _GuideInfo(
-          highlightRect: Rect.fromCenter(
-            center: Offset(screenSize.width / 2, (screenSize.height / 2) - 50),
-            width: screenSize.width * 0.85,
-            height: screenSize.height * 0.55,
-          ),
+          highlightRect: cardRect,
           guideWidget: Positioned(
-            bottom: screenSize.height * 0.2,
-            left: 0,
-            right: 0,
+            top: screenSize.height / 2 - 50,
+            left: 50,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  "**Swipe RIGHT** to Like!",
+                  style: style600S16.copyWith(color: Colors.white),
+                ),
                 Icon(Icons.arrow_forward_rounded,
                     color: Colors.white, size: 40),
-                Text(
-                  "Swipe right to LIKE",
-                  textAlign: TextAlign.center,
-                  style: style600S16.copyWith(color: Colors.white),
-                ),
               ],
             ),
           ),
         );
 
+      // Swipe Left Guide Step (Target: Card Swiper Area)
       case GuideStep.swipeLeft:
+        final cardRect = Rect.fromLTWH(
+          16,
+          topPadding + 100,
+          screenSize.width - 32,
+          screenSize.height - topPadding - 300,
+        );
         return _GuideInfo(
-          highlightRect: Rect.fromCenter(
-            center: Offset(screenSize.width / 2, (screenSize.height / 2) - 50),
-            width: screenSize.width * 0.85,
-            height: screenSize.height * 0.55,
-          ),
+          highlightRect: cardRect,
           guideWidget: Positioned(
-            bottom: screenSize.height * 0.2,
-            left: 0,
-            right: 0,
+            top: screenSize.height / 2 - 50,
+            right: 50,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Icon(Icons.arrow_back_rounded, color: Colors.white, size: 40),
                 Text(
-                  "Swipe left to SKIP",
-                  textAlign: TextAlign.center,
+                  "**Swipe LEFT** to Skip!",
                   style: style600S16.copyWith(color: Colors.white),
                 ),
+                Icon(Icons.arrow_back_rounded, color: Colors.white, size: 40),
               ],
             ),
           ),
         );
 
+      // Open Drawer Guide Step (Target: Profile Icon)
       case GuideStep.openDrawer:
-        Rect drawerRect = Rect.fromCircle(
-          center: Offset(32, topPadding + 27),
-          radius: 100,
-        );
-
-        final renderBox =
-            _drawerIconKey.currentContext?.findRenderObject() as RenderBox?;
-        if (renderBox != null) {
-          final position = renderBox.localToGlobal(Offset.zero);
-          final size = renderBox.size;
-
-          final center = Offset(
-            position.dx + size.width / 3,
-            position.dy + size.height / 2,
-          );
-
-          drawerRect = Rect.fromCircle(
-            center: center,
-            radius: size.width / 2 + 10,
-          );
-        }
+        final highlightRect = offset != null
+            ? Rect.fromLTWH(
+                offset.dx,
+                offset.dy,
+                size.width,
+                size.height,
+              )
+            : Rect.fromLTWH(defaultDrawerIconLeft, defaultDrawerIconTop,
+                defaultDrawerIconSize.width, defaultDrawerIconSize.height);
 
         return _GuideInfo(
-          highlightRect: drawerRect,
+          highlightRect: highlightRect.inflate(10), // Inflate for padding
           guideWidget: Positioned(
-            top: drawerRect.bottom + 10,
-            left: drawerRect.left + 10,
+            top: (offset?.dy ?? defaultDrawerIconTop) + size.height + 20,
+            left: 20,
             child: Text(
-              "Tap here to open\nyour menu",
-              style: style600S16.copyWith(color: Colors.white, height: 1.3),
+              "Tap here to open your **Menu**",
+              style: style600S16.copyWith(color: Colors.white),
             ),
           ),
         );
 
-      default:
+      case GuideStep.none:
+        return _GuideInfo(
+            highlightRect: Rect.zero, guideWidget: const SizedBox.shrink());
+      case GuideStep.done:
         return _GuideInfo(
             highlightRect: Rect.zero, guideWidget: const SizedBox.shrink());
     }
@@ -945,39 +951,27 @@ class _HomeScreenState extends State<HomeScreen>
 }
 
 // --- HELPER CLASSES FOR GUIDE ---
-
-/// Helper class to pass guide info
 class _GuideInfo {
   final Rect highlightRect;
   final Widget guideWidget;
+
   _GuideInfo({required this.highlightRect, required this.guideWidget});
 }
 
-/// CustomClipper to "punch a hole" in the overlay
+// Add this class definition as well for the overlay's clipping mask
 class HoleClipper extends CustomClipper<Path> {
-  final Rect holeRect;
-  HoleClipper(this.holeRect);
+  final Rect hole;
+
+  HoleClipper(this.hole);
 
   @override
   Path getClip(Size size) {
-    // Create a path for the entire screen
-    final fullScreenPath = Path()
-      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
-
-    // Create a path for the hole, as a rounded rectangle
-    final holePath = Path()
-      ..addRRect(RRect.fromRectAndRadius(holeRect, const Radius.circular(16)));
-
-    // Subtract the hole from the full screen
-    return Path.combine(
-      PathOperation.difference,
-      fullScreenPath,
-      holePath,
-    );
+    return Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..addRRect(RRect.fromRectAndRadius(hole, const Radius.circular(12)));
   }
 
   @override
-  bool shouldReclip(HoleClipper oldClipper) {
-    return oldClipper.holeRect != holeRect;
-  }
+  bool shouldReclip(HoleClipper oldClipper) => oldClipper.hole != hole;
 }

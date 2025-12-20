@@ -72,5 +72,7 @@
 	<array>
 		<string>applinks:vousvous.com</string>
 	</array>
+	<key>FlutterDeepLinkingEnabled</key>
+	<false/>
 </dict>
 </plist>

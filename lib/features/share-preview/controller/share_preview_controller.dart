@@ -19,6 +19,7 @@ class SharePreviewController extends GetxController {
         imageUrl = Get.arguments["imageUrl"];
       }
     }
+    print("Share preview screen open");
   }
 
   Future<void> likedProduct() async {

@@ -10,6 +10,7 @@ import 'package:vousvous/core/constants/storage_constants.dart';
 import 'package:vousvous/core/services/deep_link_service.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/theme/app_theme.dart';
+import 'package:vousvous/features/splash/screens/splash_screen.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 Future<void> bootstrap(
@@ -49,6 +50,9 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
+
+    Get.put<DeepLinkHandler>(_deepLinkHandler, permanent: true);
+
     _deepLinkHandler.initDeepLinks();
   }
 
@@ -71,6 +75,12 @@ class _AppState extends State<App> {
             theme: AppTheme.darkTheme,
             initialRoute: Routes.splash,
             getPages: AppPages.routes,
+            unknownRoute: GetPage(
+              name: '/notfound',
+              page: () =>
+                  SplashScreen(), // Redirects the unknown deep link path to Splash
+              transition: Transition.fadeIn,
+            ),
             builder: (context, child) {
               return MediaQuery(
                 data: MediaQuery.of(

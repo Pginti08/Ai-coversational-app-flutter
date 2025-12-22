@@ -10,7 +10,7 @@ import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
-import 'package:vousvous/core/widgets/common_container.dart';
+import 'package:vousvous/core/widgets/animated_heart_button.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/core/widgets/shimmer_utils.dart';
 import 'package:vousvous/features/skipped/controller/skipped_controller.dart';
@@ -131,27 +131,13 @@ class SkippedScreen extends StatelessWidget {
                                         Positioned(
                                           top: 10,
                                           right: 10,
-                                          child: CommonContainer(
-                                            onTap: () {
+                                          child: AnimatedHeartButton(
+                                            key: ValueKey(
+                                                'heart_${controller.skipProductsList[index].id}'),
+                                            onLiked: () {
                                               controller.likedProduct(controller
                                                   .skipProductsList[index].id);
                                             },
-                                            isCircle: true,
-                                            borderGradientColors: [
-                                              Color.fromARGB(20, 0, 0, 0),
-                                              Color.fromARGB(30, 0, 0, 0),
-                                              Color.fromARGB(40, 0, 0, 0),
-                                            ],
-                                            gradientColors: [
-                                              Color.fromARGB(10, 0, 0, 0),
-                                              Color.fromARGB(20, 0, 0, 0),
-                                              Color.fromARGB(30, 0, 0, 0),
-                                            ],
-                                            padding: EdgeInsets.all(8),
-                                            child: SvgPicture.asset(
-                                              AssetConstants.heart2,
-                                              color: AppColors.whiteColor,
-                                            ),
                                           ),
                                         )
                                       ],

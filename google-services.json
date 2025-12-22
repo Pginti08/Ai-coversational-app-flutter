@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "514476570346",
+    "project_id": "vousvous",
+    "storage_bucket": "vousvous.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514476570346:android:a1bd52fcde233df3858993",
+        "android_client_info": {
+          "package_name": "com.vrozart.vousvous"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4-QG5HoSOCsINgn-K3c19rtShNb9g5sA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514476570346:android:57ac88923f1cfb4c858993",
+        "android_client_info": {
+          "package_name": "com.vrozart.vousvous.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4-QG5HoSOCsINgn-K3c19rtShNb9g5sA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

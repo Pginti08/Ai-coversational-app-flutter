@@ -57,6 +57,7 @@ class ApiConstants {
   static const String orders = '/orders';
   static const String invoice = '/invoice';
   static const String guideSeen = '/user/guide-seen';
+  static const String fcmToken = '/user/fcm-token';
 
   // Headers
   static const Map<String, String> headers = {

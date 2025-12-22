@@ -97,16 +97,12 @@ class QuotationsScreen extends StatelessWidget {
                                                   Get.toNamed(
                                                       Routes.quotationChat,
                                                       arguments: {
-                                                        if (isNullOrEmpty(
-                                                            controller
+                                                        // Always pass imageUrl for display
+                                                        "imageUrl": controller
                                                                 .quotationList[
                                                                     index]
-                                                                .productId))
-                                                          "imageUrl": controller
-                                                                  .quotationList[
-                                                                      index]
-                                                                  .dressImage ??
-                                                              "",
+                                                                .dressImage ??
+                                                            "",
                                                         if (isNotNullOrEmpty(
                                                             controller
                                                                 .quotationList[

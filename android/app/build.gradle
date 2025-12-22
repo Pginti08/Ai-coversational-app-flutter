@@ -1,5 +1,8 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -31,7 +34,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.vrozart.vousvous"
     compileSdkVersion 36
-    ndkVersion "28.0.12433566"
+    // ndkVersion "28.0.12433566"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -100,10 +103,13 @@ android {
 
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
-            // signingConfig signingConfigs.release
+            // signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt')
+            ndk {
+                debugSymbolLevel 'FULL'
+            }
         }
         debug {
             signingConfig signingConfigs.debug

@@ -189,21 +189,78 @@ class MyDesignsScreen extends StatelessWidget {
                                   ),
                                 ),
                                 wSizedBox12,
-                                CommonContainer(
-                                  onTap: () {
-                                    controller.addToRemix(carouselController);
-                                  },
-                                  enableBlur: true,
-                                  padding: EdgeInsets.all(10),
-                                  isCircle: true,
-                                  height: 52,
-                                  width: 52,
-                                  borderGradientColors: AppColors.colorGradient,
-                                  child: SvgPicture.asset(
-                                    AssetConstants.add,
-                                    height: 28,
-                                  ),
-                                ),
+                                // If current item is already selected, show minus button
+                                controller.remixOutfits.any((outfit) =>
+                                        outfit.imageUrl ==
+                                        controller
+                                            .myDesignsList[controller
+                                                .currentCarouselIndex.value]
+                                            .imageUrl)
+                                    ? CommonContainer(
+                                        onTap: () {
+                                          controller.removeFromRemix(
+                                              controller.myDesignsList[
+                                                  controller
+                                                      .currentCarouselIndex
+                                                      .value]);
+                                        },
+                                        enableBlur: true,
+                                        padding: EdgeInsets.all(10),
+                                        isCircle: true,
+                                        height: 52,
+                                        width: 52,
+                                        borderGradientColors:
+                                            AppColors.colorGradient,
+                                        child: SvgPicture.asset(
+                                          AssetConstants.minus,
+                                          height: 28,
+                                        ),
+                                      )
+                                    // If current item is NOT selected but max 4 already selected, show disabled + button
+                                    : controller.remixOutfits.length >= 4
+                                        ? CommonContainer(
+                                            onTap: () {
+                                              // Do nothing, button is disabled
+                                            },
+                                            enableBlur: true,
+                                            padding: EdgeInsets.all(10),
+                                            isCircle: true,
+                                            height: 52,
+                                            width: 52,
+                                            borderGradientColors: [
+                                              AppColors.grey2Color
+                                                  .withAlpha(100),
+                                              AppColors.grey2Color
+                                                  .withAlpha(100),
+                                            ],
+                                            child: SvgPicture.asset(
+                                              AssetConstants.add,
+                                              height: 28,
+                                              colorFilter: ColorFilter.mode(
+                                                AppColors.whiteColor
+                                                    .withAlpha(100),
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
+                                          )
+                                        // Otherwise show active + button
+                                        : CommonContainer(
+                                            onTap: () {
+                                              controller.addToRemix(
+                                                  carouselController);
+                                            },
+                                            enableBlur: true,
+                                            padding: EdgeInsets.all(10),
+                                            isCircle: true,
+                                            height: 52,
+                                            width: 52,
+                                            borderGradientColors:
+                                                AppColors.colorGradient,
+                                            child: SvgPicture.asset(
+                                              AssetConstants.add,
+                                              height: 28,
+                                            ),
+                                          ),
                                 wSizedBox12,
                                 AppButton(
                                   height: 52,

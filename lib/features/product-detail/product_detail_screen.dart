@@ -88,19 +88,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       final String shareMessage = '''
 ✨ *${productTitle.toUpperCase()}* ✨
 
-Check out this stunning outfit on Fashion App! 👗✨
+Check out this stunning outfit on *VOUSVOUS*! 👗✨
 
 Designed by: $userName
 
-🔥 Discover unique fashion pieces
-💎 Connect with top designers
-🛍️ Get instant quotes
+🎨 Design your dream dress with intelligent styling
+🔥 Discover unique fashion creations
+💎 Connect with expert designers
+🛍️ Get instant quotes effortlessly
 
-Download Fashion App now and elevate your style! 
+Download *VOUSVOUS* now and bring your fashion vision to life!
 
 👉 $customLink
 
-#FashionApp #StyleInspiration #FashionFinds #OOTD
+#VOUSVOUS #DreamDress #IntelligentStyling #FashionDesign #StyleInspiration #OOTD
 ''';
 
       final String shareSubject =

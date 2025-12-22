@@ -34,7 +34,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.vrozart.vousvous"
     compileSdkVersion 36
-    // ndkVersion "28.0.12433566"
+    ndkVersion "28.0.12433566"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

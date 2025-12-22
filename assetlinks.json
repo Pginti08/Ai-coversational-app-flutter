@@ -4,7 +4,10 @@
     "target": {
       "namespace": "android_app",
       "package_name": "com.vrozart.vousvous.dev",
-      "sha256_cert_fingerprints": ["6B:82:8F:0B:6E:F5:49:FB:BA:CE:74:56:7D:FC:2F:2B:64:30:69:95:77:E8:5D:86:57:D5:25:73:ED:73:32:A3"]
+      "sha256_cert_fingerprints": [
+        "6B:82:8F:0B:6E:F5:49:FB:BA:CE:74:56:7D:FC:2F:2B:64:30:69:95:77:E8:5D:86:57:D5:25:73:ED:73:32:A3",
+        "F6:6A:46:75:85:1A:AC:87:7E:78:E2:BA:5E:F6:64:5F:41:6F:79:91:32:02:FF:9E:B1:AA:81:73:47:A3:6C:C6"
+      ]
     }
   },
   {
@@ -12,7 +15,10 @@
     "target": {
       "namespace": "android_app",
       "package_name": "com.vrozart.vousvous.stg",
-      "sha256_cert_fingerprints": ["6B:82:8F:0B:6E:F5:49:FB:BA:CE:74:56:7D:FC:2F:2B:64:30:69:95:77:E8:5D:86:57:D5:25:73:ED:73:32:A3"]
+      "sha256_cert_fingerprints": [
+        "6B:82:8F:0B:6E:F5:49:FB:BA:CE:74:56:7D:FC:2F:2B:64:30:69:95:77:E8:5D:86:57:D5:25:73:ED:73:32:A3",
+        "F6:6A:46:75:85:1A:AC:87:7E:78:E2:BA:5E:F6:64:5F:41:6F:79:91:32:02:FF:9E:B1:AA:81:73:47:A3:6C:C6"
+      ]
     }
   },
   {
@@ -20,7 +26,10 @@
     "target": {
       "namespace": "android_app",
       "package_name": "com.vrozart.vousvous",
-      "sha256_cert_fingerprints": ["42:64:3A:BB:69:97:1A:E8:A6:AB:C6:2A:8B:AA:6D:37:83:77:51:98:5F:AA:EE:45:A3:88:9D:34:04:52:BE:B0"]
+      "sha256_cert_fingerprints": [
+        "42:64:3A:BB:69:97:1A:E8:A6:AB:C6:2A:8B:AA:6D:37:83:77:51:98:5F:AA:EE:45:A3:88:9D:34:04:52:BE:B0",
+        "F6:6A:46:75:85:1A:AC:87:7E:78:E2:BA:5E:F6:64:5F:41:6F:79:91:32:02:FF:9E:B1:AA:81:73:47:A3:6C:C6"
+      ]
     }
   }
 ]

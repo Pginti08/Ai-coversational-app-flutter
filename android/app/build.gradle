@@ -106,9 +106,6 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt')
-            ndk {
-                debugSymbolLevel 'FULL'
-            }
         }
         debug {
             signingConfig signingConfigs.debug

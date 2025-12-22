@@ -73,12 +73,7 @@ class _AppState extends State<App> {
           child: GetMaterialApp(
             debugShowCheckedModeBanner: false,
             theme: AppTheme.darkTheme,
-            initialRoute: (LocalStorageService.instance
-                            .getString(StorageConstants.accessToken) ??
-                        '')
-                    .isNotEmpty
-                ? Routes.home
-                : Routes.splash,
+            initialRoute: Routes.splash,
             getPages: AppPages.routes,
             unknownRoute: GetPage(
               name: '/notfound',

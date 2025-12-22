@@ -26,7 +26,10 @@ class SignupController extends GetxController {
   }
 
   void validateAndSignUp() {
-    final error1 = validateCommonField(nameController.text.trim(), "name");
+    String? error1;
+    if (nameController.text.trim().isEmpty) {
+      error1 = 'please enter a name';
+    }
 
     final error2 = validateMobileNumber(mobileNoController.text.trim(), 10, 10);
     nameError.value = error1 ?? '';

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/constants/storage_constants.dart';
+import 'package:vousvous/core/services/fcm_service.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
@@ -73,6 +74,10 @@ class OtpVerifyController extends GetxController {
           StorageConstants.accessToken,
           verifyOtpModel.data?.token ?? "",
         );
+
+        // Initialize Firebase and register FCM token (only once after login/signup)
+        await FCMService.instance.initializeAndRegisterAfterLogin();
+
         Future.delayed(Duration(milliseconds: 1500), () {
           Get.offAllNamed(Routes.home);
         });

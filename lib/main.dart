@@ -69,7 +69,12 @@ class _AppState extends State<App> {
           child: GetMaterialApp(
             debugShowCheckedModeBanner: false,
             theme: AppTheme.darkTheme,
-            initialRoute: Routes.splash,
+            initialRoute: (LocalStorageService.instance
+                            .getString(StorageConstants.accessToken) ??
+                        '')
+                    .isNotEmpty
+                ? Routes.home
+                : Routes.splash,
             getPages: AppPages.routes,
             builder: (context, child) {
               return MediaQuery(

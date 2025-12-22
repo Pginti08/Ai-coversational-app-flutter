@@ -24,24 +24,22 @@ class SkippedController extends GetxController {
   }
 
   void manageScrollController() async {
-    scrollController.addListener(
-      () {
-        if (scrollController.position.maxScrollExtent ==
-            scrollController.position.pixels) {
-          if (nextPageStop.isTrue && paginationLoading.isFalse) {
-            if (scrollController.hasClients) {
-              scrollController.animateTo(
-                scrollController.position.maxScrollExtent + 100,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
-            }
-            paginationLoading.value = true;
-            getSkipProductListApi(isInitial: false);
+    scrollController.addListener(() {
+      if (scrollController.position.maxScrollExtent ==
+          scrollController.position.pixels) {
+        if (nextPageStop.isTrue && paginationLoading.isFalse) {
+          if (scrollController.hasClients) {
+            scrollController.animateTo(
+              scrollController.position.maxScrollExtent + 100,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
           }
+          paginationLoading.value = true;
+          getSkipProductListApi(isInitial: false);
         }
-      },
-    );
+      }
+    });
   }
 
   getSkipProductListApi({bool isInitial = true}) async {
@@ -62,8 +60,9 @@ class SkippedController extends GetxController {
           isLoading.value = false;
           paginationLoading.value = false;
 
-          var skipProductListModel =
-              SkipProductListModel.fromJson(result.data?.data);
+          var skipProductListModel = SkipProductListModel.fromJson(
+            result.data?.data,
+          );
           skipProductsList.value += skipProductListModel.data?.items ?? [];
           page.value = page.value + 1;
           if (skipProductsList.isNotEmpty) {
@@ -93,7 +92,11 @@ class SkippedController extends GetxController {
         baseUrlType: BaseUrl.base,
       );
       if (result.isSuccess) {
-        getSkipProductListApi();
+        // Wait for a moment to show the liked state
+        await Future.delayed(const Duration(milliseconds: 500));
+
+        // Remove the item from the list instead of reloading
+        skipProductsList.removeWhere((product) => product.id == productId);
       } else {
         toast(result.error.toString());
       }

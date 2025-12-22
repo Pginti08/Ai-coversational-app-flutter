@@ -30,6 +30,10 @@ class HomeController extends GetxController {
 
   RxInt remainingProductsInQueue = 0.obs;
 
+  // Track current page for pagination
+  int currentPage = 1;
+  bool hasMoreProducts = true;
+
   @override
   void onInit() {
     getUserDetail();
@@ -96,20 +100,46 @@ class HomeController extends GetxController {
     } catch (e) {}
   }
 
-  Future<void> getSuggestedProducts({bool isLoadMore = false}) async {
+  Future<void> getSuggestedProducts(
+      {bool isLoadMore = false, bool isShuffle = false}) async {
+    print(
+        "🔥 getSuggestedProducts called - isLoadMore: $isLoadMore, isShuffle: $isShuffle");
+
     // Guard against simultaneous fetches.
-    if (isLoading.value || isPaginating.value) return;
+    if (isLoading.value || isPaginating.value) {
+      print("⚠️ Already loading or paginating, returning...");
+      return;
+    }
+
+    // If no more products available and it's a load more request, don't fetch
+    if (isLoadMore && !hasMoreProducts) {
+      print("⚠️ No more products available, returning...");
+      return;
+    }
 
     try {
       // We now use the isLoadMore flag to determine which loader to show.
       if (isLoadMore) {
         isPaginating.value = true;
+        print("📄 Paginating...");
       } else {
         isLoading.value = true;
+        print("⏳ Loading...");
       }
 
+      // If shuffle, reset to page 1, otherwise increment page for load more
+      if (isShuffle) {
+        currentPage = 1;
+        hasMoreProducts = true;
+        print("🔀 SHUFFLE - Resetting to page 1");
+      } else if (isLoadMore) {
+        currentPage++;
+        print("➕ LOAD MORE - Incrementing to page $currentPage");
+      }
+
+      print("📡 Fetching page $currentPage from API...");
       var result = await NetworkClient.instance.callApi(
-        "${ApiConstants.getSuggestedProducts}",
+        "${ApiConstants.getSuggestedProducts}?page=$currentPage",
         MethodType.get,
         baseUrlType: BaseUrl.base,
       );
@@ -119,24 +149,48 @@ class HomeController extends GetxController {
             ProductListModel.fromJson(result.data?.data);
 
         final newProducts = suggestedProductModel.data ?? [];
+        print(
+            "✅ API Success - Received ${newProducts.length} products from page $currentPage");
 
-        // If it's an initial load, clear any old data first.
-        if (!isLoadMore) {
+        // Check if we got fewer products than expected (indicates last page)
+        if (newProducts.isEmpty || newProducts.length < 10) {
+          hasMoreProducts = false;
+          print(
+              "🚫 hasMoreProducts set to FALSE (received ${newProducts.length} products)");
+        } else {
+          print("✅ hasMoreProducts is TRUE");
+        }
+
+        // If it's a shuffle or initial load, clear any old data first.
+        if (isShuffle || !isLoadMore) {
+          print(
+              "🗑️ Clearing old products list (had ${suggestedProductsList.length} products)");
           suggestedProductsList.clear();
           remainingProductsInQueue.value = 0;
+          currentCardIndex.value = 0;
         }
 
         suggestedProductsList.addAll(newProducts);
         remainingProductsInQueue.value += newProducts.length;
+
+        print("📊 FINAL STATUS:");
+        print("   - Total products in list: ${suggestedProductsList.length}");
+        print("   - Remaining in queue: ${remainingProductsInQueue.value}");
+        print("   - Current card index: ${currentCardIndex.value}");
+        print("   - Current page: $currentPage");
+        print("   - Has more products: $hasMoreProducts");
       } else {
+        print("❌ API Error: ${result.error.toString()}");
         toast(result.error.toString());
       }
     } catch (e) {
+      print("❌ Exception: ${e.toString()}");
       toast(e.toString());
     } finally {
       // Always reset both loaders.
       isLoading.value = false;
       isPaginating.value = false;
+      print("✅ Loaders reset");
     }
   }
 

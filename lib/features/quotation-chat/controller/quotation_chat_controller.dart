@@ -309,7 +309,8 @@ class QuotationChatController extends GetxController {
     buttonOptions.clear();
     showBodyProfile.value = false;
     showBulkQuantity.value = false;
-    cardDetailModel.value = null;
+    // Don't clear the quotation card - keep previous quotation visible
+    // cardDetailModel.value = null;
     FocusManager.instance.primaryFocus?.unfocus();
     messages.insert(
       0,
@@ -318,6 +319,10 @@ class QuotationChatController extends GetxController {
         message: message,
       ),
     );
+
+    // Show thinking indicator while waiting for response
+    isThinking.value = true;
+    thinkingMessage.value = "Thinking...";
 
     socket?.emit("quotation_chat", {
       "message": message,

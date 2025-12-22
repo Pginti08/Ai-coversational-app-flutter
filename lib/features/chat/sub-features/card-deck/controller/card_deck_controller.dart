@@ -26,9 +26,8 @@ class CardDeckController extends GetxController {
       if (!remixOutfits.contains(outfits[currentCardIndex.value])) {
         if (remixOutfits.length < 4) {
           remixOutfits.add(currentOutfit);
-        } else {
-          toast("You can select maximum 4 images in Remix");
         }
+        // Silently ignore if max limit reached (button is already hidden)
       } else {
         toast("Already in Remix");
       }

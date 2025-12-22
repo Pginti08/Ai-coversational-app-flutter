@@ -51,7 +51,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
                 hSizedBox30,
-                AppTextField(
+                Obx(() => AppTextField(
                   hint: "Name",
                   controller: controller.nameController,
                   isGradientBorder: true,
@@ -65,9 +65,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       controller.nameError.value = '';
                     }
                   },
-                ),
+                )),
                 hSizedBox16,
-                AppTextField(
+                Obx(() => AppTextField(
                   hint: "Mobile number",
                   controller: controller.mobileNoController,
                   isGradientBorder: true,
@@ -91,7 +91,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       controller.mobileError.value = '';
                     }
                   },
-                ),
+                )),
                 // hSizedBox16,
                 // Text(
                 //   "Lorem Ipsum is simply dummy text of the printing nd typesetting industry. Lorem Ipsum has been the industry's",

@@ -60,7 +60,7 @@ class ChatController extends GetxController {
         Get.arguments["isInitialRemix"] == true) {
       connectSocket();
     } else {
-      getSessionList();
+      connectSocket();
     }
     getBrandsList();
     _enableWakelock();
@@ -97,26 +97,24 @@ class ChatController extends GetxController {
   }
 
   void manageScrollController() async {
-    scrollController.addListener(
-      () {
-        if (scrollController.position.maxScrollExtent ==
-            scrollController.position.pixels) {
-          if (nextPageStop.isTrue &&
-              paginationLoading.isFalse &&
-              !isNewChat.value) {
-            if (scrollController.hasClients) {
-              scrollController.animateTo(
-                scrollController.position.maxScrollExtent + 100,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
-            }
-            paginationLoading.value = true;
-            getChatHistoryApi(isInitial: false);
+    scrollController.addListener(() {
+      if (scrollController.position.maxScrollExtent ==
+          scrollController.position.pixels) {
+        if (nextPageStop.isTrue &&
+            paginationLoading.isFalse &&
+            !isNewChat.value) {
+          if (scrollController.hasClients) {
+            scrollController.animateTo(
+              scrollController.position.maxScrollExtent + 100,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
           }
+          paginationLoading.value = true;
+          getChatHistoryApi(isInitial: false);
         }
-      },
-    );
+      }
+    });
   }
 
   Future getSessionList() async {
@@ -211,7 +209,7 @@ class ChatController extends GetxController {
           .setAuth({
             'token': LocalStorageService.instance.getString(
               StorageConstants.accessToken,
-            )
+            ),
           })
           .build(),
     );
@@ -250,9 +248,10 @@ class ChatController extends GetxController {
 
     // server events (match your backend event names)
     socket?.on('server_message', (data) {
-      final msg = (data is Map && data['msg'] != null)
-          ? data['msg'].toString()
-          : data.toString();
+      final msg =
+          (data is Map && data['msg'] != null)
+              ? data['msg'].toString()
+              : data.toString();
       if (msg == "AI is thinking...") {
         thinkingMessage.value = msg.toString();
         isThinking.value = true;
@@ -260,9 +259,10 @@ class ChatController extends GetxController {
     });
 
     socket?.on('session_created', (data) {
-      final msg = (data is Map && data['session_id'] != null)
-          ? data['session_id'].toString()
-          : data.toString();
+      final msg =
+          (data is Map && data['session_id'] != null)
+              ? data['session_id'].toString()
+              : data.toString();
       currentSessionId = msg;
     });
 
@@ -271,9 +271,10 @@ class ChatController extends GetxController {
     });
 
     socket?.on('generation_started', (data) {
-      final msg = (data is Map && data['msg'] != null)
-          ? data['msg'].toString()
-          : data.toString();
+      final msg =
+          (data is Map && data['msg'] != null)
+              ? data['msg'].toString()
+              : data.toString();
       thinkingMessage.value = msg.toString();
       isThinking.value = true;
     });
@@ -292,14 +293,18 @@ class ChatController extends GetxController {
     socket?.on('generation_complete', (data) {
       isThinking.value = false;
       if (data is Map) {
-        final String msg = (data['msg'] != null)
-            ? data['msg'].toString()
-            : 'Generation complete';
-        final List<ImageModel> images = (data['filenames'] as List<dynamic>?)
-                ?.map((e) => ImageModel(
-                      filename: e.toString(),
-                      text: null, // or provide default text if needed
-                    ))
+        final String msg =
+            (data['msg'] != null)
+                ? data['msg'].toString()
+                : 'Generation complete';
+        final List<ImageModel> images =
+            (data['filenames'] as List<dynamic>?)
+                ?.map(
+                  (e) => ImageModel(
+                    filename: e.toString(),
+                    text: null, // or provide default text if needed
+                  ),
+                )
                 .toList() ??
             [];
 
@@ -310,9 +315,10 @@ class ChatController extends GetxController {
     });
 
     socket?.on('error', (data) {
-      final err = (data is Map && data['error'] != null)
-          ? data['error'].toString()
-          : data.toString();
+      final err =
+          (data is Map && data['error'] != null)
+              ? data['error'].toString()
+              : data.toString();
       isThinking.value = false;
       toast('Error: $err');
     });
@@ -324,21 +330,25 @@ class ChatController extends GetxController {
 
     FocusManager.instance.primaryFocus?.unfocus();
 
-    final refImages = isNotNullOrEmpty(userSelectedRemixOutfits)
-        ? userSelectedRemixOutfits.toList() // ✅ copy instead of reference
-        : null;
+    final refImages =
+        isNotNullOrEmpty(userSelectedRemixOutfits)
+            ? userSelectedRemixOutfits
+                .toList() // ✅ copy instead of reference
+            : null;
 
     messages.insert(
       0,
       Message(
-          sender: "user",
-          message: message,
-          sessionId: currentSessionId,
-          refImage: isNotNullOrEmpty(userSelectedRemixOutfits)
-              ? userSelectedRemixOutfits.toList()
-              : isNotNullOrEmpty(uploadImage)
-                  ? uploadImage.toList()
-                  : null),
+        sender: "user",
+        message: message,
+        sessionId: currentSessionId,
+        refImage:
+            isNotNullOrEmpty(userSelectedRemixOutfits)
+                ? userSelectedRemixOutfits.toList()
+                : isNotNullOrEmpty(uploadImage)
+                ? uploadImage.toList()
+                : null,
+      ),
     );
 
     socket?.emit("user_message", {
@@ -349,13 +359,18 @@ class ChatController extends GetxController {
       "session_id": currentSessionId,
     });
 
-    log({
-      "prompt": message,
-      "reference_filename":
-          isNotNullOrEmpty(refImages) ? refImages : null, // ✅ send the copy too
-      "uploaded_reference": isNotNullOrEmpty(uploadImage) ? uploadImage : null,
-      "session_id": currentSessionId,
-    }.toString());
+    log(
+      {
+        "prompt": message,
+        "reference_filename":
+            isNotNullOrEmpty(refImages)
+                ? refImages
+                : null, // ✅ send the copy too
+        "uploaded_reference":
+            isNotNullOrEmpty(uploadImage) ? uploadImage : null,
+        "session_id": currentSessionId,
+      }.toString(),
+    );
 
     // Now safe to clear
     userSelectedRemixOutfits.clear();
@@ -424,17 +439,19 @@ class ChatController extends GetxController {
   Future<void> imageUploadApi(File imageFile) async {
     try {
       uploadLoader.value = true;
-      var result = await NetworkClient.instance
-          .callApi("${ApiConstants.uploadImage}", MethodType.post,
-              baseUrlType: BaseUrl.chat,
-              headers: {"Content-Type": "multipart/form-data"},
-              params: dio.FormData.fromMap({
-                'file': dio.MultipartFile.fromFileSync(
-                  imageFile.path,
-                  filename: imageFile.path.split('/').last,
-                  contentType: dio.DioMediaType("image", "png"),
-                )
-              }));
+      var result = await NetworkClient.instance.callApi(
+        "${ApiConstants.uploadImage}",
+        MethodType.post,
+        baseUrlType: BaseUrl.chat,
+        headers: {"Content-Type": "multipart/form-data"},
+        params: dio.FormData.fromMap({
+          'file': dio.MultipartFile.fromFileSync(
+            imageFile.path,
+            filename: imageFile.path.split('/').last,
+            contentType: dio.DioMediaType("image", "png"),
+          ),
+        }),
+      );
 
       if (result.isSuccess) {
         if (result.data != null &&

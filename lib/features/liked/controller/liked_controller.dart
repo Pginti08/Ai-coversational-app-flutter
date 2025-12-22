@@ -20,6 +20,9 @@ class LikedController extends GetxController {
   final CarouselSliderController carouselController =
       CarouselSliderController();
 
+  // Check if maximum remix items are selected
+  bool get isRemixAtMaxCapacity => remixProducts.length >= 4;
+
   @override
   void onInit() {
     getLikedProductListApi();
@@ -47,8 +50,9 @@ class LikedController extends GetxController {
           isLoading.value = false;
           paginationLoading.value = false;
 
-          var likedProductListModel =
-              LikedProductListModel.fromJson(result.data?.data);
+          var likedProductListModel = LikedProductListModel.fromJson(
+            result.data?.data,
+          );
           likedProductsList.addAll(likedProductListModel.data?.items ?? []);
 
           page.value = page.value + 1;
@@ -76,25 +80,26 @@ class LikedController extends GetxController {
         currentCarouselIndex.value < likedProductsList.length) {
       final currentProduct = likedProductsList[currentCarouselIndex.value];
 
+      // Check if already at max capacity - silently ignore (button is hidden anyway)
+      if (isRemixAtMaxCapacity) {
+        return; // Don't add, don't show toast
+      }
+
       // Avoid duplicates
       if (!remixProducts.any((product) => product.id == currentProduct.id)) {
-        if (remixProducts.length < 4) {
-          remixProducts.add(currentProduct);
-        } else {
-          toast("You can select maximum 4 images in Remix");
+        remixProducts.add(currentProduct);
+
+        // Move to next index only if we successfully added
+        if (currentCarouselIndex.value < likedProductsList.length - 1) {
+          currentCarouselIndex.value++;
+          carouselController.animateToPage(
+            currentCarouselIndex.value,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
         }
       } else {
         toast("Already in Remix");
-      }
-
-      // Move to next index
-      if (currentCarouselIndex.value < likedProductsList.length - 1) {
-        currentCarouselIndex.value++;
-        carouselController.animateToPage(
-          currentCarouselIndex.value,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
       }
     }
   }

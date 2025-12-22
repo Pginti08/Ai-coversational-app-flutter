@@ -11,6 +11,7 @@ import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_text_field.dart';
+import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/features/quotation-chat/controller/quotation_chat_controller.dart';
 import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart';
@@ -93,7 +94,7 @@ class _QuotationChatScreenState extends State<QuotationChatScreen> {
                           maxLines: 2,
                           style: style400S16.copyWith(
                               color: AppColors.whiteTextColor,
-                              letterSpacing: 0.32,
+                              letterSpacing: 1.0,
                               overflow: TextOverflow.ellipsis),
                         ),
                       ),
@@ -102,180 +103,216 @@ class _QuotationChatScreenState extends State<QuotationChatScreen> {
                 ),
               ),
             ),
-            // Chat messages area
+            // Chat messages area with image at top (scrollable together)
             Expanded(
               child: Obx(
-                () => ListView.builder(
-                  controller: controller.scrollController,
-                  reverse: true, // Newest messages at top, oldest at bottom
-                  physics: const AlwaysScrollableScrollPhysics()
-                      .applyTo(const BouncingScrollPhysics()),
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  itemCount: controller.messages.length +
-                      (controller.paginationLoading.value ? 1 : 0) +
-                      (controller.isThinking.value
-                          ? 1
-                          : (controller.buttonOptions.isNotEmpty ? 1 : 0) +
-                              (controller.showBodyProfile.value ? 1 : 0) +
-                              (controller.showBulkQuantity.value ? 1 : 0) +
-                              (controller.cardDetailModel.value != null
-                                  ? 1
-                                  : 0)),
-                  itemBuilder: (context, index) {
-                    // Handle pagination loading indicator at bottom (oldest messages)
-                    if (controller.paginationLoading.value &&
-                        index ==
-                            controller.messages.length +
-                                (controller.isThinking.value
+                () {
+                  // Check if product image exists
+                  final productImageUrl = controller.imageUrl.isNotEmpty
+                      ? controller.imageUrl
+                      : controller.analyzeDressModel.value.imageUrl ?? "";
+                  final hasImage = productImageUrl.isNotEmpty;
+
+                  return ListView.builder(
+                    controller: controller.scrollController,
+                    reverse: true, // Newest messages at bottom
+                    physics: const AlwaysScrollableScrollPhysics()
+                        .applyTo(const BouncingScrollPhysics()),
+                    padding: EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 8,
+                      bottom: 8,
+                    ),
+                    itemCount: controller.messages.length +
+                        (controller.paginationLoading.value ? 1 : 0) +
+                        (controller.isThinking.value
+                            ? 1
+                            : (controller.buttonOptions.isNotEmpty ? 1 : 0) +
+                                (controller.showBodyProfile.value ? 1 : 0) +
+                                (controller.showBulkQuantity.value ? 1 : 0) +
+                                (controller.cardDetailModel.value != null
                                     ? 1
-                                    : (controller.buttonOptions.isNotEmpty
-                                            ? 1
-                                            : 0) +
-                                        (controller.showBodyProfile.value
-                                            ? 1
-                                            : 0) +
-                                        (controller.showBulkQuantity.value
-                                            ? 1
-                                            : 0))) {
-                      return Padding(
-                        padding: EdgeInsets.all(16.w),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              RotatingLoader(size: 20),
-                              SizedBox(height: 8),
-                              Text(
-                                'Loading older messages...',
-                                style: style400S12.copyWith(
-                                  color: Colors.grey,
-                                  fontSize: 12,
+                                    : 0)) +
+                        (hasImage ? 1 : 0), // Add image slot at end
+                    itemBuilder: (context, index) {
+                      // Calculate total extra items (before messages)
+                      int extraItemsCount = 0;
+                      if (controller.isThinking.value) {
+                        extraItemsCount = 1;
+                      } else {
+                        if (controller.buttonOptions.isNotEmpty)
+                          extraItemsCount++;
+                        if (controller.showBodyProfile.value) extraItemsCount++;
+                        if (controller.showBulkQuantity.value)
+                          extraItemsCount++;
+                        if (controller.cardDetailModel.value != null)
+                          extraItemsCount++;
+                      }
+
+                      // Show image card at the END (appears at TOP in reversed list)
+                      final imageIndex = controller.messages.length +
+                          extraItemsCount +
+                          (controller.paginationLoading.value ? 1 : 0);
+                      if (hasImage && index == imageIndex) {
+                        return _buildProductImageCard(productImageUrl);
+                      }
+
+                      // Handle pagination loading indicator
+                      if (controller.paginationLoading.value &&
+                          index ==
+                              controller.messages.length +
+                                  (controller.isThinking.value
+                                      ? 1
+                                      : (controller.buttonOptions.isNotEmpty
+                                              ? 1
+                                              : 0) +
+                                          (controller.showBodyProfile.value
+                                              ? 1
+                                              : 0) +
+                                          (controller.showBulkQuantity.value
+                                              ? 1
+                                              : 0))) {
+                        return Padding(
+                          padding: EdgeInsets.all(16.w),
+                          child: Center(
+                            child: Column(
+                              children: [
+                                RotatingLoader(size: 20),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Loading older messages...',
+                                  style: style400S12.copyWith(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    }
+                        );
+                      }
 
-                    // Handle typing indicator at top (newest position)
-                    if (controller.isThinking.value && index == 0) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 16),
-                        child: QuotationAiTypingTile(
-                            message: controller.thinkingMessage),
-                      );
-                    }
+                      // Handle typing indicator at top (newest position)
+                      if (controller.isThinking.value && index == 0) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 16),
+                          child: QuotationAiTypingTile(
+                              message: controller.thinkingMessage),
+                        );
+                      }
 
-                    // Handle button options (only show when NOT thinking)
-                    if (!controller.isThinking.value &&
-                        controller.buttonOptions.isNotEmpty &&
-                        index == 0) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 16),
-                        child: ChatActionsButtons(
-                          options: controller.buttonOptions,
-                          onOptionTap: (option) {
-                            controller.sendMessage(message: option.text ?? "");
-                          },
-                        ),
-                      );
-                    }
+                      // Handle button options (only show when NOT thinking)
+                      if (!controller.isThinking.value &&
+                          controller.buttonOptions.isNotEmpty &&
+                          index == 0) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 16),
+                          child: ChatActionsButtons(
+                            options: controller.buttonOptions,
+                            onOptionTap: (option) {
+                              controller.sendMessage(
+                                  message: option.text ?? "");
+                            },
+                          ),
+                        );
+                      }
 
-                    // Handle body profile widget (only show when NOT thinking)
-                    if (!controller.isThinking.value &&
-                        controller.showBodyProfile.value &&
-                        index ==
-                            (controller.buttonOptions.isNotEmpty ? 1 : 0)) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 16),
-                        child: ShowBodyProfileWidget(
-                          quotationChatController: controller,
-                        ),
-                      );
-                    }
+                      // Handle body profile widget (only show when NOT thinking)
+                      if (!controller.isThinking.value &&
+                          controller.showBodyProfile.value &&
+                          index ==
+                              (controller.buttonOptions.isNotEmpty ? 1 : 0)) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 16),
+                          child: ShowBodyProfileWidget(
+                            quotationChatController: controller,
+                          ),
+                        );
+                      }
 //
-                    if (!controller.isThinking.value &&
-                        controller.showBulkQuantity.value &&
-                        index ==
-                            (controller.buttonOptions.isNotEmpty ? 1 : 0)) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 16),
-                        child: ShowBulkQuantityWidget(
-                          quotationChatController: controller,
-                        ),
-                      );
-                    }
+                      if (!controller.isThinking.value &&
+                          controller.showBulkQuantity.value &&
+                          index ==
+                              (controller.buttonOptions.isNotEmpty ? 1 : 0)) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 16),
+                          child: ShowBulkQuantityWidget(
+                            quotationChatController: controller,
+                          ),
+                        );
+                      }
 
 // Handle final quotation card (only show when NOT thinking)
-                    if (!controller.isThinking.value &&
-                        controller.cardDetailModel.value != null &&
-                        index ==
-                            (controller.buttonOptions.isNotEmpty ? 1 : 0) +
-                                (controller.showBodyProfile.value ? 1 : 0) +
-                                (controller.showBulkQuantity.value ? 1 : 0)) {
+                      if (!controller.isThinking.value &&
+                          controller.cardDetailModel.value != null &&
+                          index ==
+                              (controller.buttonOptions.isNotEmpty ? 1 : 0) +
+                                  (controller.showBodyProfile.value ? 1 : 0) +
+                                  (controller.showBulkQuantity.value ? 1 : 0)) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 16),
+                          child: FinalQuotationCard(
+                            quotation: controller.cardDetailModel.value ??
+                                CardDetail(),
+                            updatedBySupport: CardDetail(),
+                          ),
+                        );
+                      }
+
+                      // Calculate message index
+                      int messageIndex = index;
+                      if (controller.isThinking.value) {
+                        messageIndex--;
+                      } else {
+                        if (controller.buttonOptions.isNotEmpty) messageIndex--;
+                        if (controller.showBodyProfile.value) messageIndex--;
+                        if (controller.showBulkQuantity.value) messageIndex--;
+                        if (controller.cardDetailModel.value != null)
+                          messageIndex--;
+                      }
+
+                      // Handle case where pagination loader affects indexing
+                      final actualMessageIndex =
+                          controller.paginationLoading.value &&
+                                  messageIndex >= controller.messages.length
+                              ? controller.messages.length - 1
+                              : messageIndex;
+
+                      if (actualMessageIndex < 0 ||
+                          actualMessageIndex >= controller.messages.length) {
+                        return SizedBox.shrink();
+                      }
+
+                      final message = controller.messages[actualMessageIndex];
+
                       return Padding(
                         padding: EdgeInsets.only(bottom: 16),
-                        child: FinalQuotationCard(
-                          quotation:
-                              controller.cardDetailModel.value ?? CardDetail(),
-                          updatedBySupport: CardDetail(),
-                        ),
+                        child: message.sender?.toLowerCase() == "user"
+                            ? QuotationUserMessageTile(
+                                message: message,
+                              )
+                            : QuotationAiMessageTile(
+                                message: message,
+                              ),
                       );
-                    }
-
-                    // Calculate message index
-                    int messageIndex = index;
-                    if (controller.isThinking.value) {
-                      messageIndex--;
-                    } else {
-                      if (controller.buttonOptions.isNotEmpty) messageIndex--;
-                      if (controller.showBodyProfile.value) messageIndex--;
-                      if (controller.showBulkQuantity.value) messageIndex--;
-                      if (controller.cardDetailModel.value != null)
-                        messageIndex--;
-                    }
-
-                    // Handle case where pagination loader affects indexing
-                    final actualMessageIndex =
-                        controller.paginationLoading.value &&
-                                messageIndex >= controller.messages.length
-                            ? controller.messages.length - 1
-                            : messageIndex;
-
-                    if (actualMessageIndex < 0 ||
-                        actualMessageIndex >= controller.messages.length) {
-                      return SizedBox.shrink();
-                    }
-
-                    final message = controller.messages[actualMessageIndex];
-
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 16),
-                      child: message.sender?.toLowerCase() == "user"
-                          ? QuotationUserMessageTile(
-                              message: message,
-                            )
-                          : QuotationAiMessageTile(
-                              message: message,
-                            ),
-                    );
-                  },
-                ),
+                    },
+                  );
+                },
               ),
             ),
-            SizedBox(
-              height: 60.h,
-            )
+            // Typing widget at bottom (inside body to prevent overlap)
+            bottomTypingWidget(),
           ],
         ),
       ),
-      bottomNavigationBar: bottomTypingWidget(),
     );
   }
 
   Widget bottomTypingWidget() {
     return KeyboardVisibilityBuilder(builder: (context, isKeyboardVisible) {
       return Column(
+        mainAxisSize: MainAxisSize.min, // Only take needed space
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
@@ -362,5 +399,119 @@ class _QuotationChatScreenState extends State<QuotationChatScreen> {
         ],
       );
     });
+  }
+
+  /// Builds a WhatsApp-style product image card for the chat
+  Widget _buildProductImageCard(String imageUrl) {
+    if (imageUrl.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: EdgeInsets.only(left: 0, right: 60, bottom: 16, top: 8),
+      child: Align(
+        alignment: Alignment.centerLeft, // Align to left like received messages
+        child: GestureDetector(
+          onTap: () {
+            // Open image in full screen viewer
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  backgroundColor: Colors.black,
+                  body: Stack(
+                    children: [
+                      Center(
+                        child: InteractiveViewer(
+                          child: AppNetworkImage(
+                            imageUrl: imageUrl,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                      SafeArea(
+                        child: IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon:
+                              Icon(Icons.close, color: Colors.white, size: 30),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth:
+                  MediaQuery.of(context).size.width * 0.65, // 65% width max
+              minWidth: 200,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(30),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Stack(
+                children: [
+                  // Product Image filling the container
+                  AspectRatio(
+                    aspectRatio: 0.75, // Portrait ratio to show full dress
+                    child: AppNetworkImage(
+                      imageUrl: imageUrl,
+                      fit: BoxFit.cover, // Cover to fill container completely
+                      backgroundColor: Colors.grey.shade900,
+                    ),
+                  ),
+                  // Subtle gradient overlay at bottom only
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.transparent,
+                            Colors.black.withAlpha(80),
+                          ],
+                          stops: [0.0, 0.75, 1.0],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Sparkle icon at top right
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      padding: EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(25),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: SvgPicture.asset(
+                        AssetConstants.sparkle,
+                        height: 14,
+                        colorFilter: ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

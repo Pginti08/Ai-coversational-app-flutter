@@ -396,11 +396,13 @@ ${controller.productDetail?.description ?? ""}''',
                                 Text.rich(
                                   TextSpan(
                                     children: [
+                                      // Show minPrice only if it's not null AND not equal to 0
                                       if (isNotNullOrEmpty(controller
-                                              .productDetail?.minPrice) ||
-                                          int.tryParse(controller
-                                                  .productDetail!.minPrice!
-                                                  .toString()) !=
+                                              .productDetail?.minPrice) &&
+                                          (int.tryParse(controller
+                                                      .productDetail!.minPrice!
+                                                      .toString()) ??
+                                                  0) !=
                                               0)
                                         TextSpan(
                                           text:
@@ -410,11 +412,13 @@ ${controller.productDetail?.description ?? ""}''',
                                             letterSpacing: 0.42,
                                           ),
                                         ),
+                                      // Show maxPrice only if it's not null AND not equal to 0
                                       if (isNotNullOrEmpty(controller
-                                              .productDetail?.maxPrice) ||
-                                          int.tryParse(controller
-                                                  .productDetail!.maxPrice!
-                                                  .toString()) !=
+                                              .productDetail?.maxPrice) &&
+                                          (int.tryParse(controller
+                                                      .productDetail!.maxPrice!
+                                                      .toString()) ??
+                                                  0) !=
                                               0) ...[
                                         TextSpan(
                                           text: " to ",
@@ -441,7 +445,10 @@ ${controller.productDetail?.description ?? ""}''',
                                     Get.toNamed(Routes.quotationChat,
                                         arguments: {
                                           "productId":
-                                              controller.productDetail?.id
+                                              controller.productDetail?.id,
+                                          "imageUrl":
+                                              controller.productDetail?.image ??
+                                                  "",
                                         });
                                   },
                                   textColor: AppColors.blackColor,

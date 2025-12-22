@@ -151,6 +151,9 @@ class LikedScreen extends StatelessWidget {
                               enlargeCenterPage: true,
                               enlargeFactor: 0.25,
                               scrollDirection: Axis.horizontal,
+                              // Keep scrolling enabled at all times
+                              scrollPhysics:
+                                  const AlwaysScrollableScrollPhysics(),
                               onPageChanged: (index, reason) {
                                 controller.currentCarouselIndex.value = index;
 
@@ -223,12 +226,13 @@ class LikedScreen extends StatelessWidget {
                                     ),
                                   ),
                                   wSizedBox12,
-                                  (controller.remixProducts.any((product) =>
+                                  // If current item is already selected, show minus button
+                                  controller.remixProducts.any((product) =>
                                           product.id ==
                                           controller
                                               .likedProductsList[controller
                                                   .currentCarouselIndex.value]
-                                              .id))
+                                              .id)
                                       ? CommonContainer(
                                           onTap: () {
                                             controller.removeFromRemix();
@@ -245,22 +249,50 @@ class LikedScreen extends StatelessWidget {
                                             height: 28,
                                           ),
                                         )
-                                      : CommonContainer(
-                                          onTap: () {
-                                            controller.addToRemix();
-                                          },
-                                          enableBlur: true,
-                                          padding: EdgeInsets.all(10),
-                                          isCircle: true,
-                                          height: 52,
-                                          width: 52,
-                                          borderGradientColors:
-                                              AppColors.colorGradient,
-                                          child: SvgPicture.asset(
-                                            AssetConstants.add,
-                                            height: 28,
-                                          ),
-                                        ),
+                                      // If current item is NOT selected but max 4 already selected, show disabled + button
+                                      : controller.isRemixAtMaxCapacity
+                                          ? CommonContainer(
+                                              onTap: () {
+                                                // Do nothing, button is disabled
+                                              },
+                                              enableBlur: true,
+                                              padding: EdgeInsets.all(10),
+                                              isCircle: true,
+                                              height: 52,
+                                              width: 52,
+                                              borderGradientColors: [
+                                                AppColors.grey2Color
+                                                    .withAlpha(100),
+                                                AppColors.grey2Color
+                                                    .withAlpha(100),
+                                              ],
+                                              child: SvgPicture.asset(
+                                                AssetConstants.add,
+                                                height: 28,
+                                                colorFilter: ColorFilter.mode(
+                                                  AppColors.whiteColor
+                                                      .withAlpha(100),
+                                                  BlendMode.srcIn,
+                                                ),
+                                              ),
+                                            )
+                                          // Otherwise show active + button
+                                          : CommonContainer(
+                                              onTap: () {
+                                                controller.addToRemix();
+                                              },
+                                              enableBlur: true,
+                                              padding: EdgeInsets.all(10),
+                                              isCircle: true,
+                                              height: 52,
+                                              width: 52,
+                                              borderGradientColors:
+                                                  AppColors.colorGradient,
+                                              child: SvgPicture.asset(
+                                                AssetConstants.add,
+                                                height: 28,
+                                              ),
+                                            ),
                                   wSizedBox12,
                                   AppButton(
                                     height: 52,
@@ -362,24 +394,31 @@ class LikedScreen extends StatelessWidget {
 
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
-                child: AnimatedCurvedBarIndicator(
-                  currentIndex: controller.currentCarouselIndex.value,
-                  totalItems: controller.likedProductsList.length,
-                  barCount: 19,
-                  maxHeight: 55,
-                  minHeight: 35,
-                  barWidth: 5,
-                  activeColor: AppColors.whiteColor,
-                  inactiveColor: AppColors.whiteColor.withOpacity(0.2),
-                  duration: Duration(milliseconds: 300),
-                  onIndexChanged: (newIndex) {
-                    controller.currentCarouselIndex.value = newIndex;
-                    controller.carouselController.animateToPage(
-                      newIndex,
+                child: IgnorePointer(
+                  // Keep indicator enabled at all times
+                  ignoring: false,
+                  child: Opacity(
+                    opacity: 1.0,
+                    child: AnimatedCurvedBarIndicator(
+                      currentIndex: controller.currentCarouselIndex.value,
+                      totalItems: controller.likedProductsList.length,
+                      barCount: 19,
+                      maxHeight: 55,
+                      minHeight: 35,
+                      barWidth: 5,
+                      activeColor: AppColors.whiteColor,
+                      inactiveColor: AppColors.whiteColor.withOpacity(0.2),
                       duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  },
+                      onIndexChanged: (newIndex) {
+                        controller.currentCarouselIndex.value = newIndex;
+                        controller.carouselController.animateToPage(
+                          newIndex,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                    ),
+                  ),
                 ),
               );
             }),

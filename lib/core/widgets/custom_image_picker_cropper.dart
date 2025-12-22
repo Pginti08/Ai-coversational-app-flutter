@@ -5,13 +5,13 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 
-Future<void> imagePickerCropper(
-  Function(File file) selectedImage,
-) async {
+Future<void> imagePickerCropper(Function(File file) selectedImage) async {
   XFile? pickedFile;
   try {
-    pickedFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 50);
+    pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
   } catch (e) {
     debugPrint(e.toString());
   }
@@ -24,6 +24,7 @@ Future<void> imagePickerCropper(
           toolbarColor: AppColors.primaryColor,
           toolbarWidgetColor: Colors.white,
           activeControlsWidgetColor: AppColors.primaryColor,
+          
           aspectRatioPresets: [
             CropAspectRatioPreset.original,
             CropAspectRatioPreset.square,
@@ -58,12 +59,12 @@ Future<void> imagePickerCropper(
   }
 }
 
-Future<void> imagePicker(
-  Function(File file) selectedImage,
-) async {
+Future<void> imagePicker(Function(File file) selectedImage) async {
   try {
-    final XFile? pickedFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 50);
+    final XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
 
     if (pickedFile != null) {
       selectedImage(File(pickedFile.path));
@@ -78,8 +79,10 @@ Future<void> imagePickerMultiple(
   Function(List<File> files) selectedImages,
 ) async {
   try {
-    final List<XFile> pickedFiles =
-        await ImagePicker().pickMultiImage(imageQuality: 30, limit: limit ?? 4);
+    final List<XFile> pickedFiles = await ImagePicker().pickMultiImage(
+      imageQuality: 30,
+      limit: limit ?? 4,
+    );
 
     if (pickedFiles.isNotEmpty) {
       final files = pickedFiles.map((e) => File(e.path)).toList();
@@ -90,9 +93,7 @@ Future<void> imagePickerMultiple(
   }
 }
 
-Future<void> capturePhoto(
-  Function(File file) capturedImage,
-) async {
+Future<void> capturePhoto(Function(File file) capturedImage) async {
   try {
     final XFile? image = await ImagePicker().pickImage(
       source: ImageSource.camera,

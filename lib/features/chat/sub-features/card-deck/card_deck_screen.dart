@@ -156,6 +156,7 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                     ),
                                   ),
                                   wSizedBox10,
+                                  // If current item is already selected, show minus button
                                   controller.remixOutfits.contains(controller
                                               .outfits[
                                           controller.currentCardIndex.value])
@@ -177,24 +178,52 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                             height: 28,
                                           ),
                                         )
-                                      : CommonContainer(
-                                          onTap: () {
-                                            controller.cardSwiperController
-                                                .swipe(
-                                                    CardSwiperDirection.right);
-                                          },
-                                          enableBlur: true,
-                                          padding: EdgeInsets.all(10),
-                                          isCircle: true,
-                                          height: 52,
-                                          width: 52,
-                                          borderGradientColors:
-                                              AppColors.colorGradient,
-                                          child: SvgPicture.asset(
-                                            AssetConstants.add,
-                                            height: 28,
-                                          ),
-                                        ),
+                                      // If current item is NOT selected but max 4 already selected, show disabled + button
+                                      : controller.remixOutfits.length >= 4
+                                          ? CommonContainer(
+                                              onTap: () {
+                                                // Do nothing, button is disabled
+                                              },
+                                              enableBlur: true,
+                                              padding: EdgeInsets.all(10),
+                                              isCircle: true,
+                                              height: 52,
+                                              width: 52,
+                                              borderGradientColors: [
+                                                AppColors.grey2Color
+                                                    .withAlpha(100),
+                                                AppColors.grey2Color
+                                                    .withAlpha(100),
+                                              ],
+                                              child: SvgPicture.asset(
+                                                AssetConstants.add,
+                                                height: 28,
+                                                colorFilter: ColorFilter.mode(
+                                                  AppColors.whiteColor
+                                                      .withAlpha(100),
+                                                  BlendMode.srcIn,
+                                                ),
+                                              ),
+                                            )
+                                          // Otherwise show active + button
+                                          : CommonContainer(
+                                              onTap: () {
+                                                controller.cardSwiperController
+                                                    .swipe(CardSwiperDirection
+                                                        .right);
+                                              },
+                                              enableBlur: true,
+                                              padding: EdgeInsets.all(10),
+                                              isCircle: true,
+                                              height: 52,
+                                              width: 52,
+                                              borderGradientColors:
+                                                  AppColors.colorGradient,
+                                              child: SvgPicture.asset(
+                                                AssetConstants.add,
+                                                height: 28,
+                                              ),
+                                            ),
                                   wSizedBox10,
                                   AppButton(
                                     height: 52,

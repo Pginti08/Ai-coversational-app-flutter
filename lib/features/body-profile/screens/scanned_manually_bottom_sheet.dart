@@ -19,8 +19,12 @@ import 'package:vousvous/features/body-profile/controller/body_profile_controlle
 import 'package:vousvous/features/body-profile/models/saved_body_profile_model.dart';
 
 class ScannedManuallyBottomSheet extends StatefulWidget {
-  ScannedManuallyBottomSheet(
-      {super.key, this.isEdit = false, this.savedBodyProfile, this.onSave});
+  ScannedManuallyBottomSheet({
+    super.key,
+    this.isEdit = false,
+    this.savedBodyProfile,
+    this.onSave,
+  });
   final bool isEdit;
   final SavedBodyProfile? savedBodyProfile;
   final void Function(dynamic)? onSave;
@@ -77,14 +81,20 @@ class _ScannedManuallyBottomSheetState
 
   void validateAndSave() {
     final error1 = validateCommonField(nameController.text.trim(), "name");
-    final error2 =
-        validateMeasurementField(heightController.text.trim(), "height");
+    final error2 = validateMeasurementField(
+      heightController.text.trim(),
+      "height",
+    );
     final error3 = validateMeasurementField(bustController.text.trim(), "bust");
-    final error4 =
-        validateMeasurementField(waistController.text.trim(), "waist");
+    final error4 = validateMeasurementField(
+      waistController.text.trim(),
+      "waist",
+    );
     final error5 = validateMeasurementField(hipController.text.trim(), "hip");
-    final error6 =
-        validateMeasurementField(shoulderController.text.trim(), "shoulder");
+    final error6 = validateMeasurementField(
+      shoulderController.text.trim(),
+      "shoulder",
+    );
 
     nameError.value = error1 ?? '';
     heightError.value = error2 ?? '';
@@ -131,20 +141,21 @@ class _ScannedManuallyBottomSheetState
       isLoading.value = true;
 
       var result = await NetworkClient.instance.callApi(
-          widget.isEdit
-              ? "${ApiConstants.bodyProfiles}/${widget.savedBodyProfile?.id}"
-              : "${ApiConstants.bodyProfiles}",
-          widget.isEdit ? MethodType.patch : MethodType.post,
-          baseUrlType: BaseUrl.base,
-          params: {
-            "name": nameController.text.trim(),
-            "height": int.tryParse(heightController.text.trim()),
-            "bust": int.tryParse(bustController.text.trim()),
-            "waist": int.tryParse(waistController.text.trim()),
-            "hips": int.tryParse(hipController.text.trim()),
-            "shoulders": int.tryParse(shoulderController.text.trim()),
-            "unit": "CM"
-          });
+        widget.isEdit
+            ? "${ApiConstants.bodyProfiles}/${widget.savedBodyProfile?.id}"
+            : "${ApiConstants.bodyProfiles}",
+        widget.isEdit ? MethodType.patch : MethodType.post,
+        baseUrlType: BaseUrl.base,
+        params: {
+          "name": nameController.text.trim(),
+          "height": int.tryParse(heightController.text.trim()),
+          "bust": int.tryParse(bustController.text.trim()),
+          "waist": int.tryParse(waistController.text.trim()),
+          "hips": int.tryParse(hipController.text.trim()),
+          "shoulders": int.tryParse(shoulderController.text.trim()),
+          "unit": "CM",
+        },
+      );
 
       if (result.isSuccess) {
         if (Get.isBottomSheetOpen ?? false) {
@@ -167,97 +178,115 @@ class _ScannedManuallyBottomSheetState
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-      child: Obx(() => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-            child: Column(
-              children: [
-                Text(
-                  "Body Profile".toUpperCase(),
+      child: Obx(
+        () => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: Column(
+            children: [
+              Text(
+                "Body Profile".toUpperCase(),
+                style: style700S12.copyWith(
+                  letterSpacing: 0.96,
+                  color: Color(0xFFCCCCCC),
+                ),
+              ),
+              hSizedBox16,
+              AppTextField(
+                label: "Name".toUpperCase(),
+                controller: nameController,
+                isRequired: true,
+                hint: "Enter Name",
+                isGradientBorder: true,
+                fillColor: AppColors.whiteColor.withAlpha(12),
+                hintStyle: style400S16.copyWith(color: Color(0xFF444444)),
+                errorText: nameError.value.isEmpty ? null : nameError.value,
+                maxLength: 30,
+                onChanged: (value) {
+                  if (nameError.value.isNotEmpty) {
+                    nameError.value = '';
+                  }
+                },
+              ),
+              hSizedBox24,
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Measurements".toUpperCase(),
                   style: style700S12.copyWith(
-                      letterSpacing: 0.96, color: Color(0xFFCCCCCC)),
-                ),
-                hSizedBox16,
-                AppTextField(
-                  label: "Name".toUpperCase(),
-                  controller: nameController,
-                  isRequired: true,
-                  hint: "Enter Name",
-                  isGradientBorder: true,
-                  fillColor: AppColors.whiteColor.withAlpha(12),
-                  hintStyle: style400S16.copyWith(color: Color(0xFF444444)),
-                  errorText: nameError.value.isEmpty ? null : nameError.value,
-                  onChanged: (value) {
-                    if (nameError.value.isNotEmpty) {
-                      nameError.value = '';
-                    }
-                  },
-                ),
-                hSizedBox24,
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Measurements".toUpperCase(),
-                    style: style700S12.copyWith(
-                        letterSpacing: 0.96, color: Color(0xFFCCCCCC)),
+                    letterSpacing: 0.96,
+                    color: Color(0xFFCCCCCC),
                   ),
                 ),
-                hSizedBox10,
-                Expanded(
-                    child: ListView(
+              ),
+              hSizedBox10,
+              Expanded(
+                child: ListView(
                   padding: EdgeInsets.zero,
                   children: [
                     measurementsTextField(
-                        title: "Height",
-                        unit: "CM",
-                        textEditingController: heightController,
-                        fieldError: heightError),
+                      title: "Height",
+                      unit: "CM",
+                      textEditingController: heightController,
+                      fieldError: heightError,
+                    ),
                     hSizedBox18,
                     measurementsTextField(
-                        title: "Bust",
-                        unit: "CM",
-                        textEditingController: bustController,
-                        fieldError: bustError),
+                      title: "Bust",
+                      unit: "CM",
+                      textEditingController: bustController,
+                      fieldError: bustError,
+                    ),
                     hSizedBox18,
                     measurementsTextField(
-                        title: "Waist",
-                        unit: "CM",
-                        textEditingController: waistController,
-                        fieldError: waistError),
+                      title: "Waist",
+                      unit: "CM",
+                      textEditingController: waistController,
+                      fieldError: waistError,
+                    ),
                     hSizedBox18,
                     measurementsTextField(
-                        title: "Hips",
-                        unit: "CM",
-                        textEditingController: hipController,
-                        fieldError: hipError),
+                      title: "Hips",
+                      unit: "CM",
+                      textEditingController: hipController,
+                      fieldError: hipError,
+                    ),
                     hSizedBox18,
                     measurementsTextField(
-                        title: "Shoulders",
-                        unit: "CM",
-                        textEditingController: shoulderController,
-                        fieldError: shoulderError),
+                      title: "Shoulders",
+                      unit: "CM",
+                      textEditingController: shoulderController,
+                      fieldError: shoulderError,
+                    ),
                     hSizedBox18,
                   ],
-                )),
-                hSizedBox10,
-                KeyboardVisibilityBuilder(
-                    builder: (context, isKeyboardVisible) {
+                ),
+              ),
+              hSizedBox10,
+              KeyboardVisibilityBuilder(
+                builder: (context, isKeyboardVisible) {
                   return isKeyboardVisible
                       ? const SizedBox.shrink()
                       : Padding(
-                          padding: const EdgeInsets.only(top: 8, bottom: 8.0),
-                          child: SafeArea(
-                              top: false,
-                              child: Obx(() => AppButton(
-                                    text: "Save Body Profile",
-                                    isLoading: isLoading.value,
-                                    onTap: () {
-                                      validateAndSave();
-                                    },
-                                  ))));
-                })
-              ],
-            ),
-          )),
+                        padding: const EdgeInsets.only(top: 8, bottom: 8.0),
+                        child: SafeArea(
+                          top: false,
+                          child: Obx(
+                            () => AppButton(
+                              text: "Save Body Profile",
+                              isLoading: isLoading.value,
+                              onTap: () {
+                                validateAndSave();
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -305,7 +334,9 @@ class _ScannedManuallyBottomSheetState
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     textStyle: style600S20.copyWith(
-                        letterSpacing: 0.42, color: AppColors.whiteTextColor),
+                      letterSpacing: 0.42,
+                      color: AppColors.whiteTextColor,
+                    ),
                     onChanged: (value) {
                       if (fieldError.value.isNotEmpty) {
                         fieldError.value = '';
@@ -316,9 +347,10 @@ class _ScannedManuallyBottomSheetState
                 Text(
                   unit.toUpperCase(),
                   style: style700S12.copyWith(
-                      fontSize: 10,
-                      letterSpacing: 0.80,
-                      color: const Color(0xFF666666)),
+                    fontSize: 10,
+                    letterSpacing: 0.80,
+                    color: const Color(0xFF666666),
+                  ),
                 ),
               ],
             ),

@@ -29,7 +29,7 @@ class CardDeckController extends GetxController {
         }
         // Silently ignore if max limit reached (button is already hidden)
       } else {
-        toast("Already in Remix");
+        toast("Already in Remix", type: ToastType.warning);
       }
     }
   }

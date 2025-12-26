@@ -12,6 +12,7 @@ enum ToastType {
   success,
   error,
   general,
+  warning,
 }
 
 toast(
@@ -52,6 +53,9 @@ toast(
                         child: SvgPicture.asset(
                           _getToastIcon(type),
                           width: 20,
+                          color: type == ToastType.warning
+                              ? AppColors.yellowColor
+                              : null,
                         ),
                       ),
                       decoration: BoxDecoration(
@@ -119,6 +123,8 @@ String _getToastIcon(ToastType type) {
       return AssetConstants.notification;
     case ToastType.error:
       return AssetConstants.warning;
+    case ToastType.warning:
+      return AssetConstants.warning;
   }
 }
 
@@ -130,6 +136,8 @@ Color _getToastColor(ToastType type) {
       return AppColors.primaryColor;
     case ToastType.error:
       return AppColors.redColor;
+    case ToastType.warning:
+      return AppColors.yellowColor;
   }
 }
 
@@ -141,5 +149,7 @@ String _getTitle(ToastType type) {
       return "General Notification";
     case ToastType.error:
       return "Error";
+    case ToastType.warning:
+      return "Warning";
   }
 }

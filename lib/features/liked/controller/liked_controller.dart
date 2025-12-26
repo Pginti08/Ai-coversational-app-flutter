@@ -99,7 +99,7 @@ class LikedController extends GetxController {
           );
         }
       } else {
-        toast("Already in Remix");
+        toast("Already in Remix", type: ToastType.warning);
       }
     }
   }

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,8 +11,10 @@ import 'package:vousvous/core/constants/flavors.dart';
 import 'package:vousvous/core/constants/storage_constants.dart';
 import 'package:vousvous/core/services/deep_link_service.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
+import 'package:vousvous/core/services/notification_service.dart';
 import 'package:vousvous/core/theme/app_theme.dart';
 import 'package:vousvous/features/splash/screens/splash_screen.dart';
+import 'package:vousvous/firebase_options.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 Future<void> bootstrap(
@@ -20,6 +24,15 @@ Future<void> bootstrap(
   Flavor.setFlavor = env;
 
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging.onBackgroundMessage(
+    firebaseMessagingBackgroundHandler,
+  );
+
+  // Initialize LocalStorageService
+  await LocalStorageService.instance.init();
 
   // Set status bar text and icons to dark
   SystemChrome.setSystemUIOverlayStyle(
@@ -30,9 +43,6 @@ Future<void> bootstrap(
       systemNavigationBarColor: Colors.black,
     ),
   );
-
-  // Initialize LocalStorageService
-  await LocalStorageService.instance.init();
 
   runApp(await builder());
 }
@@ -65,7 +75,9 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     debugPrint(
-        LocalStorageService.instance.getString(StorageConstants.accessToken));
+        "token: ${LocalStorageService.instance.getString(StorageConstants.accessToken)}");
+    debugPrint(
+        "fcm: ${LocalStorageService.instance.getString(StorageConstants.fcmToken)}");
     return ScreenUtilInit(
       designSize: const Size(390, 844),
       builder: (_, child) {

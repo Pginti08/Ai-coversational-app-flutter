@@ -10,8 +10,8 @@ import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
-import 'package:vousvous/core/widgets/app_text_field.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
+import 'package:vousvous/core/widgets/app_text_field.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/features/quotation-chat/controller/quotation_chat_controller.dart';
 import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart';
@@ -482,26 +482,6 @@ class _QuotationChatScreenState extends State<QuotationChatScreen> {
                             Colors.black.withAlpha(80),
                           ],
                           stops: [0.0, 0.75, 1.0],
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Sparkle icon at top right
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      padding: EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withAlpha(25),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: SvgPicture.asset(
-                        AssetConstants.sparkle,
-                        height: 14,
-                        colorFilter: ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
                         ),
                       ),
                     ),

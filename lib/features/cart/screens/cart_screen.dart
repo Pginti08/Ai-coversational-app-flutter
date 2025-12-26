@@ -248,10 +248,10 @@ class CartScreen extends StatelessWidget {
         bottomNavigationBar: Obx(
           () => controller.cartList.isEmpty
               ? SizedBox.shrink()
-              : SafeArea(
-                  top: false,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: SafeArea(
+                    top: false,
                     child: Row(
                       children: [
                         Expanded(

@@ -92,9 +92,6 @@ class SkippedController extends GetxController {
         baseUrlType: BaseUrl.base,
       );
       if (result.isSuccess) {
-        // Wait for a moment to show the liked state
-        await Future.delayed(const Duration(milliseconds: 500));
-
         // Remove the item from the list instead of reloading
         skipProductsList.removeWhere((product) => product.id == productId);
       } else {

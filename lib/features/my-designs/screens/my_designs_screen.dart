@@ -327,12 +327,13 @@ class MyDesignsScreen extends StatelessWidget {
                                         wSizedBox6,
                                         Text(
                                           "Remix Selected",
-                                          style: style700S14,
+                                          style: style700S12,
                                         ),
                                         wSizedBox4,
                                         SvgPicture.asset(
                                           AssetConstants.arrowRight,
                                           color: AppColors.whiteColor,
+                                          width: 16,
                                         ),
                                       ],
                                     ),

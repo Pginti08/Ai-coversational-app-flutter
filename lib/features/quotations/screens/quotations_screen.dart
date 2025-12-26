@@ -103,16 +103,11 @@ class QuotationsScreen extends StatelessWidget {
                                                                     index]
                                                                 .dressImage ??
                                                             "",
-                                                        if (isNotNullOrEmpty(
-                                                            controller
+                                                        "productId": controller
                                                                 .quotationList[
                                                                     index]
-                                                                .productId))
-                                                          "productId": controller
-                                                                  .quotationList[
-                                                                      index]
-                                                                  .productId ??
-                                                              "",
+                                                                .productId ??
+                                                            "",
                                                         if (isNotNullOrEmpty(
                                                             controller
                                                                 .quotationList[

@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/services/haptic_service.dart';
+import 'package:vousvous/core/services/notification_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void initState() {
     super.initState();
-
+    FCMService.instance.initializeAfterLogin();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,

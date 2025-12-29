@@ -10,7 +10,10 @@ import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/constants/storage_constants.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/firebase_options.dart';
+import 'package:vousvous/routes/app_pages.dart';
 
 /// Background message handler - must be a top-level function
 @pragma('vm:entry-point')
@@ -22,22 +25,6 @@ Future<void> firebaseMessagingBackgroundHandler(
   );
 
   debugPrint('📩 BG Message ID: ${message.messageId}');
-  debugPrint('📩 BG Data: ${message.data}');
-
-  // Store notification for later handling when app opens
-  await _storeNotificationForLater(message);
-}
-
-/// Helper to store notification data
-Future<void> _storeNotificationForLater(RemoteMessage message) async {
-  try {
-    await LocalStorageService.instance.saveString(
-      'pending_notification',
-      message.data.toString(),
-    );
-  } catch (e) {
-    debugPrint('Error storing notification: $e');
-  }
 }
 
 class FCMService {
@@ -46,13 +33,15 @@ class FCMService {
 
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
+  bool _initialMessageHandledThisSession = false;
+
   String? _fcmToken;
   bool _handlersInitialized = false;
 
-  // Navigation key - set this from your main.dart
+  // Navigation key
   GlobalKey<NavigatorState>? navigatorKey;
 
-  /// Call this AFTER LOGIN (safe to call multiple times)
+  /// Call this AFTER LOGIN
   Future<void> initializeAfterLogin() async {
     await _requestPermission();
     await _resolveToken();
@@ -78,34 +67,27 @@ class FCMService {
       sound: true,
       provisional: false,
     );
-
     debugPrint('🔔 Permission: ${settings.authorizationStatus}');
   }
 
-  /// Robust token resolution
+  /// Token resolution
   Future<void> _resolveToken() async {
     if (Platform.isIOS) {
       await _waitForAPNSToken();
     }
-
     _fcmToken ??= await _messaging.getToken();
     debugPrint('🔑 FCM Token: $_fcmToken');
   }
 
-  /// iOS APNs readiness wait
   Future<void> _waitForAPNSToken() async {
     for (int i = 0; i < 5; i++) {
       final apns = await _messaging.getAPNSToken();
-      if (apns != null) {
-        debugPrint('📱 APNs ready');
-        return;
-      }
+      if (apns != null) return;
       await Future.delayed(const Duration(milliseconds: 500));
     }
-    debugPrint('⚠️ APNs token not ready after retries');
   }
 
-  /// Prevent duplicate backend registration
+  /// Backend registration
   Future<void> _registerTokenIfNeeded({bool force = false}) async {
     if (_fcmToken == null) return;
 
@@ -133,7 +115,6 @@ class FCMService {
     }
   }
 
-  /// Device info (unchanged logic, cleaner)
   Future<Map<String, dynamic>> _getDeviceInfo() async {
     final deviceInfo = DeviceInfoPlugin();
     final pkg = await PackageInfo.fromPlatform();
@@ -159,118 +140,144 @@ class FCMService {
     };
   }
 
-  /// Message handlers (registered ONCE)
+  /// Message handlers
   void _setupMessageHandlers() {
-    // FOREGROUND - App is open and visible
-    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+    // 1. FOREGROUND
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint('📩 Foreground Message Received');
+      if (message.notification != null) {
+        _showForegroundNotification(message);
+      }
+    });
 
-    // BACKGROUND - App is in background, user taps notification
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationTap);
+    // 2. BACKGROUND TAP
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      debugPrint('📩 Background notification tapped');
+      _handleNotificationTap(message, isBackgroundTap: true);
+    });
 
-    // TERMINATED - App was completely closed, user taps notification
+    // 3. TERMINATED STATE CHECK
     _checkInitialMessage();
   }
 
   /// Check for notification that opened the app from terminated state
+  /// Enhanced fix for Hot Restart/Reload issue
   Future<void> _checkInitialMessage() async {
-    final msg = await _messaging.getInitialMessage();
-    if (msg != null) {
-      debugPrint('📩 App opened from TERMINATED state');
-      // Delay navigation until app is fully initialized
-      Future.delayed(const Duration(milliseconds: 500), () {
-        _handleNotificationTap(msg);
-      });
+    if (_initialMessageHandledThisSession) {
+      debugPrint('⚠️ Initial message already handled in this session');
+      return;
+    }
+
+    RemoteMessage? initialMessage = await _messaging.getInitialMessage();
+
+    if (initialMessage == null) return;
+
+    _initialMessageHandledThisSession = true; // ✅ BLOCK FUTURE CALLS
+
+    debugPrint('📩 App opened from TERMINATED via notification');
+
+    Future.delayed(const Duration(seconds: 3), () {
+      _handleNotificationTap(initialMessage);
+    });
+  }
+
+  void _showForegroundNotification(RemoteMessage message) {
+    final notification = message.notification;
+    if (notification == null) return;
+
+    final accessToken =
+        LocalStorageService.instance.getString(StorageConstants.accessToken);
+    if (isNotNullOrEmpty(accessToken)) {
+      toast(
+        notification.body ?? "",
+        title: notification.title,
+        seconds: 3,
+        type: ToastType.general,
+        onTap: () {
+          _handleNotificationTap(message, isForegroundTap: true);
+        },
+      );
     }
   }
 
-  /// Handle foreground messages (just log, no UI shown)
-  void _handleForegroundMessage(RemoteMessage message) {
-    debugPrint('📩 FOREGROUND Message');
-    debugPrint('📩 Title: ${message.notification?.title}');
-    debugPrint('📩 Body: ${message.notification?.body}');
+  void _handleNotificationTap(
+    RemoteMessage message, {
+    bool isForegroundTap = false,
+    bool isBackgroundTap = false,
+    bool isTerminatedTap = false,
+  }) {
+    debugPrint(
+        '📩 Notification TAPPED (Foreground: $isForegroundTap, Background: $isBackgroundTap, Terminated: $isTerminatedTap)');
     debugPrint('📩 Data: ${message.data}');
 
-    // Optional: Navigate immediately on foreground message
-    // Uncomment if you want auto-navigation without user tap
-    // _navigateBasedOnPayload(message.data);
+    final accessToken =
+        LocalStorageService.instance.getString(StorageConstants.accessToken);
+    if (!isNotNullOrEmpty(accessToken)) {
+      debugPrint('⚠️ No access token, skipping navigation');
+      return;
+    }
+
+    final cleanedData = _cleanNotificationData(message.data);
+    _navigateBasedOnPayload(cleanedData);
   }
 
-  /// Handle notification tap (background or terminated)
-  void _handleNotificationTap(RemoteMessage message) {
-    debugPrint('📩 Notification TAPPED');
-    debugPrint('📩 Data: ${message.data}');
-
-    // Navigate based on notification data
-    _navigateBasedOnPayload(message.data);
-  }
-
-  /// Navigate based on notification payload
   void _navigateBasedOnPayload(Map<String, dynamic> data) {
     try {
       final type = data['type'] as String?;
-      final id = data['id'] as String?;
-
-      debugPrint('🧭 Navigating to: $type with ID: $id');
+      final imageUrl = data['imageUrl'] as String?;
+      final productId = data['productId'] as String?;
+      final orderItemId = data['orderItemId'] as String?;
 
       switch (type) {
-        case 'chat':
-        case 'message':
-          _navigateToChat(id);
+        case 'QUOTATION_UPDATE':
+          _navigateToQuotation(imageUrl, productId);
           break;
 
-        case 'order':
-          _navigateToOrder(id);
-          break;
-
-        case 'profile':
-          _navigateToProfile(id);
-          break;
-
-        case 'booking':
-          _navigateToBooking(id);
+        case 'ORDER_UPDATE':
+          _navigateToOrder(orderItemId);
           break;
 
         default:
-          _navigateToHome();
+          debugPrint('⚠️ Unknown notification type: $type');
       }
     } catch (e) {
       debugPrint('❌ Navigation error: $e');
-      _navigateToHome();
     }
   }
 
-  // Navigation methods - customize these based on your GetX routes
-  void _navigateToChat(String? chatId) {
+  void _navigateToQuotation(String? imageUrl, String? productId) {
     Get.toNamed(
-      '/chat',
-      arguments: {'chatId': chatId},
+      Routes.quotationChat,
+      arguments: {"imageUrl": imageUrl, "productId": productId},
     );
   }
 
   void _navigateToOrder(String? orderId) {
     Get.toNamed(
-      '/order-details',
+      Routes.orderDetail,
       arguments: {'orderId': orderId},
     );
   }
 
-  void _navigateToProfile(String? userId) {
-    Get.toNamed(
-      '/profile',
-      arguments: {'userId': userId},
-    );
-  }
-
-  void _navigateToBooking(String? bookingId) {
-    Get.toNamed(
-      '/booking-details',
-      arguments: {'bookingId': bookingId},
-    );
-  }
-
-  void _navigateToHome() {
-    Get.offAllNamed('/home');
-  }
-
   String? get token => _fcmToken;
+}
+
+/// Helper to clean data
+Map<String, dynamic> _cleanNotificationData(Map<String, dynamic> data) {
+  final cleanedData = <String, dynamic>{};
+
+  data.forEach((key, value) {
+    if (value is String) {
+      String cleanValue = value.trim();
+      if (cleanValue.startsWith('"') && cleanValue.endsWith('"')) {
+        cleanValue = cleanValue.substring(1, cleanValue.length - 1);
+      }
+      cleanValue = cleanValue.replaceAll('\\"', '');
+      cleanedData[key] = cleanValue;
+    } else {
+      cleanedData[key] = value;
+    }
+  });
+
+  return cleanedData;
 }

@@ -43,11 +43,10 @@ class QuotationChatController extends GetxController {
   // Chat messages list
   final RxList<Message> messages = <Message>[].obs;
 
-  //chat actions
+  //chat actions - ONLY show these when NOT part of a message
   final RxList<Option> buttonOptions = <Option>[].obs;
   final RxBool showBodyProfile = false.obs;
   final RxBool showBulkQuantity = false.obs;
-  final Rxn<CardDetail> cardDetailModel = Rxn<CardDetail>();
 
   @override
   void onInit() {
@@ -145,7 +144,7 @@ class QuotationChatController extends GetxController {
   getChatHistoryApi({bool isInitial = true}) async {
     try {
       if (isInitial) {
-        messages.clear(); // Use clear() instead of assigning empty list
+        messages.clear();
         quotationChatHistoryModel = QuotationChatHistoryModel();
         page.value = 1;
         nextPageStop.value = true;
@@ -172,12 +171,28 @@ class QuotationChatController extends GetxController {
           page.value = page.value + 1;
           if (messages.isNotEmpty) {
             if (messages.length.toString() ==
-                quotationChatHistoryModel.data?.total?.toString()) {
+                (quotationChatHistoryModel.data?.total ?? 0).toString()) {
               nextPageStop.value = false;
+              // Add image message at the end
+              if (isNotNullOrEmpty(imageUrl)) {
+                messages.add(Message(
+                  sender: 'ai',
+                  message: imageUrl,
+                  messageType: 'image',
+                ));
+              }
             }
             isNewChat.value = false;
           } else {
             isNewChat.value = true;
+            // Add image message at the end (oldest position) if it's initial load
+            if (isNotNullOrEmpty(imageUrl)) {
+              messages.add(Message(
+                sender: 'ai',
+                message: imageUrl,
+                messageType: 'image',
+              ));
+            }
           }
         } else {
           loader.value = false;
@@ -201,7 +216,7 @@ class QuotationChatController extends GetxController {
     socket = IO.io(
       ApiConstants.chatURL,
       IO.OptionBuilder()
-          .setTransports(['websocket']) // ✅ force WebSocket only
+          .setTransports(['websocket'])
           .enableForceNew()
           .enableReconnection()
           .setReconnectionAttempts(5)
@@ -215,7 +230,6 @@ class QuotationChatController extends GetxController {
           .build(),
     );
 
-    // 🔥 Log all events
     socket?.onAny((event, data) {
       log("📩 Event: $event | Data: $data");
     });
@@ -225,7 +239,6 @@ class QuotationChatController extends GetxController {
       socket?.emit("quotation_chat", {
         "quotation_id": quotationId,
       });
-
       debugPrint('✅ Socket.IO connected');
     });
 
@@ -246,7 +259,6 @@ class QuotationChatController extends GetxController {
       loader.value = false;
     });
 
-    // server events (match your backend event names)
     socket?.on('server_message', (data) {
       final msg = (data is Map && data['message'] != null)
           ? data['message'].toString()
@@ -260,7 +272,7 @@ class QuotationChatController extends GetxController {
     socket?.on('quotation_chat_response', (data) {
       isThinking.value = false;
       if (data is Map) {
-        final reply = data['message'].toString();
+        final reply = data['message']?.toString();
         final rawOptions = data['options'];
         final showBodyProfileForm = data['show_body_profile_form'];
         final showBulkQuantityForm = data['show_bulk_quantity_form'];
@@ -269,26 +281,50 @@ class QuotationChatController extends GetxController {
                 ? CardDetail.fromJson(data['quotation_card'])
                 : null;
 
-        // Insert new messages at the beginning (newest first)
+        // CRITICAL FIX: Check if this message already exists before adding
+        bool messageExists = false;
         if (isNotNullOrEmpty(reply)) {
-          if (messages.firstOrNull?.message != reply) {
-            messages.insert(
-              0,
-              Message(
-                sender: 'ai',
-                message: reply,
-              ),
-            );
+          // Check if any existing message has the same content
+          if (messages.isNotEmpty) {
+            messageExists = (messages.first.message?.toLowerCase() ==
+                    reply?.toLowerCase()) &&
+                (messages.first.sender?.toLowerCase() == 'ai');
+          }
+          // Only add message if it doesn't exist AND has content
+          if (!messageExists) {
+            // If there's a quotation card, create a card message
+            if (finalQuotationCardDetail != null) {
+              messages.insert(
+                0,
+                Message(
+                  sender: 'ai',
+                  message: 'quotation_card',
+                  messageType: 'card',
+                  cardDetail: finalQuotationCardDetail,
+                ),
+              );
+            }
+            // Otherwise create a regular text message
+            else {
+              messages.insert(
+                0,
+                Message(
+                  sender: 'ai',
+                  message: reply,
+                  messageType: 'text',
+                ),
+              );
+            }
           }
         }
-        // Safely convert to List<Option>
+
+        // Update UI actions (these are separate from messages)
         buttonOptions.value = (rawOptions is List)
             ? rawOptions.map((e) => Option.fromJson(e)).toList()
             : [];
 
         showBodyProfile.value = showBodyProfileForm ?? false;
         showBulkQuantity.value = showBulkQuantityForm ?? false;
-        cardDetailModel.value = finalQuotationCardDetail;
       } else {
         toast(data.toString());
       }
@@ -306,21 +342,25 @@ class QuotationChatController extends GetxController {
   /// Send chat
   void sendMessage({required String message}) {
     if (message.trim().isEmpty) return;
+
+    // Clear UI actions but NOT messages
     buttonOptions.clear();
     showBodyProfile.value = false;
     showBulkQuantity.value = false;
-    // Don't clear the quotation card - keep previous quotation visible
-    // cardDetailModel.value = null;
+
     FocusManager.instance.primaryFocus?.unfocus();
+
+    // Add user message
     messages.insert(
       0,
       Message(
         sender: "user",
         message: message,
+        messageType: 'text',
       ),
     );
 
-    // Show thinking indicator while waiting for response
+    // Show thinking indicator
     isThinking.value = true;
     thinkingMessage.value = "Thinking...";
 
@@ -342,7 +382,6 @@ class QuotationChatController extends GetxController {
     if (socket != null) {
       socket?.close();
     }
-    // Disable wakelock when controller is disposed
     _disableWakelock();
     super.onClose();
   }

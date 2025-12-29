@@ -9,6 +9,7 @@ import 'package:vousvous/features/checkout/screens/checkout_screen.dart';
 import 'package:vousvous/features/edit-profile/screens/edit_profile_screen.dart';
 import 'package:vousvous/features/home/screens/home_screen.dart';
 import 'package:vousvous/features/invite-friend/screens/invite_friend_screen.dart';
+import 'package:vousvous/features/liked/liked-product/liked_product_screen.dart';
 import 'package:vousvous/features/liked/screens/liked_screen.dart';
 import 'package:vousvous/features/login/screens/login_screen.dart';
 import 'package:vousvous/features/my-designs/screens/my_designs_screen.dart';
@@ -184,6 +185,13 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.remixedProduct,
       page: () => RemixedProductScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.likedProduct,
+      page: () => LikedProductScreen(),
     ),
     GetPage(
       opaque: false,

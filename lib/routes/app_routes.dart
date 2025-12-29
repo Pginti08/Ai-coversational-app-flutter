@@ -25,6 +25,7 @@ abstract class Routes {
   static const String bodyProfile = '/body-profile';
   static const String editProfile = '/edit-profile';
   static const String remixedProduct = '/remixed-product';
+  static const String likedProduct = '/liked-product';
   static const String quotationChat = '/quotation-chat';
   static const String inviteFriend = '/invite-friend';
   static const String sharePreview = '/share-preview';

@@ -1,6 +1,6 @@
 name: vousvous
 description: Vousvous App
-version: 1.0.0+5
+version: 1.0.1+6
 publish_to: none
 
 environment:

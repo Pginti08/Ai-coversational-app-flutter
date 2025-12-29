@@ -20,6 +20,7 @@ toast(
   String? title,
   int seconds = 2,
   ToastType type = ToastType.error,
+  VoidCallback? onTap,
 }) {
   if (isNotNullOrEmpty(message)) {
     toastification
@@ -31,81 +32,89 @@ toast(
         dismissDirection: DismissDirection.vertical,
         autoCloseDuration: Duration(seconds: seconds),
         builder: (context, holder) {
-          return Material(
-            color: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: CommonContainer(
-                enableBlur: true,
-                backgroundColor: AppColors.blackColor.withAlpha(30),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                borderRadius: 20,
-                borderColor: Color(0xFF2C2D2C),
-                child: Row(
-                  children: [
-                    Container(
-                      child: CommonContainer(
-                        enableBlur: true,
-                        backgroundColor: AppColors.blackColor.withAlpha(40),
-                        borderRadius: 100,
-                        padding: EdgeInsets.all(4),
-                        child: SvgPicture.asset(
-                          _getToastIcon(type),
-                          width: 20,
-                          color: type == ToastType.warning
-                              ? AppColors.yellowColor
-                              : null,
+          return GestureDetector(
+            onTap: () {
+              toastification.dismiss(holder); // Close toast on tap
+              if (onTap != null) onTap(); // Execute the callback
+            },
+            child: Material(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: CommonContainer(
+                  enableBlur: true,
+                  backgroundColor: AppColors.blackColor.withAlpha(30),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  borderRadius: 20,
+                  borderColor: Color(0xFF2C2D2C),
+                  child: Row(
+                    children: [
+                      Container(
+                        child: CommonContainer(
+                          enableBlur: true,
+                          backgroundColor: AppColors.blackColor.withAlpha(40),
+                          borderRadius: 100,
+                          padding: EdgeInsets.all(4),
+                          child: SvgPicture.asset(
+                            _getToastIcon(type),
+                            width: 20,
+                            color: type == ToastType.warning
+                                ? AppColors.yellowColor
+                                : type == ToastType.general
+                                    ? AppColors.secondaryColor
+                                    : null,
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: _getToastColor(type),
+                              blurRadius: 50,
+                              spreadRadius: 10,
+                            ),
+                          ],
                         ),
                       ),
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: _getToastColor(type),
-                            blurRadius: 50,
-                            spreadRadius: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                    wSizedBox16,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  title ?? _getTitle(type),
-                                  overflow: TextOverflow.ellipsis,
-                                  style: style400S16.copyWith(
-                                    color: AppColors.textColor,
-                                    letterSpacing: 0.32,
+                      wSizedBox16,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    title ?? _getTitle(type),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: style400S16.copyWith(
+                                      color: AppColors.textColor,
+                                      letterSpacing: 0.32,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          hSizedBox6,
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  message,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  style: style400S12.copyWith(
-                                    color: AppColors.greyTextColor,
+                              ],
+                            ),
+                            hSizedBox6,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    message,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: style400S12.copyWith(
+                                      color: AppColors.greyTextColor,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -133,7 +142,7 @@ Color _getToastColor(ToastType type) {
     case ToastType.success:
       return AppColors.greenColor;
     case ToastType.general:
-      return AppColors.primaryColor;
+      return AppColors.secondaryColor;
     case ToastType.error:
       return AppColors.redColor;
     case ToastType.warning:

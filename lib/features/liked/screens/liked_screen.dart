@@ -83,13 +83,25 @@ class LikedScreen extends StatelessWidget {
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(24),
-                                      child: AppNetworkImage(
-                                        imageUrl: controller
-                                                .likedProductsList[index]
-                                                .image ??
-                                            "",
-                                        fit: BoxFit.cover,
-                                        isOpenImageViewer: true,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Get.toNamed(Routes.likedProduct,
+                                              arguments: {
+                                                "imageUrl":
+                                                    "${controller.likedProductsList[index].image}",
+                                                "productId":
+                                                    "${controller.likedProductsList[index].id}",
+                                                "productDetail": controller
+                                                    .likedProductsList[index],
+                                              });
+                                        },
+                                        child: AppNetworkImage(
+                                          imageUrl: controller
+                                                  .likedProductsList[index]
+                                                  .image ??
+                                              "",
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                   ),

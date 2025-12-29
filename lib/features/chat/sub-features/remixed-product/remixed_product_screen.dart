@@ -57,16 +57,6 @@ class _RemixedProductScreenState extends State<RemixedProductScreen> {
       final String fullName =
           LocalStorageService.instance.userInfo.value.data?.name ?? "-";
 
-      // 2. Download image
-      final String? imagePath = await _downloadImage(imageUrl);
-
-      if (imagePath == null || imagePath.isEmpty) {
-        toast("Unable to download design");
-        return;
-      }
-
-      final XFile fileToShare = XFile(imagePath);
-
       // 3. Create product link
       final String customLink = 'https://vousvous.com/share?imageUrl=$imageUrl';
 
@@ -88,18 +78,34 @@ Download VOUSVOUS now and bring your fashion vision to life!
 
 #VOUSVOUS #DreamDress #IntelligentStyling #FashionDesign #StyleInspiration #OOTD''';
 
-      // 5. iPad popup position
+      final String shareSubject = '✨ Generated Design from Fashion App';
+
+      // 4. Prepare Files (if image exists)
+      List<XFile> filesToShare = [];
+
+      if (imageUrl.isNotEmpty) {
+        final String? imagePath = await _downloadImage(imageUrl);
+        if (imagePath != null && imagePath.isNotEmpty) {
+          filesToShare.add(XFile(imagePath));
+        }
+      }
+
+      // 5. Handle iPad Position (Optional but recommended)
+      // iPad requires a source rect to anchor the share popup
       final box = context.findRenderObject() as RenderBox?;
       final Rect? shareOrigin =
           box != null ? box.localToGlobal(Offset.zero) & box.size : null;
 
-      // 6. Share with proper parameters for WhatsApp
-      await Share.shareXFiles(
-        [fileToShare],
-        text: shareMessage, // ✅ Text will be caption for image
-        subject:
-            '✨ Generated Design from Fashion App', // ✅ Subject for email apps
-        sharePositionOrigin: shareOrigin,
+      // 6. Execute Share using the NEW API
+      // "Share.share" and "Share.shareXFiles" are replaced by "SharePlus.instance.share"
+      // using a "ShareParams" object.
+      await SharePlus.instance.share(
+        ShareParams(
+          text: shareMessage,
+          subject: shareSubject,
+          files: filesToShare, // Can be empty for text-only share
+          sharePositionOrigin: shareOrigin, // Crucial for iPad
+        ),
       );
     } catch (e) {
       debugPrint("Error sharing generated design: $e");

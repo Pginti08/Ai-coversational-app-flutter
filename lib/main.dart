@@ -27,12 +27,12 @@ Future<void> bootstrap(
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // Initialize LocalStorageService
+  await LocalStorageService.instance.init();
+
   FirebaseMessaging.onBackgroundMessage(
     firebaseMessagingBackgroundHandler,
   );
-
-  // Initialize LocalStorageService
-  await LocalStorageService.instance.init();
 
   // Set status bar text and icons to dark
   SystemChrome.setSystemUIOverlayStyle(

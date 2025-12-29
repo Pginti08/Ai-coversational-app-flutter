@@ -57,6 +57,7 @@ class Data {
   String? image;
   String? bio;
   bool? hasSeenGuide;
+  int? swipeCount;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -69,6 +70,7 @@ class Data {
     this.image,
     this.bio,
     this.hasSeenGuide,
+    this.swipeCount,
     this.createdAt,
     this.updatedAt,
   });
@@ -82,6 +84,7 @@ class Data {
         image: json["image"],
         bio: json["bio"],
         hasSeenGuide: json["hasSeenGuide"],
+        swipeCount: json["swipeCount"],
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),
@@ -99,6 +102,7 @@ class Data {
         "image": image,
         "bio": bio,
         "hasSeenGuide": hasSeenGuide,
+        "swipeCount": swipeCount,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
       };
@@ -113,6 +117,7 @@ class Data {
     String? image,
     String? bio,
     bool? hasSeenGuide,
+    int? swipeCount,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -125,6 +130,7 @@ class Data {
       image: image ?? this.image,
       bio: bio ?? this.bio,
       hasSeenGuide: hasSeenGuide ?? this.hasSeenGuide,
+      swipeCount: swipeCount ?? this.swipeCount,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

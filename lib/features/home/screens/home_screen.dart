@@ -477,6 +477,10 @@ class _HomeScreenState extends State<HomeScreen>
                                                   "",
                                             );
                                           }
+
+                                          // Track swipe for unlock customization
+                                          controller.onCardSwiped();
+
                                           controller
                                               .remainingProductsInQueue.value--;
 
@@ -711,7 +715,9 @@ class _HomeScreenState extends State<HomeScreen>
       children: [
         Obx(
           () => TopProgressBar(
-            value: controller.currentCardIndex.value,
+            value: controller.totalSwipes.value >= 15
+                ? 15
+                : controller.totalSwipes.value,
             maxValue: 15,
             height: 50,
           ),

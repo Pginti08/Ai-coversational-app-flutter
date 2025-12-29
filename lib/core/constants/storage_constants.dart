@@ -3,4 +3,5 @@ class StorageConstants {
   static const String accessToken = 'access_token';
   static const String userModel = 'user_model';
   static const String fcmToken = 'fcm_token';
+  static const String unlockedCustomization = 'unlocked_customization';
 }

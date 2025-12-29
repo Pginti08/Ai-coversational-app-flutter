@@ -184,7 +184,8 @@ class LikedScreen extends StatelessWidget {
               }),
             ),
             hSizedBox18,
-            Obx(() => controller.isLoading.value
+            Obx(() => controller.isLoading.value ||
+                    controller.likedProductsList.isEmpty
                 ? SizedBox.shrink()
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),

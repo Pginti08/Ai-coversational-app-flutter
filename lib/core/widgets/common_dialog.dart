@@ -9,6 +9,7 @@ import 'package:vousvous/core/widgets/blur_dialog.dart';
 void commonDialog({
   required String title,
   required String description,
+  Widget? icon,
   required VoidCallback onSuccess,
   VoidCallback? onCancel,
   String successButtonTitle = "OK",
@@ -23,6 +24,11 @@ void commonDialog({
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        if (icon != null) ...[
+          icon,
+          SizedBox(height: 10.h),
+        ],
+
         /// Title
         Text(
           title,

@@ -3,9 +3,11 @@ import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/core/widgets/common_dialog.dart';
 import 'package:vousvous/features/home/models/product_list_model.dart';
 import 'package:vousvous/features/home/models/user_detail_model.dart';
 import 'package:vousvous/features/home/screens/home_screen.dart';
+import 'package:vousvous/routes/app_pages.dart';
 
 class HomeController extends GetxController {
 // isLoading for the initial, full-screen load.
@@ -34,6 +36,10 @@ class HomeController extends GetxController {
   int currentPage = 1;
   bool hasMoreProducts = true;
 
+  // Unlock customization tracking
+  final RxInt totalSwipes = 0.obs;
+  final int requiredSwipes = 15;
+
   @override
   void onInit() {
     getUserDetail();
@@ -60,6 +66,8 @@ class HomeController extends GetxController {
             LocalStorageService.instance.userInfo.value.data?.name ?? "";
         userImage.value =
             LocalStorageService.instance.userInfo.value.data?.image ?? "";
+        totalSwipes.value =
+            LocalStorageService.instance.userInfo.value.data?.swipeCount ?? 0;
         checkUserGuideStatus();
       } else {
         toast(result.error.toString());
@@ -207,4 +215,38 @@ class HomeController extends GetxController {
       );
     } catch (e) {}
   }
+
+  void onCardSwiped() {
+    totalSwipes.value++;
+
+    // Update user info locally
+    final currentUserInfo = LocalStorageService.instance.userInfo.value;
+    final updatedData =
+        currentUserInfo.data?.copyWith(swipeCount: totalSwipes.value);
+    final updatedUserInfo = currentUserInfo.copyWith(data: updatedData);
+    LocalStorageService.instance.setUserInfo(updatedUserInfo);
+
+    // Show popup when reaching 15 swipes for the first time
+    if (totalSwipes.value == requiredSwipes) {
+      _showCustomizationAvailablePopup();
+    }
+  }
+
+  void _showCustomizationAvailablePopup() {
+    commonDialog(
+      title: "Customize Your Style",
+      description:
+          'You can personalize your outfits to match your taste.\nTap below to get started.',
+      successButtonTitle: "Start Creating",
+      cancelButtonTitle: "Later",
+      onSuccess: () {
+        Get.back();
+        Get.toNamed(Routes.chat);
+      },
+    );
+  }
+
+  bool get canCustomize => totalSwipes.value >= requiredSwipes;
+  int get remainingSwipesToCustomize =>
+      (requiredSwipes - totalSwipes.value).clamp(0, requiredSwipes);
 }

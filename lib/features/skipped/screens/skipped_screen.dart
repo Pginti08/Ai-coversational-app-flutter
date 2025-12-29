@@ -8,9 +8,9 @@ import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/animated_heart_button.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
-import 'package:vousvous/core/widgets/animated_heart_button.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/core/widgets/shimmer_utils.dart';
 import 'package:vousvous/features/skipped/controller/skipped_controller.dart';
@@ -71,7 +71,7 @@ class SkippedScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SvgPicture.asset(
-                                  AssetConstants.heart,
+                                  AssetConstants.previous,
                                   height: 80,
                                   color: AppColors.textColor.withOpacity(0.3),
                                 ),

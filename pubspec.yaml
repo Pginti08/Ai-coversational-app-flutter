@@ -1,6 +1,6 @@
 name: vousvous
 description: Vousvous App
-version: 1.0.1+6
+version: 1.0.1+7
 publish_to: none
 
 environment:
@@ -49,6 +49,7 @@ dependencies:
   app_links: ^6.4.1
   firebase_core: ^4.2.1
   firebase_messaging: ^16.0.4
+  firebase_crashlytics: ^5.0.6
   device_info_plus: ^11.2.0
   package_info_plus: ^9.0.0
 

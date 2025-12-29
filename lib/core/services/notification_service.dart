@@ -72,11 +72,13 @@ class FCMService {
 
   /// Token resolution
   Future<void> _resolveToken() async {
-    if (Platform.isIOS) {
-      await _waitForAPNSToken();
-    }
-    _fcmToken ??= await _messaging.getToken();
-    debugPrint('🔑 FCM Token: $_fcmToken');
+    try {
+      if (Platform.isIOS) {
+        await _waitForAPNSToken();
+      }
+      _fcmToken ??= await _messaging.getToken();
+      debugPrint('🔑 FCM Token: $_fcmToken');
+    } catch (e) {}
   }
 
   Future<void> _waitForAPNSToken() async {

@@ -56,7 +56,7 @@ class _AiMessageTileState extends State<AiMessageTile> {
                 child: GptMarkdown(
                   widget.message.message ?? "",
                   style: style400S16.copyWith(letterSpacing: 0.32),
-                  onLinkTab: (url, title) {
+                  onLinkTap: (url, title) {
                     launchUrl(Uri.parse(url),
                         mode: LaunchMode.externalApplication);
                   },
@@ -118,7 +118,7 @@ class _AiMessageTileState extends State<AiMessageTile> {
               GptMarkdown(
                 widget.message.message ?? "",
                 style: style400S16.copyWith(letterSpacing: 0.32),
-                onLinkTab: (url, title) {
+                onLinkTap: (url, title) {
                   launchUrl(Uri.parse(url),
                       mode: LaunchMode.externalApplication);
                 },
@@ -130,7 +130,7 @@ class _AiMessageTileState extends State<AiMessageTile> {
               GptMarkdown(
                 widget.message.message ?? "",
                 style: style400S16.copyWith(letterSpacing: 0.32),
-                onLinkTab: (url, title) {
+                onLinkTap: (url, title) {
                   launchUrl(Uri.parse(url),
                       mode: LaunchMode.externalApplication);
                 },

@@ -100,10 +100,8 @@ class HomeController extends GetxController {
     } catch (e) {}
   }
 
-  Future<void> getSuggestedProducts(
-      {bool isLoadMore = false, bool isShuffle = false}) async {
-    print(
-        "🔥 getSuggestedProducts called - isLoadMore: $isLoadMore, isShuffle: $isShuffle");
+  Future<void> getSuggestedProducts({bool isLoadMore = false}) async {
+    print("🔥 getSuggestedProducts called - isLoadMore: $isLoadMore");
 
     // Guard against simultaneous fetches.
     if (isLoading.value || isPaginating.value) {
@@ -128,11 +126,7 @@ class HomeController extends GetxController {
       }
 
       // If shuffle, reset to page 1, otherwise increment page for load more
-      if (isShuffle) {
-        currentPage = 1;
-        hasMoreProducts = true;
-        print("🔀 SHUFFLE - Resetting to page 1");
-      } else if (isLoadMore) {
+      if (isLoadMore) {
         currentPage++;
         print("➕ LOAD MORE - Incrementing to page $currentPage");
       }
@@ -162,12 +156,12 @@ class HomeController extends GetxController {
         }
 
         // If it's a shuffle or initial load, clear any old data first.
-        if (isShuffle || !isLoadMore) {
+        if (!isLoadMore) {
           print(
               "🗑️ Clearing old products list (had ${suggestedProductsList.length} products)");
           suggestedProductsList.clear();
           remainingProductsInQueue.value = 0;
-          currentCardIndex.value = 0;
+          // currentCardIndex.value = 0;
         }
 
         suggestedProductsList.addAll(newProducts);

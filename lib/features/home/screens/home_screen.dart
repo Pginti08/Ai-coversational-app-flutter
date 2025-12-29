@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen>
 
         break;
       case ThumbSelection.shuffle:
-        controller.getSuggestedProducts(isShuffle: true);
+        controller.getSuggestedProducts();
         if (controller.currentGuideStep.value == GuideStep.thumbLeft ||
             controller.currentGuideStep.value == GuideStep.thumbRight) {
           controller.currentGuideStep.value = GuideStep.dragDown;
@@ -712,7 +712,7 @@ class _HomeScreenState extends State<HomeScreen>
         Obx(
           () => TopProgressBar(
             value: controller.currentCardIndex.value,
-            maxValue: controller.suggestedProductsList.length,
+            maxValue: 15,
             height: 50,
           ),
         ),

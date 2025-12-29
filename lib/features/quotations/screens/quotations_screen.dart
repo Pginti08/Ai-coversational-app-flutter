@@ -192,10 +192,9 @@ class QuotationsScreen extends StatelessWidget {
                                                                           if (controller.quotationList[index].hasNewMessage ==
                                                                               true) ...[
                                                                             wSizedBox10,
-                                                                            Container(
-                                                                              width: 10,
-                                                                              height: 10,
-                                                                              decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.greenColor),
+                                                                            SvgPicture.asset(
+                                                                              AssetConstants.notification,
+                                                                              colorFilter: ColorFilter.mode(AppColors.greenColor, BlendMode.srcIn),
                                                                             ),
                                                                             wSizedBox10,
                                                                           ],

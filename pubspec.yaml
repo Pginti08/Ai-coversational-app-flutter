@@ -52,6 +52,7 @@ dependencies:
   firebase_crashlytics: ^5.0.6
   device_info_plus: ^11.2.0
   package_info_plus: ^9.0.0
+  eventflux: ^2.2.1
 
 dev_dependencies:
   flutter_test:

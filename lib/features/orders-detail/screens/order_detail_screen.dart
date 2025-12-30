@@ -13,7 +13,8 @@ import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/features/orders-detail/controller/order_detail_controller.dart';
-import 'package:vousvous/features/orders-detail/screens/widgets/shipping_progress_bar.dart';
+import 'package:vousvous/features/orders-detail/screens/widgets/shipping_progress_bar_horizontally.dart';
+import 'package:vousvous/routes/app_pages.dart';
 
 class OrderDetailScreen extends StatelessWidget {
   OrderDetailScreen({super.key});
@@ -37,7 +38,7 @@ class OrderDetailScreen extends StatelessWidget {
                 Text('Order Details',
                     textAlign: TextAlign.center,
                     style:
-                        style400S18.copyWith(color: AppColors.whiteTextColor)),
+                        style500S20.copyWith(color: AppColors.whiteTextColor)),
               ],
             ),
             Expanded(
@@ -157,42 +158,51 @@ class OrderDetailScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          hSizedBox24,
-                          CommonContainer(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              borderRadius: 24,
-                              enableBlur: true,
-                              borderGradientColors:
-                                  AppColors.glassBorderGradient,
-                              backgroundColor:
-                                  AppColors.whiteColor.withAlpha(25),
-                              child: Row(children: [
-                                Expanded(
-                                    child: Column(
-                                  children: [
-                                    ShippingProgressBar(
-                                      currentStep: 1,
-                                      activeColor: Color(0xFF4FC3F7),
-                                      inactiveColor: Color(0xFF757575),
-                                    ),
-                                    hSizedBox20,
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 14,
+                          if ((controller.orderDetailModel.value.tracking
+                                      ?.length ??
+                                  0) !=
+                              0) ...[
+                            hSizedBox24,
+                            CommonContainer(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                borderRadius: 24,
+                                enableBlur: true,
+                                borderGradientColors:
+                                    AppColors.glassBorderGradient,
+                                backgroundColor:
+                                    AppColors.whiteColor.withAlpha(25),
+                                child: Row(children: [
+                                  Expanded(
+                                      child: Column(
+                                    children: [
+                                      ShippingProgressBarHorizontally(
+                                        tracking: controller.orderDetailModel
+                                                .value.tracking ??
+                                            [],
+                                        activeColor: Color(0xFF4FC3F7),
+                                        inactiveColor: Color(0xFF757575),
                                       ),
-                                      child: AppButton(
-                                        onTap: () {},
-                                        textColor: AppColors.whiteColor,
-                                        backgroundColor:
-                                            AppColors.whiteColor.withAlpha(5),
-                                        gradientBorderColors:
-                                            AppColors.glassBorderGradient,
-                                        text: "View Tracking Details",
+                                      hSizedBox20,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 14,
+                                        ),
+                                        child: AppButton(
+                                          onTap: () {
+                                            Get.toNamed(Routes.trackingDetail);
+                                          },
+                                          textColor: AppColors.whiteColor,
+                                          backgroundColor:
+                                              AppColors.whiteColor.withAlpha(5),
+                                          gradientBorderColors:
+                                              AppColors.glassBorderGradient,
+                                          text: "View Tracking Details",
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ))
-                              ])),
+                                    ],
+                                  ))
+                                ])),
+                          ],
                           hSizedBox24,
                           CommonContainer(
                             padding: EdgeInsets.symmetric(

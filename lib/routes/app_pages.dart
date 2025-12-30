@@ -14,6 +14,7 @@ import 'package:vousvous/features/liked/screens/liked_screen.dart';
 import 'package:vousvous/features/login/screens/login_screen.dart';
 import 'package:vousvous/features/my-designs/screens/my_designs_screen.dart';
 import 'package:vousvous/features/orders-detail/screens/order_detail_screen.dart';
+import 'package:vousvous/features/orders-detail/screens/tracking_detail_screen.dart';
 import 'package:vousvous/features/orders/screens/orders_screen.dart';
 import 'package:vousvous/features/otp-verify/screens/otp_verify_screen.dart';
 import 'package:vousvous/features/product-detail/product_detail_screen.dart';
@@ -213,6 +214,13 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.sharePreview,
       page: () => SharePreviewScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.trackingDetail,
+      page: () => TrackingDetailScreen(),
     ),
   ];
 }

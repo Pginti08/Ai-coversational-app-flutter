@@ -49,12 +49,14 @@ class ApiConstants {
   static const String getBrandList = '/product/brands';
   static const String uploadImage = '/upload/';
   static const String quotations = '/quotations';
+  static const String quotationsStream = '/quotations/stream';
   static const String analyzeDress = '/quotations/analyze-dress';
   static const String bodyMeasurementsAnalyze = '/body-measurements/analyze';
   static const String cart = '/cart';
   static const String modificationRequest = '/modification-request';
   static const String inviteFriend = '/user/invite-friend';
   static const String orders = '/orders';
+  static const String ordersStream = '/orders/stream';
   static const String invoice = '/invoice';
   static const String guideSeen = '/user/guide-seen';
   static const String fcmToken = '/user/fcm-token';

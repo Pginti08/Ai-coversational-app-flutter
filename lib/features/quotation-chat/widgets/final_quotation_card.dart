@@ -43,7 +43,6 @@ class FinalQuotationCard extends StatelessWidget {
           });
 
       if (result.isSuccess) {
-        toast("Product added to cart successfully", type: ToastType.success);
         Get.until((route) => Get.currentRoute == Routes.home);
         Get.toNamed(Routes.cart);
       } else {

@@ -10,21 +10,41 @@ OrderModel orderModelFromJson(String str) =>
 String orderModelToJson(OrderModel data) => json.encode(data.toJson());
 
 class OrderModel {
-  bool? success;
-  String? message;
+  String? type;
+  Data? data;
+  DateTime? timestamp;
+
+  OrderModel({
+    this.type,
+    this.data,
+    this.timestamp,
+  });
+
+  factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
+        type: json["type"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+        timestamp: json["timestamp"] == null
+            ? null
+            : DateTime.parse(json["timestamp"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "type": type,
+        "data": data?.toJson(),
+        "timestamp": timestamp?.toIso8601String(),
+      };
+}
+
+class Data {
   List<OrderItem>? orderItems;
   Pagination? pagination;
 
-  OrderModel({
-    this.success,
-    this.message,
+  Data({
     this.orderItems,
     this.pagination,
   });
 
-  factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
-        success: json["success"],
-        message: json["message"],
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
         orderItems: json["orderItems"] == null
             ? []
             : List<OrderItem>.from(
@@ -35,8 +55,6 @@ class OrderModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "success": success,
-        "message": message,
         "orderItems": orderItems == null
             ? []
             : List<dynamic>.from(orderItems!.map((x) => x.toJson())),

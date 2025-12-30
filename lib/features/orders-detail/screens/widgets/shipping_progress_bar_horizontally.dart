@@ -3,16 +3,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/features/orders-detail/models/order_detail_model.dart';
 
-class ShippingProgressBar extends StatelessWidget {
-  final int currentStep;
+// ==================== HORIZONTAL PROGRESS BAR ====================
+class ShippingProgressBarHorizontally extends StatelessWidget {
+  final List<Tracking> tracking;
   final Color activeColor;
   final Color inactiveColor;
   final Color lineColor;
 
-  const ShippingProgressBar({
+  const ShippingProgressBarHorizontally({
     Key? key,
-    this.currentStep = 2, // Default to step 2 (Stitching Your Dress)
+    required this.tracking,
     this.activeColor = const Color(0xFF4FC3F7),
     this.inactiveColor = const Color(0xFF757575),
     this.lineColor = const Color(0xFF4FC3F7),
@@ -24,27 +26,30 @@ class ShippingProgressBar extends StatelessWidget {
       children: [
         // Icons and connecting lines
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             children: [
               _buildStepIcon(AssetConstants.box, 1),
               _buildConnectingLine(1),
               _buildStepIcon(AssetConstants.scissor, 2),
               _buildConnectingLine(2),
-              _buildStepIcon(AssetConstants.truck, 3),
+              _buildStepIcon(AssetConstants.truckTime, 3),
               _buildConnectingLine(3),
-              _buildStepIcon(AssetConstants.boxTick, 4),
+              _buildStepIcon(AssetConstants.truckTick, 4),
+              _buildConnectingLine(4),
+              _buildStepIcon(AssetConstants.boxTick, 5),
             ],
           ),
         ),
-        hSizedBox10,
+        hSizedBox6,
         // Labels
         Row(
           children: [
             _buildStepLabel("ORDER PLACED", 1),
-            _buildStepLabel("STITCHING YOUR DRESS", 2),
-            _buildStepLabel("OUT FOR DELIVERY", 3),
-            _buildStepLabel("DELIVERED", 4),
+            _buildStepLabel("STITCHING", 2),
+            _buildStepLabel("SHIPPED", 3),
+            _buildStepLabel("OUT FOR DELIVERY", 4),
+            _buildStepLabel("DELIVERED", 5),
           ],
         ),
       ],
@@ -52,17 +57,18 @@ class ShippingProgressBar extends StatelessWidget {
   }
 
   Widget _buildStepIcon(String icon, int step) {
-    final isActive = step <= currentStep;
+    final isActive = step <= tracking.length;
 
     return SvgPicture.asset(
       icon,
       color: isActive ? activeColor : inactiveColor,
+      height: 20,
     );
   }
 
   Widget _buildConnectingLine(int step) {
-    final isActive = step < currentStep;
-    final isCurrentlyProgressing = step == currentStep;
+    final isActive = step < tracking.length;
+    final isCurrentlyProgressing = step == tracking.length;
 
     return Expanded(
       child: Stack(
@@ -94,7 +100,9 @@ class ShippingProgressBar extends StatelessWidget {
               height: 10,
               width: 10,
               decoration: BoxDecoration(
-                  shape: BoxShape.circle, color: Color(0xFFFFB86B)),
+                shape: BoxShape.circle,
+                color: Color(0xFFFFB86B),
+              ),
             )
         ],
       ),
@@ -102,7 +110,7 @@ class ShippingProgressBar extends StatelessWidget {
   }
 
   Widget _buildStepLabel(String label, int step) {
-    final isActive = step <= currentStep;
+    final isActive = step <= tracking.length;
 
     return Expanded(
       child: Padding(
@@ -111,62 +119,10 @@ class ShippingProgressBar extends StatelessWidget {
           label,
           textAlign: TextAlign.center,
           style: style700S10.copyWith(
-              color: isActive ? activeColor : inactiveColor,
-              letterSpacing: 0.80),
-        ),
-      ),
-    );
-  }
-}
-
-// Example usage widget
-class ShippingProgressExample extends StatefulWidget {
-  @override
-  _ShippingProgressExampleState createState() =>
-      _ShippingProgressExampleState();
-}
-
-class _ShippingProgressExampleState extends State<ShippingProgressExample> {
-  int currentStep = 2;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text('Shipping Progress'),
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            ShippingProgressBar(currentStep: currentStep),
-            const SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: currentStep > 1
-                      ? () => setState(() => currentStep--)
-                      : null,
-                  child: Text('Previous'),
-                ),
-                ElevatedButton(
-                  onPressed: currentStep < 4
-                      ? () => setState(() => currentStep++)
-                      : null,
-                  child: Text('Next'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Current Step: $currentStep',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-          ],
+            fontSize: 9,
+            color: isActive ? activeColor : inactiveColor,
+            letterSpacing: 0.80,
+          ),
         ),
       ),
     );

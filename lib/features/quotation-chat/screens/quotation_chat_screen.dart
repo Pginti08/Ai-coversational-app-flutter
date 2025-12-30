@@ -19,7 +19,6 @@ import 'package:vousvous/features/quotation-chat/widgets/quotation_ai_typing_til
 import 'package:vousvous/features/quotation-chat/widgets/quotation_user_message_tile.dart';
 import 'package:vousvous/features/quotation-chat/widgets/show_body_profile_widget.dart';
 import 'package:vousvous/features/quotation-chat/widgets/show_bulk_quantity_widget.dart';
-import 'package:vousvous/features/quotations/controller/quotations_controller.dart';
 
 class QuotationChatScreen extends StatefulWidget {
   QuotationChatScreen({super.key});
@@ -35,23 +34,15 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
 
   @override
   Widget build(BuildContext context) {
-    // print(controller.messages[2].toJson());
     super.build(context);
-    return PopScope(
-      onPopInvokedWithResult: (didPop, result) {
-        if (Get.isRegistered<QuotationsController>()) {
-          Get.find<QuotationsController>().getQuotationListApi();
-        }
-      },
-      child: Obx(() {
-        return Stack(
-          children: [
-            buildMainView(context),
-            if (controller.loader.value || controller.loader1.value) AppLoader()
-          ],
-        );
-      }),
-    );
+    return Obx(() {
+      return Stack(
+        children: [
+          buildMainView(context),
+          if (controller.loader.value || controller.loader1.value) AppLoader()
+        ],
+      );
+    });
   }
 
   bool get _hasBottomWidget {
@@ -214,7 +205,6 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(15),
                     border: Border(
                         top: BorderSide(
                       color: Colors.white.withAlpha(30),

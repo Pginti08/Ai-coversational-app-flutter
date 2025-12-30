@@ -8,6 +8,7 @@ import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
@@ -21,7 +22,7 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => CustomScaffold(
+    return CustomScaffold(
         isBottomEffect: false,
         isBottomSafeArea: false,
         body: Padding(
@@ -47,156 +48,156 @@ class OrdersScreen extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: controller.isLoading.value
-                    ? Center(
-                        child: RotatingLoader(),
-                      )
-                    : controller.orderList.isEmpty
-                        ? Center(
-                            child: Text(
-                              "No orders found",
-                              style: style400S16,
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return Center(child: RotatingLoader());
+                  }
+
+                  if (controller.orderList.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "No orders found",
+                        style: style400S16,
+                      ),
+                    );
+                  }
+
+                  return NotificationListener<ScrollNotification>(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      // Detect when user scrolls near the bottom
+                      if (scrollInfo.metrics.pixels >=
+                          scrollInfo.metrics.maxScrollExtent - 200) {
+                        controller.onScrollEndReached();
+                      }
+                      return false;
+                    },
+                    child: ListView.builder(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      controller: controller.scrollController,
+                      physics: const AlwaysScrollableScrollPhysics()
+                          .applyTo(const BouncingScrollPhysics()),
+                      itemCount: controller.orderList.length +
+                          (controller.paginationLoading.value ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        // Show loader at the end
+                        if (index >= controller.orderList.length) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20.h),
+                            child: Center(
+                              child: RotatingLoader(size: 30),
                             ),
-                          )
-                        : ListView(
-                            padding: EdgeInsets.only(bottom: 16),
-                            controller: controller.scrollController,
-                            physics: const AlwaysScrollableScrollPhysics()
-                                .applyTo(const BouncingScrollPhysics()),
-                            children: [
-                              ListView.separated(
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 16),
-                                shrinkWrap: true,
-                                itemCount: controller.orderList.length,
-                                separatorBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12),
-                                    child: Divider(
-                                      color: AppColors.grey2Color,
+                          );
+                        }
+
+                        final order = controller.orderList[index];
+                        final isLastItem =
+                            index == controller.orderList.length - 1;
+
+                        return Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Get.toNamed(Routes.orderDetail,
+                                    arguments: {"orderId": order.id});
+                              },
+                              child: Container(
+                                color: Colors.transparent,
+                                child: Row(
+                                  children: [
+                                    AppNetworkImage(
+                                      width: 68,
+                                      height: 100,
+                                      borderRadius: BorderRadius.circular(6),
+                                      imageUrl:
+                                          order.quotationCard?.dressImage ?? "",
+                                      fit: BoxFit.cover,
                                     ),
-                                  );
-                                },
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Get.toNamed(Routes.orderDetail,
-                                          arguments: {
-                                            "orderId":
-                                                controller.orderList[index].id
-                                          });
-                                    },
-                                    child: Container(
-                                      color: Colors.transparent,
-                                      child: Row(
+                                    wSizedBox10,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          AppNetworkImage(
-                                            width: 68,
-                                            height: 100,
-                                            borderRadius:
-                                                BorderRadius.circular(6),
-                                            imageUrl: controller
-                                                    .orderList[index]
-                                                    .quotationCard
-                                                    ?.dressImage ??
-                                                "",
-                                            fit: BoxFit.cover,
+                                          Row(
+                                            children: [
+                                              SvgPicture.asset(
+                                                getOrderStatusIcon(
+                                                    order.order?.orderStatus ??
+                                                        ""),
+                                                color: AppColors.primaryColor,
+                                                height: 20,
+                                              ),
+                                              wSizedBox4,
+                                              GradientText(
+                                                (order.order?.orderStatus
+                                                            ?.replaceAll(
+                                                                "_", " ") ??
+                                                        "")
+                                                    .toUpperCase(),
+                                                colors: AppColors.colorGradient,
+                                                style: style700S12.copyWith(
+                                                    letterSpacing: 0.96),
+                                              ),
+                                            ],
                                           ),
-                                          wSizedBox10,
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    SvgPicture.asset(
-                                                        AssetConstants.truck),
-                                                    wSizedBox4,
-                                                    GradientText(
-                                                      (controller
-                                                                  .orderList[
-                                                                      index]
-                                                                  .order
-                                                                  ?.orderStatus
-                                                                  ?.replaceAll(
-                                                                      "_",
-                                                                      " ") ??
-                                                              "")
-                                                          .toUpperCase(),
-                                                      colors: AppColors
-                                                          .colorGradient,
-                                                      style:
-                                                          style700S12.copyWith(
-                                                              letterSpacing:
-                                                                  0.96),
-                                                    ),
-                                                  ],
-                                                ),
-                                                hSizedBox8,
-                                                Text(
-                                                  controller
-                                                          .orderList[index]
-                                                          .quotationCard
-                                                          ?.title ??
-                                                      "",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: style500S18.copyWith(
-                                                      letterSpacing: 0.32,
-                                                      color: AppColors
-                                                          .whiteTextColor),
-                                                ),
-                                                hSizedBox4,
-                                                Text(
-                                                  "${AssetConstants.rupeeSymbol}${controller.orderList[index].price?.toStringAsFixed(0) ?? "-"}",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: style600S14.copyWith(
-                                                      letterSpacing: 0.36,
-                                                      color: Color(0xFFCCCCCC)),
-                                                ),
-                                                Text(
-                                                  "Qty: ${controller.orderList[index].quantity}",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: style400S14.copyWith(
-                                                      letterSpacing: 0.36,
-                                                      color: Color(0xFFCCCCCC)),
-                                                ),
-                                              ],
-                                            ),
+                                          hSizedBox8,
+                                          Text(
+                                            order.quotationCard?.title ?? "",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: style500S18.copyWith(
+                                                letterSpacing: 0.32,
+                                                color:
+                                                    AppColors.whiteTextColor),
                                           ),
-                                          wSizedBox10,
-                                          Transform.rotate(
-                                            angle: 3.14159,
-                                            child: SvgPicture.asset(
-                                              AssetConstants.backward,
-                                              color: AppColors.whiteColor,
-                                            ),
+                                          hSizedBox4,
+                                          Text(
+                                            "${AssetConstants.rupeeSymbol}${order.price?.toStringAsFixed(0) ?? "-"}",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: style600S14.copyWith(
+                                                letterSpacing: 0.36,
+                                                color: Color(0xFFCCCCCC)),
+                                          ),
+                                          Text(
+                                            "Qty: ${order.quantity}",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: style400S14.copyWith(
+                                                letterSpacing: 0.36,
+                                                color: Color(0xFFCCCCCC)),
                                           ),
                                         ],
                                       ),
                                     ),
-                                  );
-                                },
-                              ),
-                              if (controller.paginationLoading.value)
-                                Padding(
-                                  padding: EdgeInsets.all(8.w),
-                                  child: Center(
-                                    child: RotatingLoader(
-                                      size: 30,
+                                    wSizedBox10,
+                                    Transform.rotate(
+                                      angle: 3.14159,
+                                      child: SvgPicture.asset(
+                                        AssetConstants.backward,
+                                        color: AppColors.whiteColor,
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                            ],
-                          ),
+                              ),
+                            ),
+                            // Add divider except for last item or before loader
+                            if (!isLastItem)
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                child: Divider(
+                                  color: AppColors.grey2Color,
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                }),
               )
             ],
           ),
-        )));
+        ));
   }
 }

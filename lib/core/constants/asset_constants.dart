@@ -49,7 +49,8 @@ class AssetConstants {
   static const previous2 = '${icons}previous2.svg';
   static const share = '${icons}share.svg';
   static const personalCard = '${icons}personalcard.svg';
-  static const truck = '${icons}truck.svg';
+  static const truckTick = '${icons}truck-tick.svg';
+  static const truckTime = '${icons}truck-time.svg';
   static const remove = '${icons}remove.svg';
   static const minus = '${icons}minus.svg';
   static const tickCircle = '${icons}tick-circle.svg';
@@ -63,6 +64,7 @@ class AssetConstants {
   static const camera = '${icons}camera.svg';
   static const gallery = '${icons}gallery.svg';
   static const logout = '${icons}logout.svg';
+  static const emptyWalletTime = '${icons}empty-wallet-time.svg';
 
   ///__________________________________ gif __________________________________///
 

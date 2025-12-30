@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:intl/intl.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
 
 bool isNullOrEmpty(dynamic val) {
   final value = val.toString();
@@ -163,4 +164,28 @@ String fullImageUrl(String imageUrl) {
 
   // Otherwise, prepend the base URL
   return '${ApiConstants.imageURL}$imageUrl';
+}
+
+String getOrderStatusIcon(String orderStatus) {
+  switch (orderStatus) {
+    case 'PENDING_PAYMENT':
+      return AssetConstants.emptyWalletTime;
+
+    case 'ORDER_PLACED':
+      return AssetConstants.box;
+
+    case 'PROCESSING':
+      return AssetConstants.scissor;
+
+    case 'SHIPPED':
+      return AssetConstants.truckTime;
+    case 'OUT_FOR_DELIVERY':
+      return AssetConstants.truckTick;
+
+    case 'DELIVERED':
+      return AssetConstants.boxTick;
+
+    default:
+      return AssetConstants.box;
+  }
 }

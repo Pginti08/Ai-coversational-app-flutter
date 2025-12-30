@@ -24,7 +24,7 @@ class OrderDetailModel {
   DateTime? createdAt;
   DateTime? updatedAt;
   Order? order;
-  List<dynamic>? tracking;
+  List<Tracking>? tracking;
   QuotationCard? quotationCard;
   List<String>? images;
 
@@ -68,7 +68,8 @@ class OrderDetailModel {
         order: json["order"] == null ? null : Order.fromJson(json["order"]),
         tracking: json["tracking"] == null
             ? []
-            : List<dynamic>.from(json["tracking"]!.map((x) => x)),
+            : List<Tracking>.from(
+                json["tracking"]!.map((x) => Tracking.fromJson(x))),
         quotationCard: json["quotationCard"] == null
             ? null
             : QuotationCard.fromJson(json["quotationCard"]),
@@ -91,8 +92,9 @@ class OrderDetailModel {
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
         "order": order?.toJson(),
-        "tracking":
-            tracking == null ? [] : List<dynamic>.from(tracking!.map((x) => x)),
+        "tracking": tracking == null
+            ? []
+            : List<dynamic>.from(tracking!.map((x) => x.toJson())),
         "quotationCard": quotationCard?.toJson(),
         "images":
             images == null ? [] : List<dynamic>.from(images!.map((x) => x)),
@@ -208,5 +210,53 @@ class QuotationCard {
         "purchaseType": purchaseType,
         "sizeMeasurement": sizeMeasurement,
         "bulkQuantities": bulkQuantities,
+      };
+}
+
+class Tracking {
+  String? id;
+  String? orderItemId;
+  String? status;
+  String? notes;
+  String? performedBy;
+  String? performedByRole;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+
+  Tracking({
+    this.id,
+    this.orderItemId,
+    this.status,
+    this.notes,
+    this.performedBy,
+    this.performedByRole,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory Tracking.fromJson(Map<String, dynamic> json) => Tracking(
+        id: json["id"],
+        orderItemId: json["orderItemId"],
+        status: json["status"],
+        notes: json["notes"],
+        performedBy: json["performedBy"],
+        performedByRole: json["performedByRole"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "orderItemId": orderItemId,
+        "status": status,
+        "notes": notes,
+        "performedBy": performedBy,
+        "performedByRole": performedByRole,
+        "createdAt": createdAt?.toIso8601String(),
+        "updatedAt": updatedAt?.toIso8601String(),
       };
 }

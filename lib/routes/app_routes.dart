@@ -29,4 +29,5 @@ abstract class Routes {
   static const String quotationChat = '/quotation-chat';
   static const String inviteFriend = '/invite-friend';
   static const String sharePreview = '/share-preview';
+  static const String trackingDetail = '/tracking-detail';
 }

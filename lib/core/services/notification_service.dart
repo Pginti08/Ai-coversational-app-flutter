@@ -178,7 +178,7 @@ class FCMService {
 
     debugPrint('📩 App opened from TERMINATED via notification');
 
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       _handleNotificationTap(initialMessage);
     });
   }

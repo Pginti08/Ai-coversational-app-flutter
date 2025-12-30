@@ -1,36 +1,37 @@
 // To parse this JSON data, do
 //
-//     final conversationsModel = conversationsModelFromJson(jsonString);
+//     final quotationModel = quotationModelFromJson(jsonString);
 
 import 'dart:convert';
 
-QuotationModel conversationsModelFromJson(String str) =>
+QuotationModel quotationModelFromJson(String str) =>
     QuotationModel.fromJson(json.decode(str));
 
-String conversationsModelToJson(QuotationModel data) =>
-    json.encode(data.toJson());
+String quotationModelToJson(QuotationModel data) => json.encode(data.toJson());
 
 class QuotationModel {
-  bool? success;
-  String? message;
+  String? type;
   Data? data;
+  DateTime? timestamp;
 
   QuotationModel({
-    this.success,
-    this.message,
+    this.type,
     this.data,
+    this.timestamp,
   });
 
   factory QuotationModel.fromJson(Map<String, dynamic> json) => QuotationModel(
-        success: json["success"],
-        message: json["message"],
+        type: json["type"],
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
+        timestamp: json["timestamp"] == null
+            ? null
+            : DateTime.parse(json["timestamp"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "success": success,
-        "message": message,
+        "type": type,
         "data": data?.toJson(),
+        "timestamp": timestamp?.toIso8601String(),
       };
 }
 

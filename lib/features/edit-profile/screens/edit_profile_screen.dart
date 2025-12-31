@@ -132,7 +132,7 @@ class EditProfileScreen extends StatelessWidget {
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 3),
                                     child: Text(
-                                      "Edit",
+                                      "EDIT",
                                       style: style400S12.copyWith(
                                         color: const Color(0xFF959595),
                                       ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -198,78 +197,71 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
           ClipRRect(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(24), topRight: Radius.circular(24)),
-            child: RepaintBoundary(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    border: Border(
-                        top: BorderSide(
-                      color: Colors.white.withAlpha(30),
-                    )),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24)),
-                  ),
-                  child: SafeArea(
-                    top: false,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                          vertical: Platform.isAndroid
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                border: Border(
+                    top: BorderSide(
+                  color: Colors.white.withAlpha(30),
+                )),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24)),
+              ),
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: Platform.isAndroid
+                          ? 8
+                          : MediaQuery.viewInsetsOf(context).bottom > 0
                               ? 8
-                              : MediaQuery.viewInsetsOf(context).bottom > 0
-                                  ? 8
-                                  : 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AppTextField(
-                            focusNode: controller.typeFocusNode,
-                            controller: _textController,
-                            outsideMargin: EdgeInsets.zero,
-                            contentPadding: EdgeInsets.symmetric(vertical: 10),
-                            hint: "Start Typing...",
-                            maxLines: 2,
-                            minLines: 1,
-                            keyboardType: TextInputType.multiline,
-                            borderColor: Colors.transparent,
-                            onSubmitted: (value) {
-                              if (_textController.text.trim().isNotEmpty &&
-                                  !controller.isThinking.value) {
-                                controller.sendMessage(
-                                  message: _textController.text.trim(),
-                                );
-                                _textController.clear();
-                              }
-                            },
-                            suffixIcon: isKeyboardVisible
-                                ? GestureDetector(
-                                    onTap: () {
-                                      if (_textController.text
-                                              .trim()
-                                              .isNotEmpty &&
-                                          !controller.isThinking.value) {
-                                        controller.sendMessage(
-                                          message: _textController.text.trim(),
-                                        );
-                                        _textController.clear();
-                                      }
-                                    },
-                                    child: SvgPicture.asset(
-                                        AssetConstants.arrowUp),
-                                  )
-                                : GestureDetector(
-                                    onTap: () {},
-                                    child: SvgPicture.asset(
-                                        AssetConstants.voiceCircleIcon),
-                                  ),
-                          ),
-                        ],
+                              : 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppTextField(
+                        fillColor: Colors.transparent,
+                        focusNode: controller.typeFocusNode,
+                        controller: _textController,
+                        outsideMargin: EdgeInsets.zero,
+                        contentPadding: EdgeInsets.symmetric(vertical: 10),
+                        hint: "Start Typing...",
+                        maxLines: 2,
+                        minLines: 1,
+                        keyboardType: TextInputType.multiline,
+                        borderColor: Colors.transparent,
+                        onSubmitted: (value) {
+                          if (_textController.text.trim().isNotEmpty &&
+                              !controller.isThinking.value) {
+                            controller.sendMessage(
+                              message: _textController.text.trim(),
+                            );
+                            _textController.clear();
+                          }
+                        },
+                        suffixIcon: isKeyboardVisible
+                            ? GestureDetector(
+                                onTap: () {
+                                  if (_textController.text.trim().isNotEmpty &&
+                                      !controller.isThinking.value) {
+                                    controller.sendMessage(
+                                      message: _textController.text.trim(),
+                                    );
+                                    _textController.clear();
+                                  }
+                                },
+                                child: SvgPicture.asset(AssetConstants.arrowUp),
+                              )
+                            : GestureDetector(
+                                onTap: () {},
+                                child: SvgPicture.asset(
+                                    AssetConstants.voiceCircleIcon),
+                              ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),

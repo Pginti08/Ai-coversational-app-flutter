@@ -1,0 +1,172 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
+import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
+import 'package:vousvous/core/widgets/common_container.dart';
+import 'package:vousvous/core/widgets/custom_scaffold.dart';
+
+class WhatAreAppCreditsScreen extends StatelessWidget {
+  WhatAreAppCreditsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScaffold(
+      isBottomEffect: false,
+      isBottomSafeArea: false,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6).copyWith(bottom: 0),
+        child: Column(
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('What are App Credits?'.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: style700S14.copyWith(
+                            color: Color(0xFFCCCCCC), letterSpacing: 0.96)),
+                  ],
+                ),
+                Positioned(
+                  left: 0,
+                  child: IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: SvgPicture.asset(AssetConstants.backward),
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+                child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('App Credits are virtual currency used inside the app',
+                        textAlign: TextAlign.start,
+                        style: style400S16.copyWith(
+                            color: Color(0xFFCCCCCC), letterSpacing: 0.32)),
+                    hSizedBox16,
+                    Text(
+                        '0.01 Credits = ${AssetConstants.rupeeSymbol} 1'
+                            .toUpperCase(),
+                        textAlign: TextAlign.start,
+                        style: style700S12.copyWith(
+                            color: Color(0xFFCCCCCC), letterSpacing: 0.96)),
+                    hSizedBox16,
+                    Text('Use credits for:',
+                        textAlign: TextAlign.start,
+                        style: style400S14.copyWith(
+                            color: Color(0xFF999999), letterSpacing: 0.28)),
+                    hSizedBox16,
+                    creditsForTile(
+                        title: "ai designs", icon: AssetConstants.aiDesign),
+                    hSizedBox6,
+                    creditsForTile(title: "try on", icon: AssetConstants.tryOn),
+                    hSizedBox6,
+                    creditsForTile(
+                        title: "remixes", icon: AssetConstants.remixes),
+                    hSizedBox6,
+                    creditsForTile(
+                        title: "order discounts",
+                        icon: AssetConstants.discount),
+                    hSizedBox16,
+                    CommonContainer(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      borderRadius: 100,
+                      borderGradientColors: AppColors.glassBorderGradient,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              SvgPicture.asset(AssetConstants.danger),
+                              wSizedBox8,
+                              Expanded(
+                                child: Text(
+                                  "Promo credits may expire",
+                                  textAlign: TextAlign.start,
+                                  style: style400S14.copyWith(
+                                      letterSpacing: 0.28,
+                                      color: Color(0xFFCCCCCC)),
+                                ),
+                              )
+                            ],
+                          ),
+                          hSizedBox8,
+                          Row(
+                            children: [
+                              SvgPicture.asset(AssetConstants.tickCircle2),
+                              wSizedBox8,
+                              Expanded(
+                                child: Text(
+                                  "Purchased credits never expire",
+                                  textAlign: TextAlign.start,
+                                  style: style400S14.copyWith(
+                                      letterSpacing: 0.28,
+                                      color: Color(0xFFCCCCCC)),
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    hSizedBox24,
+                    Align(
+                      alignment: Alignment.center,
+                      child: AppButton(
+                        width: MediaQuery.sizeOf(context).width / 2.5,
+                        onTap: () {
+                          Get.back();
+                        },
+                        text: "Got it",
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Row creditsForTile({required String title, required String icon}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.all(6),
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: GradientBoxBorder(
+                width: 0.5,
+                gradient: LinearGradient(
+                  colors: AppColors.colorGradient,
+                ),
+              )),
+          child: SvgPicture.asset(icon),
+        ),
+        wSizedBox8,
+        Flexible(
+          child: Text(title.toUpperCase(),
+              style: style700S12.copyWith(
+                  color: Color(0xFFCCCCCC), letterSpacing: 0.96)),
+        )
+      ],
+    );
+  }
+}

@@ -109,6 +109,14 @@ class _UserMenuState extends State<UserMenu> {
                   child: ListView(
                 children: [
                   menuTiles(
+                    name: "My Wallet",
+                    icon: AssetConstants.wallet,
+                    height: 20,
+                    onTap: () {
+                      Get.toNamed(Routes.wallet);
+                    },
+                  ),
+                  menuTiles(
                     name: "Orders",
                     icon: AssetConstants.box,
                     onTap: () {
@@ -160,6 +168,7 @@ class _UserMenuState extends State<UserMenu> {
                   menuTiles(
                     name: "Invite Friends",
                     icon: AssetConstants.share,
+                    height: 19,
                     onTap: () {
                       Get.toNamed(Routes.inviteFriend);
                     },
@@ -224,6 +233,7 @@ class _UserMenuState extends State<UserMenu> {
   Widget menuTiles(
       {required String icon,
       required String name,
+      double? height,
       void Function()? onTap,
       bool isToggle = true}) {
     return GestureDetector(
@@ -240,7 +250,7 @@ class _UserMenuState extends State<UserMenu> {
           children: [
             SvgPicture.asset(
               icon,
-              height: 20,
+              height: height,
               colorFilter: ColorFilter.mode(Color(0xFFCCCCCC), BlendMode.srcIn),
             ),
             wSizedBox8,

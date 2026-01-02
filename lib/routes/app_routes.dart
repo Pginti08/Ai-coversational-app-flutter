@@ -30,4 +30,6 @@ abstract class Routes {
   static const String inviteFriend = '/invite-friend';
   static const String sharePreview = '/share-preview';
   static const String trackingDetail = '/tracking-detail';
+  static const String wallet = '/wallet';
+  static const String creditHistory = '/credit-history';
 }

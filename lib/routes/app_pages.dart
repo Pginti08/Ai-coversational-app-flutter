@@ -25,6 +25,8 @@ import 'package:vousvous/features/share-preview/screens/share_preview_screen.dar
 import 'package:vousvous/features/signup/screens/signup_screen.dart';
 import 'package:vousvous/features/skipped/screens/skipped_screen.dart';
 import 'package:vousvous/features/splash/screens/splash_screen.dart';
+import 'package:vousvous/features/wallet/screens/wallet_screen.dart';
+import 'package:vousvous/features/wallet/sub-feature/credit_history/screens/credit_history_screen.dart';
 import 'package:vousvous/features/welcome/screens/welcome_screen.dart';
 
 part 'app_routes.dart';
@@ -221,6 +223,20 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.trackingDetail,
       page: () => TrackingDetailScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.wallet,
+      page: () => WalletScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.creditHistory,
+      page: () => CreditHistoryScreen(),
     ),
   ];
 }

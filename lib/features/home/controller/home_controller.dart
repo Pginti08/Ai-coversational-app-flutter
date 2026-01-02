@@ -1,5 +1,11 @@
+import 'dart:io';
+
+import 'package:app_version_update/app_version_update.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/constants/flavors.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
@@ -44,7 +50,14 @@ class HomeController extends GetxController {
   void onInit() {
     getUserDetail();
     getSuggestedProducts();
+
     super.onInit();
+  }
+
+  @override
+  void onReady() {
+    getNewAppVersion();
+    super.onReady();
   }
 
   void toggleDrawer() {
@@ -249,4 +262,43 @@ class HomeController extends GetxController {
   bool get canCustomize => totalSwipes.value >= requiredSwipes;
   int get remainingSwipesToCustomize =>
       (requiredSwipes - totalSwipes.value).clamp(0, requiredSwipes);
+
+  getNewAppVersion() async {
+    if (!(!kDebugMode && Flavor.getFlavor == FlavorType.production)) {
+      const appleId = '12345678';
+      const playStoreId = 'com.vrozart.vousvous';
+
+      try {
+        await AppVersionUpdate.checkForUpdates(
+                appleId: appleId, playStoreId: playStoreId)
+            .then((data) async {
+          if (data.canUpdate!) {
+            commonDialog(
+              title: "Update Available",
+              description:
+                  "A new and improved version of the app is available.\nPlease update to continue and enjoy a better experience.",
+              successButtonTitle: "Update Now",
+              cancelButtonTitle: "Later",
+              onSuccess: () async {
+                try {
+                  final url = Platform.isIOS
+                      ? "https://apps.apple.com/app/tulah/id12345678"
+                      : "https://play.google.com/store/apps/details?id=com.vrozart.vousvous";
+
+                  await launchUrl(
+                    Uri.parse(url),
+                    mode: LaunchMode.externalApplication,
+                  );
+                } catch (e) {
+                  debugPrint("❌ Failed to open store: $e");
+                }
+              },
+            );
+          } else {
+            debugPrint("no new version available");
+          }
+        });
+      } catch (e) {}
+    }
+  }
 }

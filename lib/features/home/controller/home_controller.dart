@@ -264,7 +264,7 @@ class HomeController extends GetxController {
       (requiredSwipes - totalSwipes.value).clamp(0, requiredSwipes);
 
   getNewAppVersion() async {
-    if (!(!kDebugMode && Flavor.getFlavor == FlavorType.production)) {
+    if ((!kDebugMode && Flavor.getFlavor == FlavorType.production)) {
       const appleId = '12345678';
       const playStoreId = 'com.vrozart.vousvous';
 

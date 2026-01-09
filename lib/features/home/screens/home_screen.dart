@@ -10,6 +10,7 @@ import 'package:vousvous/core/services/notification_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
@@ -348,13 +349,52 @@ class _HomeScreenState extends State<HomeScreen>
                                                   ),
                                                 ),
                                               )
-                                            : Text(
-                                                "No More Outfits Available",
-                                                style: style600S20.copyWith(
-                                                  letterSpacing: 0.42,
-                                                  color:
-                                                      AppColors.whiteTextColor,
-                                                  height: 1.1,
+                                            : Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 20),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      "No More Outfits Available",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style:
+                                                          style600S20.copyWith(
+                                                        letterSpacing: 0.42,
+                                                        color: AppColors
+                                                            .whiteTextColor,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "You can personalize your outfits to match your taste.",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style:
+                                                          style600S16.copyWith(
+                                                        color: AppColors
+                                                            .lightGreyTextColor,
+                                                      ),
+                                                    ),
+                                                    hSizedBox8,
+                                                    AppButton(
+                                                      onTap: () {
+                                                        Get.toNamed(
+                                                            Routes.chat);
+                                                      },
+                                                      width: MediaQuery.sizeOf(
+                                                                  context)
+                                                              .width /
+                                                          2.5,
+                                                      height: 40,
+                                                      text: "Start Creating",
+                                                      fontSize: 14,
+                                                    )
+                                                  ],
                                                 ),
                                               ),
                                       )

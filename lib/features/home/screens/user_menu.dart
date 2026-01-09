@@ -36,6 +36,13 @@ class _UserMenuState extends State<UserMenu> {
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: CommonContainer(
+                  onTap: () {
+                    widget.controller.toggleDrawer();
+                    Get.toNamed(Routes.userProfile, arguments: {
+                      "userId":
+                          LocalStorageService.instance.userInfo.value.data?.id
+                    });
+                  },
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8)
                       .copyWith(right: 0),
                   borderRadius: 16,

@@ -65,6 +65,9 @@ class AssetConstants {
   static const gallery = '${icons}gallery.svg';
   static const logout = '${icons}logout.svg';
   static const emptyWalletTime = '${icons}empty-wallet-time.svg';
+  static const grid = '${icons}grid.svg';
+  static const private = '${icons}private.svg';
+  static const public = '${icons}public.svg';
 
   ///__________________________________ gif __________________________________///
 

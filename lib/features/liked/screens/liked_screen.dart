@@ -85,21 +85,21 @@ class LikedScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(24),
                                       child: GestureDetector(
                                         onTap: () {
-                                          Get.toNamed(Routes.likedProduct,
-                                              arguments: {
-                                                "imageUrl":
-                                                    "${controller.likedProductsList[index].image}",
-                                                "productId":
-                                                    "${controller.likedProductsList[index].id}",
-                                                "productDetail": controller
-                                                    .likedProductsList[index],
-                                              });
+                                          Get.toNamed(
+                                            Routes.productDetail,
+                                            arguments: {
+                                              "productDetail": controller
+                                                  .likedProductsList[index],
+                                            },
+                                          );
                                         },
                                         child: AppNetworkImage(
                                           imageUrl: controller
                                                   .likedProductsList[index]
                                                   .image ??
                                               "",
+                                          width: double.infinity, // Add this
+                                          height: double.infinity, // Add this
                                           fit: BoxFit.cover,
                                         ),
                                       ),

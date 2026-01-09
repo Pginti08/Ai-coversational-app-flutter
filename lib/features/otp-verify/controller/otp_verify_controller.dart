@@ -74,7 +74,7 @@ class OtpVerifyController extends GetxController {
           verifyOtpModel.data?.token ?? "",
         );
 
-        Future.delayed(Duration(milliseconds: 1500), () {
+        Future.delayed(Duration(milliseconds: 700), () {
           Get.offAllNamed(Routes.home);
         });
       } else {

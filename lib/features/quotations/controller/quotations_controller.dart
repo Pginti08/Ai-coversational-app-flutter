@@ -292,7 +292,7 @@ class QuotationsController extends GetxController {
 
         debugPrint("📊 List: $countBefore → $countAfter items");
 
-        toast("Quotation deleted successfully");
+        toast("Quotation deleted successfully", type: ToastType.success);
       } else {
         debugPrint("❌ API delete failed: ${result.error}");
         toast(result.error.toString());

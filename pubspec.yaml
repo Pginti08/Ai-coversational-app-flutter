@@ -54,6 +54,10 @@ dependencies:
   package_info_plus: ^9.0.0
   eventflux: ^2.2.1
   app_version_update: ^3.1.0
+  scrollable_positioned_list: ^0.3.8
+  image_gallery_saver: ^2.0.3
+  image_gallery_saver_plus: ^4.0.1
+  readmore: ^3.0.0
 
 dev_dependencies:
   flutter_test:

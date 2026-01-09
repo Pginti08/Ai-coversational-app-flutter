@@ -189,3 +189,22 @@ String getOrderStatusIcon(String orderStatus) {
       return AssetConstants.box;
   }
 }
+
+String formatTimeAgo(DateTime? dateTime) {
+  if (dateTime == null) return "Unknown";
+
+  final now = DateTime.now();
+  final difference = now.difference(dateTime);
+
+  if (difference.inMinutes < 1) {
+    return "Just now";
+  } else if (difference.inMinutes < 60) {
+    return "${difference.inMinutes} minute${difference.inMinutes == 1 ? '' : 's'} ago";
+  } else if (difference.inHours < 24) {
+    return "${difference.inHours} hour${difference.inHours == 1 ? '' : 's'} ago";
+  } else if (difference.inDays < 77) {
+    return "${difference.inDays} day${difference.inDays == 1 ? '' : 's'} ago";
+  } else {
+    return DateFormat('dd MMMM yyyy').format(dateTime);
+  }
+}

@@ -248,8 +248,7 @@ class HomeController extends GetxController {
   void _showCustomizationAvailablePopup() {
     commonDialog(
       title: "Customize Your Style",
-      description:
-          'You can personalize your outfits to match your taste.\nTap below to get started.',
+      description: 'You can personalize your outfits to match your taste',
       successButtonTitle: "Start Creating",
       cancelButtonTitle: "Later",
       onSuccess: () {

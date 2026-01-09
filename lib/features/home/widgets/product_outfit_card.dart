@@ -46,6 +46,8 @@ class _ProductOutfitCardState extends State<ProductOutfitCard> {
             child: AppNetworkImage(
               imageUrl: widget.product.image ?? "",
               fit: BoxFit.cover,
+              width: double.infinity, // Add this
+              height: double.infinity, // Add this
               onTap: widget.onTap,
             ),
           ),

@@ -59,7 +59,7 @@ class QuotationsScreen extends StatelessWidget {
                     if (controller.quotationList.isEmpty) {
                       return Center(
                         child: Text(
-                          "Quotations not found",
+                          "No quotations available",
                           style: style400S16,
                         ),
                       );

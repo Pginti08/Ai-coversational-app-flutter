@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
@@ -90,38 +87,33 @@ class AppNetworkImage extends StatelessWidget {
       child: ClipRRect(
         borderRadius: borderRadius ?? BorderRadius.zero,
         child: Container(
-          height: height,
           width: width,
+          height: height,
           clipBehavior: Clip.antiAlias,
           margin: padding,
           decoration: BoxDecoration(color: backgroundColor, shape: shape),
           child: isUrl(_fullImageUrl)
-              ? CachedNetworkImage(
-                  imageBuilder: (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: fit,
-                      ),
-                    ),
-                  ),
-                  imageUrl: _fullImageUrl,
+              ? Image.network(
+                  _fullImageUrl,
                   fit: fit,
-                  height: height,
                   width: width,
+                  height: height,
                   colorBlendMode: BlendMode.saturation,
                   color: imageColor,
                   filterQuality: filterQuality,
-                  placeholder: (context, url) => shimmer(
-                    child: shimmerContainer(
-                      width: width,
-                      height: height,
-                      borderRadius: 0,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    height: height,
-                    width: width,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return shimmer(
+                      child: shimmerContainer(
+                        width: width ?? double.infinity,
+                        height: height ?? 200,
+                        borderRadius: 0,
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    height: height ?? 200,
+                    width: width ?? double.infinity,
                     color: AppColors.greyColor,
                     child: errorWidget ??
                         Center(
@@ -131,18 +123,11 @@ class AppNetworkImage extends StatelessWidget {
                           ),
                         ),
                   ),
-                  errorListener: (e) {
-                    if (e is SocketException) {
-                      print('Error with ${e.address} and message ${e.message}');
-                    } else {
-                      print('Image Exception is: ${e.runtimeType}');
-                    }
-                  },
                 )
               : errorWidget ??
                   Container(
-                    height: height,
-                    width: width,
+                    height: height ?? 200,
+                    width: width ?? double.infinity,
                     color: AppColors.greyColor,
                     child: Center(
                       child: Icon(

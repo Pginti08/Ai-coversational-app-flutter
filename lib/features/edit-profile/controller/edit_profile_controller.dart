@@ -10,6 +10,7 @@ import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/utils/validators.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/features/home/controller/home_controller.dart';
+import 'package:vousvous/features/user-profile/controller/user_profile_controller.dart';
 
 class EditProfileController extends GetxController {
   final RxBool isLoading = false.obs;
@@ -60,7 +61,12 @@ class EditProfileController extends GetxController {
       if (result.isSuccess) {
         if (isNullOrEmpty(newProfileImage.value.path)) {
           toast("Profile Update Successfully!", type: ToastType.success);
-          Get.find<HomeController>().getUserDetail();
+          if (Get.isRegistered<HomeController>()) {
+            Get.find<HomeController>().getUserDetail();
+          }
+          if (Get.isRegistered<UserProfileController>()) {
+            Get.find<UserProfileController>().getUserDetail();
+          }
         } else {
           updateProfileImageApi();
         }
@@ -91,10 +97,14 @@ class EditProfileController extends GetxController {
 
       if (result.isSuccess) {
         toast("Profile Update Successfully!", type: ToastType.success);
-        Get.find<HomeController>().getUserDetail();
+        if (Get.isRegistered<HomeController>()) {
+          Get.find<HomeController>().getUserDetail();
+        }
+        if (Get.isRegistered<UserProfileController>()) {
+          Get.find<UserProfileController>().getUserDetail();
+        }
       } else {
         toast(result.error.toString());
-        Get.find<HomeController>().getUserDetail();
       }
     } catch (e) {
       toast(e.toString());

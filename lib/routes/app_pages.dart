@@ -4,7 +4,7 @@ import 'package:vousvous/features/cart/screens/cart_screen.dart';
 import 'package:vousvous/features/chat/screens/chat_screen.dart';
 import 'package:vousvous/features/chat/sub-features/brand_search/brand_search_screen.dart';
 import 'package:vousvous/features/chat/sub-features/card-deck/card_deck_screen.dart';
-import 'package:vousvous/features/chat/sub-features/remixed-product/remixed_product_screen.dart';
+import 'package:vousvous/features/chat/sub-features/remixed-product/screens/remixed_product_screen.dart';
 import 'package:vousvous/features/checkout/screens/checkout_screen.dart';
 import 'package:vousvous/features/edit-profile/screens/edit_profile_screen.dart';
 import 'package:vousvous/features/home/screens/home_screen.dart';
@@ -25,6 +25,8 @@ import 'package:vousvous/features/share-preview/screens/share_preview_screen.dar
 import 'package:vousvous/features/signup/screens/signup_screen.dart';
 import 'package:vousvous/features/skipped/screens/skipped_screen.dart';
 import 'package:vousvous/features/splash/screens/splash_screen.dart';
+import 'package:vousvous/features/user-profile/screens/posts_view_screen.dart';
+import 'package:vousvous/features/user-profile/screens/user_profile_screen.dart';
 import 'package:vousvous/features/welcome/screens/welcome_screen.dart';
 
 part 'app_routes.dart';
@@ -221,6 +223,20 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.trackingDetail,
       page: () => TrackingDetailScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.userProfile,
+      page: () => UserProfileScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.postsView,
+      page: () => PostsViewScreen(),
     ),
   ];
 }

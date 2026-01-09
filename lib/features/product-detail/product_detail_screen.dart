@@ -316,37 +316,93 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                 hSizedBox6,
                                 Row(
                                   children: [
-                                    AppNetworkImage(
-                                      width: 24,
-                                      height: 24,
-                                      shape: BoxShape.circle,
-                                      fit: BoxFit.cover,
-                                      imageUrl:
-                                          controller.productDetail?.userImage ??
-                                              "",
-                                      errorWidget: Container(
-                                        width: 24,
-                                        height: 24,
-                                        color: AppColors.lightGreyTextColor
-                                            .withAlpha(50),
-                                        padding: EdgeInsets.all(5),
-                                        alignment: Alignment.center,
-                                        child: SvgPicture.asset(
-                                          AssetConstants.user,
-                                          color: AppColors.whiteColor,
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Get.toNamed(Routes.userProfile,
+                                              arguments: {
+                                                "userId": controller
+                                                    .productDetail?.userId
+                                              });
+                                        },
+                                        child: Row(
+                                          children: [
+                                            AppNetworkImage(
+                                              width: 24,
+                                              height: 24,
+                                              shape: BoxShape.circle,
+                                              fit: BoxFit.cover,
+                                              imageUrl: controller.productDetail
+                                                      ?.userImage ??
+                                                  "",
+                                              errorWidget: Container(
+                                                width: 24,
+                                                height: 24,
+                                                color: AppColors
+                                                    .lightGreyTextColor
+                                                    .withAlpha(50),
+                                                padding: EdgeInsets.all(5),
+                                                alignment: Alignment.center,
+                                                child: SvgPicture.asset(
+                                                  AssetConstants.user,
+                                                  color: AppColors.whiteColor,
+                                                ),
+                                              ),
+                                            ),
+                                            wSizedBox6,
+                                            Expanded(
+                                              child: Text(
+                                                controller.productDetail
+                                                        ?.userName ??
+                                                    "",
+                                                overflow: TextOverflow.ellipsis,
+                                                style: style400S14.copyWith(
+                                                  color:
+                                                      AppColors.whiteTextColor,
+                                                  letterSpacing: 0.42,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                    wSizedBox6,
-                                    Text(
-                                      controller.productDetail?.userName ?? "",
-                                      style: style400S14.copyWith(
-                                        color: AppColors.whiteTextColor,
-                                        letterSpacing: 0.42,
-                                      ),
-                                    ),
+                                    Obx(() => controller.isFollowing.value
+                                        ? AppButton(
+                                            onTap: controller
+                                                    .isFollowLoading.value
+                                                ? null
+                                                : () {
+                                                    controller.toggleFollow();
+                                                  },
+                                            height: 30,
+                                            text:
+                                                controller.isFollowLoading.value
+                                                    ? "..."
+                                                    : "Following",
+                                            isOutlined: true,
+                                            textColor: AppColors.whiteColor,
+                                            gradientBorderColors:
+                                                AppColors.colorGradient,
+                                            fontSize: 13,
+                                          )
+                                        : AppButton(
+                                            onTap: controller
+                                                    .isFollowLoading.value
+                                                ? null
+                                                : () {
+                                                    controller.toggleFollow();
+                                                  },
+                                            height: 30,
+                                            text:
+                                                controller.isFollowLoading.value
+                                                    ? "..."
+                                                    : "Follow",
+                                            fontSize: 13,
+                                          ))
                                   ],
                                 ),
+
                                 // Animated description that appears only when sheet is expanded
                                 ValueListenableBuilder<double>(
                                   valueListenable: _sheetExtentNotifier,
@@ -379,7 +435,7 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                                 children: [
                                                   hSizedBox10,
                                                   Text(
-                                                    '''Description:
+                                                    '''
 ${controller.productDetail?.description ?? ""}''',
                                                     style: style400S16.copyWith(
                                                         color: const Color(

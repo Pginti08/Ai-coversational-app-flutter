@@ -1,10 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
-import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/routes/app_pages.dart';
@@ -90,8 +88,8 @@ class _StartCreatingDragBottomState extends State<StartCreatingDragBottom>
           onVerticalDragEnd: _handleDragEnd,
           child: Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6)
-                .copyWith(bottom: 0),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12)
+                .copyWith(bottom: 8),
             decoration: BoxDecoration(
               color: Colors.white.withAlpha(10),
               border: GradientBoxBorder(
@@ -150,14 +148,14 @@ class _StartCreatingDragBottomState extends State<StartCreatingDragBottom>
                         "Start Creating...",
                         style: style400S16.copyWith(letterSpacing: 0.32),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          Get.toNamed(Routes.chat);
-                        },
-                        icon: SvgPicture.asset(
-                          AssetConstants.voiceCircleIcon,
-                        ),
-                      ),
+                      // IconButton(
+                      //   onPressed: () {
+                      //     Get.toNamed(Routes.chat);
+                      //   },
+                      //   icon: SvgPicture.asset(
+                      //     AssetConstants.voiceCircleIcon,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:vousvous/features/home/models/product_list_model.dart';
 import 'package:vousvous/features/user-profile/controller/user_profile_controller.dart';
 
@@ -12,11 +13,16 @@ class PostsViewController extends GetxController {
 
   UserProfileController userProfileController =
       Get.find<UserProfileController>();
-  final ScrollController scrollController = ScrollController();
+
+  // Replace ScrollController with ItemScrollController and ItemPositionsListener
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
 
   @override
   void onInit() {
-    manageScrollController();
+    super.onInit();
+
     if (Get.arguments != null) {
       if (Get.arguments["posts"] != null) {
         posts.value = List<Product>.from(Get.arguments["posts"]);
@@ -32,27 +38,54 @@ class PostsViewController extends GetxController {
       }
     }
 
-    super.onInit();
+    // Setup listener after initialization
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      manageScrollListener();
+      scrollToInitialIndex();
+    });
   }
 
-  void manageScrollController() async {
-    scrollController.addListener(() {
-      if (scrollController.position.maxScrollExtent ==
-          scrollController.position.pixels) {
-        if (userProfileController.nextPageStop.isTrue &&
-            userProfileController.paginationLoading.isFalse) {
-          if (scrollController.hasClients) {
-            scrollController.animateTo(
-              scrollController.position.maxScrollExtent + 100,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-            );
-          }
-          userProfileController.paginationLoading.value = true;
-          if (userProfileController.isYou) {
-            userProfileController.getProductListApi(isInitial: false);
-          } else {
-            userProfileController.getOtherUserProductListApi(isInitial: false);
+  void scrollToInitialIndex() {
+    if (initialIndex.value > 0 && posts.isNotEmpty) {
+      if (itemScrollController.isAttached) {
+        itemScrollController.jumpTo(
+          index: initialIndex.value,
+        );
+      }
+    }
+  }
+
+  void manageScrollListener() {
+    itemPositionsListener.itemPositions.addListener(() {
+      final positions = itemPositionsListener.itemPositions.value;
+
+      if (positions.isNotEmpty) {
+        // Get the last visible item index
+        final lastVisibleIndex = positions
+            .where((position) => position.itemTrailingEdge > 0)
+            .map((position) => position.index)
+            .reduce((a, b) => a > b ? a : b);
+
+        // Check if we're near the end of the list
+        if (lastVisibleIndex >= posts.length - 2) {
+          if (userProfileController.nextPageStop.isTrue &&
+              userProfileController.paginationLoading.isFalse) {
+            userProfileController.paginationLoading.value = true;
+            isLoadingMore.value = true;
+
+            if (userProfileController.isYou) {
+              userProfileController
+                  .getProductListApi(isInitial: false)
+                  .then((_) {
+                isLoadingMore.value = false;
+              });
+            } else {
+              userProfileController
+                  .getOtherUserProductListApi(isInitial: false)
+                  .then((_) {
+                isLoadingMore.value = false;
+              });
+            }
           }
         }
       }

@@ -5,33 +5,61 @@ import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/features/home/models/product_list_model.dart';
 
 class ProductDetailController extends GetxController {
-  Product? productDetail;
+  final RxBool isLoading = false.obs;
   final RxBool isFollowing = false.obs;
   final RxBool isFollowLoading = false.obs;
+  Rx<Product> productDetail = Product().obs;
 
   @override
   void onInit() {
     if (Get.arguments != null && Get.arguments["productDetail"] != null) {
-      productDetail = Get.arguments["productDetail"];
-      isFollowing.value = productDetail?.isFollowing ?? false;
+      productDetail.value = Get.arguments["productDetail"];
     }
     super.onInit();
   }
 
+  void onReady() {
+    getProductDetail();
+    super.onReady();
+  }
+
   Future<void> toggleFollow() async {
-    if (productDetail?.userId == null) return;
+    if (productDetail.value.userId == null) return;
 
     isFollowLoading.value = true;
     final wasFollowing = isFollowing.value;
 
     try {
       if (wasFollowing) {
-        await unfollow(productDetail!.userId!);
+        await unfollow(productDetail.value.userId!);
       } else {
-        await follow(productDetail!.userId!);
+        await follow(productDetail.value.userId!);
       }
     } finally {
       isFollowLoading.value = false;
+    }
+  }
+
+  Future<void> getProductDetail() async {
+    try {
+      isLoading.value = true;
+      var result = await NetworkClient.instance.callApi(
+        "${ApiConstants.product}/${productDetail.value.id}",
+        MethodType.get,
+        baseUrlType: BaseUrl.base,
+      );
+
+      if (result.isSuccess) {
+        isFollowing.value = true;
+        productDetail.value = Product.fromJson(result.data?.data["data"]);
+        isFollowing.value = productDetail.value.isFollowing ?? false;
+      } else {
+        toast(result.error.toString());
+      }
+    } catch (e) {
+      toast(e.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -45,7 +73,7 @@ class ProductDetailController extends GetxController {
 
       if (result.isSuccess) {
         isFollowing.value = true;
-        productDetail = productDetail?.copyWith(isFollowing: true);
+        productDetail.value = productDetail.value.copyWith(isFollowing: true);
       } else {
         toast(result.error.toString());
       }
@@ -64,7 +92,7 @@ class ProductDetailController extends GetxController {
 
       if (result.isSuccess) {
         isFollowing.value = false;
-        productDetail = productDetail?.copyWith(isFollowing: false);
+        productDetail.value = productDetail.value.copyWith(isFollowing: false);
       } else {
         toast(result.error.toString());
       }

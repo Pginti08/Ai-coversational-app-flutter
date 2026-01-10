@@ -12,6 +12,7 @@ import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/core/widgets/shimmer_utils.dart';
+import 'package:vousvous/features/product-detail/controller/product_detail_controller.dart';
 import 'package:vousvous/features/user-profile/controller/user_profile_controller.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
@@ -21,399 +22,405 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (Get.isRegistered<ProductDetailController>()) {
+          Get.find<ProductDetailController>().getProductDetail();
+        }
       },
-      child: CustomScaffold(
-        isBottomEffect: false,
-        resizeToAvoidBottomInset: false,
-        isEffect3: true,
-        isBottomSafeArea: false,
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Obx(() => controller.isLoading.value
-                          ? shimmer(
-                              child: shimmerContainer(
-                                width: 80,
-                                height: 18,
-                                borderRadius: 4,
-                              ),
-                            )
-                          : Text(controller.userDetail.value.data?.name ?? "-",
-                              textAlign: TextAlign.center,
-                              style: style600S14.copyWith(
-                                  letterSpacing: 0.96,
-                                  color: Color(0xFFCCCCCC)))),
-                    ],
-                  ),
-                  Positioned(
-                    left: 0,
-                    child: IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      icon: SvgPicture.asset(AssetConstants.backward),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                controller: controller.scrollController,
-                padding: EdgeInsets.zero,
-                children: [
-                  Obx(
-                    () => Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
-                      child: controller.isLoading.value
-                          ? userDetailLoadingShimmer()
-                          : Column(
-                              children: [
-                                hSizedBox10,
-                                Obx(
-                                  () => Row(
-                                    children: [
-                                      CommonContainer(
-                                        width: 100,
-                                        height: 100,
-                                        isCircle: true,
-                                        borderGradientColors:
-                                            AppColors.colorGradient,
-                                        backgroundColor:
-                                            AppColors.blackColor.withOpacity(1),
-                                        child: AppNetworkImage(
-                                          imageUrl: controller.userDetail.value
-                                                  .data?.image ??
-                                              "",
-                                          shape: BoxShape.circle,
-                                          fit: BoxFit.cover,
-                                          errorWidget: Container(
-                                            width: 100,
-                                            height: 100,
-                                            color: AppColors.lightGreyTextColor
-                                                .withAlpha(30),
-                                            padding: EdgeInsets.all(24),
-                                            alignment: Alignment.center,
-                                            child: SvgPicture.asset(
-                                              AssetConstants.user,
-                                              color: AppColors.whiteColor,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      wSizedBox16,
-                                      Expanded(
-                                          child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              controller.userDetail.value.data
-                                                      ?.name ??
-                                                  "-",
-                                              textAlign: TextAlign.center,
-                                              style: style700S16.copyWith(
-                                                  color: Color(0xFFCCCCCC))),
-                                          hSizedBox10,
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                        (controller
-                                                                    .userDetail
-                                                                    .value
-                                                                    .data
-                                                                    ?.productsCount ??
-                                                                0)
-                                                            .toString(),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: style500S18
-                                                            .copyWith(
-                                                                letterSpacing:
-                                                                    0.36,
-                                                                color: AppColors
-                                                                    .whiteColor)),
-                                                    Text("Posts",
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: style300S14
-                                                            .copyWith(
-                                                                letterSpacing:
-                                                                    0.42,
-                                                                color: AppColors
-                                                                    .whiteColor)),
-                                                  ],
-                                                ),
-                                              ),
-                                              wSizedBox10,
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                        (controller
-                                                                    .userDetail
-                                                                    .value
-                                                                    .data
-                                                                    ?.followersCount ??
-                                                                0)
-                                                            .toString(),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: style500S18
-                                                            .copyWith(
-                                                                letterSpacing:
-                                                                    0.36,
-                                                                color: AppColors
-                                                                    .whiteColor)),
-                                                    Text("Follower",
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: style300S14
-                                                            .copyWith(
-                                                                letterSpacing:
-                                                                    0.42,
-                                                                color: AppColors
-                                                                    .whiteColor)),
-                                                  ],
-                                                ),
-                                              ),
-                                              wSizedBox10,
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                        (controller
-                                                                    .userDetail
-                                                                    .value
-                                                                    .data
-                                                                    ?.followingCount ??
-                                                                0)
-                                                            .toString(),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: style500S18
-                                                            .copyWith(
-                                                                letterSpacing:
-                                                                    0.36,
-                                                                color: AppColors
-                                                                    .whiteColor)),
-                                                    Text("Following",
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: style300S14
-                                                            .copyWith(
-                                                                letterSpacing:
-                                                                    0.42,
-                                                                color: AppColors
-                                                                    .whiteColor)),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ))
-                                    ],
-                                  ),
+      child: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: CustomScaffold(
+          isBottomEffect: false,
+          resizeToAvoidBottomInset: false,
+          isEffect3: true,
+          isBottomSafeArea: false,
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Obx(() => controller.isLoading.value
+                            ? shimmer(
+                                child: shimmerContainer(
+                                  width: 80,
+                                  height: 18,
+                                  borderRadius: 4,
                                 ),
-                                hSizedBox10,
-                                if (isNotNullOrEmpty(
-                                    controller.userDetail.value.data?.bio))
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      controller.userDetail.value.data?.bio ??
-                                          "",
-                                      textAlign: TextAlign.start,
-                                      style: style400S14.copyWith(
-                                        color: const Color(0xFFACACAC),
-                                      ),
-                                    ),
-                                  ),
-                                hSizedBox16,
-                                controller.isYou == true
-                                    ? AppButton(
-                                        onTap: () {
-                                          Get.toNamed(Routes.editProfile);
-                                        },
-                                        text: "Edit Profile",
-                                        borderColor: AppColors
-                                            .lightGreyTextColor
-                                            .withAlpha(70),
-                                        textColor: AppColors.lightGreyTextColor,
-                                        backgroundColor: AppColors
-                                            .greyBorderColor
-                                            .withAlpha(150),
-                                      )
-                                    : Obx(() => controller.isFollowing.value
-                                        ? AppButton(
-                                            onTap: controller
-                                                    .isFollowLoading.value
-                                                ? null
-                                                : () {
-                                                    controller.toggleFollow();
-                                                  },
-                                            text:
-                                                controller.isFollowLoading.value
-                                                    ? "..."
-                                                    : "Following",
-                                            isOutlined: true,
-                                            textColor: AppColors.whiteColor,
-                                            gradientBorderColors:
-                                                AppColors.colorGradient,
-                                          )
-                                        : AppButton(
-                                            onTap: controller
-                                                    .isFollowLoading.value
-                                                ? null
-                                                : () {
-                                                    controller.toggleFollow();
-                                                  },
-                                            text:
-                                                controller.isFollowLoading.value
-                                                    ? "..."
-                                                    : "Follow",
-                                            textColor: AppColors.blackColor,
-                                          )),
-                              ],
-                            ),
+                              )
+                            : Text(
+                                controller.userDetail.value.data?.name ?? "-",
+                                textAlign: TextAlign.center,
+                                style: style600S14.copyWith(
+                                    letterSpacing: 0.96,
+                                    color: Color(0xFFCCCCCC)))),
+                      ],
                     ),
-                  ),
-
-                  Divider(),
-
-                  // Posts Grid
-                  Obx(() => Padding(
+                    Positioned(
+                      left: 0,
+                      child: IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: SvgPicture.asset(AssetConstants.backward),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  controller: controller.scrollController,
+                  padding: EdgeInsets.zero,
+                  children: [
+                    Obx(
+                      () => Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10),
-                        child: controller.isLoading2.value
-                            ? postsGridShimmer()
-                            : controller.productsList.length == 0
-                                ? Padding(
-                                    padding: EdgeInsets.only(top: 120),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                        child: controller.isLoading.value
+                            ? userDetailLoadingShimmer()
+                            : Column(
+                                children: [
+                                  hSizedBox10,
+                                  Obx(
+                                    () => Row(
                                       children: [
                                         CommonContainer(
-                                          padding: EdgeInsets.all(30),
+                                          width: 100,
+                                          height: 100,
                                           isCircle: true,
-                                          borderColor: AppColors
-                                              .lightGreyTextColor
-                                              .withAlpha(100),
-                                          child: SvgPicture.asset(
-                                            AssetConstants.camera,
-                                            height: 28,
+                                          borderGradientColors:
+                                              AppColors.colorGradient,
+                                          backgroundColor: AppColors.blackColor
+                                              .withOpacity(1),
+                                          child: AppNetworkImage(
+                                            imageUrl: controller.userDetail
+                                                    .value.data?.image ??
+                                                "",
+                                            shape: BoxShape.circle,
+                                            fit: BoxFit.cover,
+                                            errorWidget: Container(
+                                              width: 100,
+                                              height: 100,
+                                              color: AppColors
+                                                  .lightGreyTextColor
+                                                  .withAlpha(30),
+                                              padding: EdgeInsets.all(24),
+                                              alignment: Alignment.center,
+                                              child: SvgPicture.asset(
+                                                AssetConstants.user,
+                                                color: AppColors.whiteColor,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        hSizedBox6,
-                                        Text(
-                                          "No post yet",
-                                          style: style400S14,
-                                        )
+                                        wSizedBox16,
+                                        Expanded(
+                                            child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                controller.userDetail.value.data
+                                                        ?.name ??
+                                                    "-",
+                                                textAlign: TextAlign.center,
+                                                style: style700S16.copyWith(
+                                                    color: Color(0xFFCCCCCC))),
+                                            hSizedBox10,
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                          (controller
+                                                                      .userDetail
+                                                                      .value
+                                                                      .data
+                                                                      ?.productsCount ??
+                                                                  0)
+                                                              .toString(),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: style500S18.copyWith(
+                                                              letterSpacing:
+                                                                  0.36,
+                                                              color: AppColors
+                                                                  .whiteColor)),
+                                                      Text("Posts",
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: style300S14.copyWith(
+                                                              letterSpacing:
+                                                                  0.42,
+                                                              color: AppColors
+                                                                  .whiteColor)),
+                                                    ],
+                                                  ),
+                                                ),
+                                                wSizedBox10,
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                          (controller
+                                                                      .userDetail
+                                                                      .value
+                                                                      .data
+                                                                      ?.followersCount ??
+                                                                  0)
+                                                              .toString(),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: style500S18.copyWith(
+                                                              letterSpacing:
+                                                                  0.36,
+                                                              color: AppColors
+                                                                  .whiteColor)),
+                                                      Text("Follower",
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: style300S14.copyWith(
+                                                              letterSpacing:
+                                                                  0.42,
+                                                              color: AppColors
+                                                                  .whiteColor)),
+                                                    ],
+                                                  ),
+                                                ),
+                                                wSizedBox10,
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                          (controller
+                                                                      .userDetail
+                                                                      .value
+                                                                      .data
+                                                                      ?.followingCount ??
+                                                                  0)
+                                                              .toString(),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: style500S18.copyWith(
+                                                              letterSpacing:
+                                                                  0.36,
+                                                              color: AppColors
+                                                                  .whiteColor)),
+                                                      Text("Following",
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: style300S14.copyWith(
+                                                              letterSpacing:
+                                                                  0.42,
+                                                              color: AppColors
+                                                                  .whiteColor)),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ))
                                       ],
                                     ),
-                                  )
-                                : GridView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 2,
-                                      mainAxisSpacing: 2,
-                                      childAspectRatio: 1,
-                                    ),
-                                    itemCount: controller.productsList.length,
-                                    itemBuilder: (context, index) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Get.toNamed(Routes.postsView,
-                                              arguments: {
-                                                "posts":
-                                                    controller.productsList,
-                                                "initialIndex": index,
-                                                "userName": controller
-                                                    .userDetail
-                                                    .value
-                                                    .data
-                                                    ?.name,
-                                                "userAvatar": controller
-                                                    .userDetail
-                                                    .value
-                                                    .data
-                                                    ?.image,
-                                              });
-                                        },
-                                        child: Stack(
-                                          children: [
-                                            AppNetworkImage(
-                                              imageUrl: controller
-                                                      .productsList[index]
-                                                      .image ??
-                                                  "",
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                            ),
-                                            if (controller.isYou)
-                                              Positioned(
-                                                  right: 5,
-                                                  top: 5,
-                                                  child: SvgPicture.asset(
-                                                    (controller
-                                                                .productsList[
-                                                                    index]
-                                                                .isPrivate ??
-                                                            true)
-                                                        ? AssetConstants.private
-                                                        : AssetConstants.public,
-                                                    color: AppColors.grey2Color,
-                                                    width: 16,
-                                                  )),
-                                          ],
-                                        ),
-                                      );
-                                    },
                                   ),
-                      )),
+                                  hSizedBox10,
+                                  if (isNotNullOrEmpty(
+                                      controller.userDetail.value.data?.bio))
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        controller.userDetail.value.data?.bio ??
+                                            "",
+                                        textAlign: TextAlign.start,
+                                        style: style400S14.copyWith(
+                                          color: const Color(0xFFACACAC),
+                                        ),
+                                      ),
+                                    ),
+                                  hSizedBox16,
+                                  controller.isYou == true
+                                      ? AppButton(
+                                          onTap: () {
+                                            Get.toNamed(Routes.editProfile);
+                                          },
+                                          text: "Edit Profile",
+                                          borderColor: AppColors
+                                              .lightGreyTextColor
+                                              .withAlpha(70),
+                                          textColor:
+                                              AppColors.lightGreyTextColor,
+                                          backgroundColor: AppColors
+                                              .greyBorderColor
+                                              .withAlpha(150),
+                                        )
+                                      : Obx(() => controller.isFollowing.value
+                                          ? AppButton(
+                                              onTap: controller
+                                                      .isFollowLoading.value
+                                                  ? null
+                                                  : () {
+                                                      controller.toggleFollow();
+                                                    },
+                                              text: controller
+                                                      .isFollowLoading.value
+                                                  ? "..."
+                                                  : "Following",
+                                              isOutlined: true,
+                                              textColor: AppColors.whiteColor,
+                                              gradientBorderColors:
+                                                  AppColors.colorGradient,
+                                            )
+                                          : AppButton(
+                                              onTap: controller
+                                                      .isFollowLoading.value
+                                                  ? null
+                                                  : () {
+                                                      controller.toggleFollow();
+                                                    },
+                                              text: controller
+                                                      .isFollowLoading.value
+                                                  ? "..."
+                                                  : "Follow",
+                                              textColor: AppColors.blackColor,
+                                            )),
+                                ],
+                              ),
+                      ),
+                    ),
 
-                  Obx(() => controller.paginationLoading.value
-                      ? Padding(
-                          padding: EdgeInsets.all(8),
-                          child: Center(
-                            child: RotatingLoader(
-                              size: 30,
+                    Divider(),
+
+                    // Posts Grid
+                    Obx(() => Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: controller.isLoading2.value
+                              ? postsGridShimmer()
+                              : controller.posts.length == 0
+                                  ? Padding(
+                                      padding: EdgeInsets.only(top: 120),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          CommonContainer(
+                                            padding: EdgeInsets.all(30),
+                                            isCircle: true,
+                                            borderColor: AppColors
+                                                .lightGreyTextColor
+                                                .withAlpha(100),
+                                            child: SvgPicture.asset(
+                                              AssetConstants.camera,
+                                              height: 28,
+                                            ),
+                                          ),
+                                          hSizedBox6,
+                                          Text(
+                                            "No post yet",
+                                            style: style400S14,
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  : GridView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        crossAxisSpacing: 2,
+                                        mainAxisSpacing: 2,
+                                        childAspectRatio: 1,
+                                      ),
+                                      itemCount: controller.posts.length,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Get.toNamed(Routes.postsView,
+                                                arguments: {
+                                                  "posts": controller.posts,
+                                                  "initialIndex": index,
+                                                  "userName": controller
+                                                      .userDetail
+                                                      .value
+                                                      .data
+                                                      ?.name,
+                                                  "userAvatar": controller
+                                                      .userDetail
+                                                      .value
+                                                      .data
+                                                      ?.image,
+                                                });
+                                          },
+                                          child: Stack(
+                                            children: [
+                                              AppNetworkImage(
+                                                imageUrl: controller
+                                                        .posts[index].image ??
+                                                    "",
+                                                fit: BoxFit.cover,
+                                                width: double.infinity,
+                                              ),
+                                              if (controller.isYou)
+                                                Positioned(
+                                                    right: 5,
+                                                    top: 5,
+                                                    child: SvgPicture.asset(
+                                                      (controller.posts[index]
+                                                                  .isPrivate ??
+                                                              true)
+                                                          ? AssetConstants
+                                                              .private
+                                                          : AssetConstants
+                                                              .public,
+                                                      color:
+                                                          AppColors.grey2Color,
+                                                      width: 16,
+                                                    )),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                        )),
+
+                    Obx(() => controller.paginationLoading.value
+                        ? Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Center(
+                              child: RotatingLoader(
+                                size: 30,
+                              ),
                             ),
-                          ),
-                        )
-                      : SizedBox.shrink()),
-                ],
+                          )
+                        : SizedBox.shrink()),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

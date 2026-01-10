@@ -75,10 +75,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Future<void> _shareProduct() async {
     try {
       // 1. Setup Data
-      final imageUrl = controller.productDetail?.image ?? "";
-      final productTitle = controller.productDetail?.title ?? '-';
-      final productId = controller.productDetail?.id ?? '';
-      final userName = controller.productDetail?.userName ?? '-';
+      final imageUrl = controller.productDetail.value.image ?? "";
+      final productTitle = controller.productDetail.value.title ?? '-';
+      final productId = controller.productDetail.value.id ?? '';
+      final userName = controller.productDetail.value.userName ?? '-';
 
       // 2. Create Link
       final String customLink =
@@ -156,374 +156,425 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
     final initialBorderRadius = 24;
     final finalBorderRadius = 9;
 
-    return CustomScaffold(
-      isBottomSafeArea: false,
-      body: Stack(
-        children: [
-          // --- Background Content ---
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      icon: SvgPicture.asset(
-                        AssetConstants.backward,
-                        height: 32,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: _shareProduct,
-                      icon: SvgPicture.asset(
-                        AssetConstants.share,
-                        height: 24,
-                      ),
-                    ),
-                  ],
-                ),
-                hSizedBox6,
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: ValueListenableBuilder<double>(
-                      valueListenable: _sheetExtentNotifier,
-                      builder: (context, extent, child) {
-                        final normalizedExtent = (extent - _minSheetSize) /
-                            (_maxSheetSize - _minSheetSize);
-                        final clampedExtent = normalizedExtent.clamp(0.0, 1.0);
-
-                        final imageHeight = lerpDouble(initialImageHeight,
-                            finalImageHeight, clampedExtent);
-
-                        final imageWidth = lerpDouble(
-                            initialImageWidth, finalImageWidth, clampedExtent);
-                        final imageBorderRadius = lerpDouble(
-                            initialBorderRadius,
-                            finalBorderRadius,
-                            clampedExtent);
-
-                        return ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(imageBorderRadius ?? 0),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 10),
-                            curve: Curves.linear,
-                            height: imageHeight,
-                            width: imageWidth,
-                            child: child,
-                          ),
-                        );
-                      },
-                      child: AppNetworkImage(
-                        imageUrl: controller.productDetail?.image ?? "",
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // --- Draggable Bottom Sheet ---
-          NotificationListener<DraggableScrollableNotification>(
-            onNotification: (notification) {
-              // Determine if the sheet is closing (extent is decreasing)
-              _isSheetClosing = notification.extent < _previousExtent;
-              _previousExtent = notification.extent;
-
-              // Update the notifier with the new extent as the sheet is dragged.
-              _sheetExtentNotifier.value = notification.extent;
-              // Return true to allow the notification to continue bubbling up.
-              return true;
-            },
-            child: DraggableScrollableSheet(
-              initialChildSize: _minSheetSize,
-              minChildSize: _minSheetSize,
-              maxChildSize: _maxSheetSize,
-              builder:
-                  (BuildContext context, ScrollController scrollController) {
-                // The content of the bottom sheet.
-                return ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
-                  ),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black.withAlpha(150),
-                        border: GradientBoxBorder(
-                          width: 1,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: AppColors.glassBorderGradient,
-                          ),
+    return Obx(() => Stack(
+          children: [
+            CustomScaffold(
+              isBottomSafeArea: false,
+              body: Stack(
+                children: [
+                  // --- Background Content ---
+                  SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              icon: SvgPicture.asset(
+                                AssetConstants.backward,
+                                height: 32,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: _shareProduct,
+                              icon: SvgPicture.asset(
+                                AssetConstants.share,
+                                height: 24,
+                              ),
+                            ),
+                          ],
                         ),
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24),
-                        ),
-                      ),
-                      // Use SingleChildScrollView to make the sheet's content scrollable
-                      // when it's fully expanded, but disable scrolling when closing.
-                      child: SingleChildScrollView(
-                        controller: scrollController,
-                        // Disable scrolling when the sheet is closing
-                        physics: _isSheetClosing
-                            ? const NeverScrollableScrollPhysics()
-                            : const AlwaysScrollableScrollPhysics(),
-                        child: SafeArea(
-                          top: false,
+                        hSizedBox6,
+                        Center(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 6),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                // --- Drag Handle ---
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Container(
-                                    width: 40,
-                                    height: 4,
-                                    margin:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    decoration: ShapeDecoration(
-                                      color: Colors.white.withAlpha(80),
-                                      shape: const StadiumBorder(),
-                                    ),
-                                  ),
-                                ),
-                                // --- Sheet Content ---
-                                Text(
-                                  controller.productDetail?.title ?? "",
-                                  style: TextStyle(
-                                    color: AppColors.whiteTextColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.42,
-                                  ),
-                                ),
-                                hSizedBox6,
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Get.toNamed(Routes.userProfile,
-                                              arguments: {
-                                                "userId": controller
-                                                    .productDetail?.userId
-                                              });
-                                        },
-                                        child: Row(
-                                          children: [
-                                            AppNetworkImage(
-                                              width: 24,
-                                              height: 24,
-                                              shape: BoxShape.circle,
-                                              fit: BoxFit.cover,
-                                              imageUrl: controller.productDetail
-                                                      ?.userImage ??
-                                                  "",
-                                              errorWidget: Container(
-                                                width: 24,
-                                                height: 24,
-                                                color: AppColors
-                                                    .lightGreyTextColor
-                                                    .withAlpha(50),
-                                                padding: EdgeInsets.all(5),
-                                                alignment: Alignment.center,
-                                                child: SvgPicture.asset(
-                                                  AssetConstants.user,
-                                                  color: AppColors.whiteColor,
-                                                ),
-                                              ),
-                                            ),
-                                            wSizedBox6,
-                                            Expanded(
-                                              child: Text(
-                                                controller.productDetail
-                                                        ?.userName ??
-                                                    "",
-                                                overflow: TextOverflow.ellipsis,
-                                                style: style400S14.copyWith(
-                                                  color:
-                                                      AppColors.whiteTextColor,
-                                                  letterSpacing: 0.42,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Obx(() => controller.isFollowing.value
-                                        ? AppButton(
-                                            onTap: controller
-                                                    .isFollowLoading.value
-                                                ? null
-                                                : () {
-                                                    controller.toggleFollow();
-                                                  },
-                                            height: 30,
-                                            text:
-                                                controller.isFollowLoading.value
-                                                    ? "..."
-                                                    : "Following",
-                                            isOutlined: true,
-                                            textColor: AppColors.whiteColor,
-                                            gradientBorderColors:
-                                                AppColors.colorGradient,
-                                            fontSize: 13,
-                                          )
-                                        : AppButton(
-                                            onTap: controller
-                                                    .isFollowLoading.value
-                                                ? null
-                                                : () {
-                                                    controller.toggleFollow();
-                                                  },
-                                            height: 30,
-                                            text:
-                                                controller.isFollowLoading.value
-                                                    ? "..."
-                                                    : "Follow",
-                                            fontSize: 13,
-                                          ))
-                                  ],
-                                ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: ValueListenableBuilder<double>(
+                              valueListenable: _sheetExtentNotifier,
+                              builder: (context, extent, child) {
+                                final normalizedExtent =
+                                    (extent - _minSheetSize) /
+                                        (_maxSheetSize - _minSheetSize);
+                                final clampedExtent =
+                                    normalizedExtent.clamp(0.0, 1.0);
 
-                                // Animated description that appears only when sheet is expanded
-                                ValueListenableBuilder<double>(
-                                  valueListenable: _sheetExtentNotifier,
-                                  builder: (context, extent, child) {
-                                    // Calculate how much the sheet is opened (0.0 to 1.0)
-                                    final normalizedExtent =
-                                        (extent - _minSheetSize) /
-                                            (_maxSheetSize - _minSheetSize);
-                                    final clampedExtent =
-                                        normalizedExtent.clamp(0.0, 1.0);
+                                final imageHeight = lerpDouble(
+                                    initialImageHeight,
+                                    finalImageHeight,
+                                    clampedExtent);
 
-                                    // Show description only when sheet is significantly opened (more than 30%)
-                                    final shouldShowDescription =
-                                        clampedExtent > 0.3;
+                                final imageWidth = lerpDouble(initialImageWidth,
+                                    finalImageWidth, clampedExtent);
+                                final imageBorderRadius = lerpDouble(
+                                    initialBorderRadius,
+                                    finalBorderRadius,
+                                    clampedExtent);
 
-                                    return AnimatedContainer(
-                                      duration:
-                                          const Duration(milliseconds: 300),
-                                      curve: Curves.easeInOut,
-                                      height: shouldShowDescription ? null : 0,
-                                      child: AnimatedOpacity(
-                                        duration:
-                                            const Duration(milliseconds: 200),
-                                        opacity:
-                                            shouldShowDescription ? 1.0 : 0.0,
-                                        child: shouldShowDescription
-                                            ? Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  hSizedBox10,
-                                                  Text(
-                                                    '''
-${controller.productDetail?.description ?? ""}''',
-                                                    style: style400S16.copyWith(
-                                                        color: const Color(
-                                                            0xFFCCCCCC),
-                                                        letterSpacing: 0.32),
-                                                  ),
-                                                ],
-                                              )
-                                            : const SizedBox.shrink(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                hSizedBox10,
-                                Text.rich(
-                                  TextSpan(
-                                    children: [
-                                      // Show minPrice only if it's not null AND not equal to 0
-                                      if (isNotNullOrEmpty(controller
-                                              .productDetail?.minPrice) &&
-                                          (int.tryParse(controller
-                                                      .productDetail!.minPrice!
-                                                      .toString()) ??
-                                                  0) !=
-                                              0)
-                                        TextSpan(
-                                          text:
-                                              "${AssetConstants.rupeeSymbol}${controller.productDetail?.minPrice?.toStringAsFixed(0) ?? "-"}",
-                                          style: style600S20.copyWith(
-                                            color: AppColors.whiteTextColor,
-                                            letterSpacing: 0.42,
-                                          ),
-                                        ),
-                                      // Show maxPrice only if it's not null AND not equal to 0
-                                      if (isNotNullOrEmpty(controller
-                                              .productDetail?.maxPrice) &&
-                                          (int.tryParse(controller
-                                                      .productDetail!.maxPrice!
-                                                      .toString()) ??
-                                                  0) !=
-                                              0) ...[
-                                        TextSpan(
-                                          text: " to ",
-                                          style: style400S16.copyWith(
-                                            color: AppColors.hintTextColor,
-                                            letterSpacing: 0.42,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              "${AssetConstants.rupeeSymbol}${controller.productDetail?.maxPrice?.toStringAsFixed(0) ?? "-"}",
-                                          style: style600S20.copyWith(
-                                            color: AppColors.whiteTextColor,
-                                            letterSpacing: 0.42,
-                                          ),
-                                        ),
-                                      ],
-                                    ],
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      imageBorderRadius ?? 0),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 10),
+                                    curve: Curves.linear,
+                                    height: imageHeight,
+                                    width: imageWidth,
+                                    child: child,
                                   ),
-                                ),
-                                hSizedBox8,
-                                AppButton(
-                                  onTap: () {
-                                    Get.toNamed(Routes.quotationChat,
-                                        arguments: {
-                                          "productId":
-                                              controller.productDetail?.id,
-                                          "imageUrl":
-                                              controller.productDetail?.image ??
-                                                  "",
-                                        });
-                                  },
-                                  textColor: AppColors.blackColor,
-                                  text: "Get Quote",
-                                ),
-                              ],
+                                );
+                              },
+                              child: AppNetworkImage(
+                                imageUrl:
+                                    controller.productDetail.value.image ?? "",
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                );
-              },
+
+                  // --- Draggable Bottom Sheet ---
+                  NotificationListener<DraggableScrollableNotification>(
+                    onNotification: (notification) {
+                      // Determine if the sheet is closing (extent is decreasing)
+                      _isSheetClosing = notification.extent < _previousExtent;
+                      _previousExtent = notification.extent;
+
+                      // Update the notifier with the new extent as the sheet is dragged.
+                      _sheetExtentNotifier.value = notification.extent;
+                      // Return true to allow the notification to continue bubbling up.
+                      return true;
+                    },
+                    child: DraggableScrollableSheet(
+                      initialChildSize: _minSheetSize,
+                      minChildSize: _minSheetSize,
+                      maxChildSize: _maxSheetSize,
+                      builder: (BuildContext context,
+                          ScrollController scrollController) {
+                        // The content of the bottom sheet.
+                        return ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24),
+                          ),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black.withAlpha(150),
+                                border: GradientBoxBorder(
+                                  width: 1,
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: AppColors.glassBorderGradient,
+                                  ),
+                                ),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(24),
+                                  topRight: Radius.circular(24),
+                                ),
+                              ),
+                              // Use SingleChildScrollView to make the sheet's content scrollable
+                              // when it's fully expanded, but disable scrolling when closing.
+                              child: SingleChildScrollView(
+                                controller: scrollController,
+                                // Disable scrolling when the sheet is closing
+                                physics: _isSheetClosing
+                                    ? const NeverScrollableScrollPhysics()
+                                    : const AlwaysScrollableScrollPhysics(),
+                                child: SafeArea(
+                                  top: false,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 6),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        // --- Drag Handle ---
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                            width: 40,
+                                            height: 4,
+                                            margin: const EdgeInsets.symmetric(
+                                                vertical: 8),
+                                            decoration: ShapeDecoration(
+                                              color: Colors.white.withAlpha(80),
+                                              shape: const StadiumBorder(),
+                                            ),
+                                          ),
+                                        ),
+                                        // --- Sheet Content ---
+                                        Text(
+                                          controller
+                                                  .productDetail.value.title ??
+                                              "",
+                                          style: TextStyle(
+                                            color: AppColors.whiteTextColor,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 0.42,
+                                          ),
+                                        ),
+                                        hSizedBox6,
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Get.toNamed(
+                                                      Routes.userProfile,
+                                                      arguments: {
+                                                        "userId": controller
+                                                            .productDetail
+                                                            .value
+                                                            .userId
+                                                      });
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    AppNetworkImage(
+                                                      width: 24,
+                                                      height: 24,
+                                                      shape: BoxShape.circle,
+                                                      fit: BoxFit.cover,
+                                                      imageUrl: controller
+                                                              .productDetail
+                                                              .value
+                                                              .userImage ??
+                                                          "",
+                                                      errorWidget: Container(
+                                                        width: 24,
+                                                        height: 24,
+                                                        color: AppColors
+                                                            .lightGreyTextColor
+                                                            .withAlpha(50),
+                                                        padding:
+                                                            EdgeInsets.all(5),
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: SvgPicture.asset(
+                                                          AssetConstants.user,
+                                                          color: AppColors
+                                                              .whiteColor,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    wSizedBox6,
+                                                    Expanded(
+                                                      child: Text(
+                                                        controller
+                                                                .productDetail
+                                                                .value
+                                                                .userName ??
+                                                            "",
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: style400S14
+                                                            .copyWith(
+                                                          color: AppColors
+                                                              .whiteTextColor,
+                                                          letterSpacing: 0.42,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Obx(() => controller
+                                                    .isFollowing.value
+                                                ? AppButton(
+                                                    onTap: controller
+                                                            .isFollowLoading
+                                                            .value
+                                                        ? null
+                                                        : () {
+                                                            controller
+                                                                .toggleFollow();
+                                                          },
+                                                    height: 30,
+                                                    text: controller
+                                                            .isFollowLoading
+                                                            .value
+                                                        ? "..."
+                                                        : "Following",
+                                                    isOutlined: true,
+                                                    textColor:
+                                                        AppColors.whiteColor,
+                                                    gradientBorderColors:
+                                                        AppColors.colorGradient,
+                                                    fontSize: 13,
+                                                  )
+                                                : AppButton(
+                                                    onTap: controller
+                                                            .isFollowLoading
+                                                            .value
+                                                        ? null
+                                                        : () {
+                                                            controller
+                                                                .toggleFollow();
+                                                          },
+                                                    height: 30,
+                                                    text: controller
+                                                            .isFollowLoading
+                                                            .value
+                                                        ? "..."
+                                                        : "Follow",
+                                                    fontSize: 13,
+                                                  ))
+                                          ],
+                                        ),
+
+                                        // Animated description that appears only when sheet is expanded
+                                        ValueListenableBuilder<double>(
+                                          valueListenable: _sheetExtentNotifier,
+                                          builder: (context, extent, child) {
+                                            // Calculate how much the sheet is opened (0.0 to 1.0)
+                                            final normalizedExtent = (extent -
+                                                    _minSheetSize) /
+                                                (_maxSheetSize - _minSheetSize);
+                                            final clampedExtent =
+                                                normalizedExtent.clamp(
+                                                    0.0, 1.0);
+
+                                            // Show description only when sheet is significantly opened (more than 30%)
+                                            final shouldShowDescription =
+                                                clampedExtent > 0.3;
+
+                                            return AnimatedContainer(
+                                              duration: const Duration(
+                                                  milliseconds: 300),
+                                              curve: Curves.easeInOut,
+                                              height: shouldShowDescription
+                                                  ? null
+                                                  : 0,
+                                              child: AnimatedOpacity(
+                                                duration: const Duration(
+                                                    milliseconds: 200),
+                                                opacity: shouldShowDescription
+                                                    ? 1.0
+                                                    : 0.0,
+                                                child: shouldShowDescription
+                                                    ? Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          hSizedBox10,
+                                                          Text(
+                                                            '''
+        ${controller.productDetail.value.description ?? ""}''',
+                                                            style: style400S16.copyWith(
+                                                                color: const Color(
+                                                                    0xFFCCCCCC),
+                                                                letterSpacing:
+                                                                    0.32),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : const SizedBox.shrink(),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        hSizedBox10,
+                                        Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              // Show minPrice only if it's not null AND not equal to 0
+                                              if (isNotNullOrEmpty(controller
+                                                      .productDetail
+                                                      .value
+                                                      .minPrice) &&
+                                                  (int.tryParse(controller
+                                                              .productDetail
+                                                              .value
+                                                              .minPrice!
+                                                              .toString()) ??
+                                                          0) !=
+                                                      0)
+                                                TextSpan(
+                                                  text:
+                                                      "${AssetConstants.rupeeSymbol}${controller.productDetail.value.minPrice?.toStringAsFixed(0) ?? "-"}",
+                                                  style: style600S20.copyWith(
+                                                    color: AppColors
+                                                        .whiteTextColor,
+                                                    letterSpacing: 0.42,
+                                                  ),
+                                                ),
+                                              // Show maxPrice only if it's not null AND not equal to 0
+                                              if (isNotNullOrEmpty(controller
+                                                      .productDetail
+                                                      .value
+                                                      .maxPrice) &&
+                                                  (int.tryParse(controller
+                                                              .productDetail
+                                                              .value
+                                                              .maxPrice!
+                                                              .toString()) ??
+                                                          0) !=
+                                                      0) ...[
+                                                TextSpan(
+                                                  text: " to ",
+                                                  style: style400S16.copyWith(
+                                                    color:
+                                                        AppColors.hintTextColor,
+                                                    letterSpacing: 0.42,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                      "${AssetConstants.rupeeSymbol}${controller.productDetail.value.maxPrice?.toStringAsFixed(0) ?? "-"}",
+                                                  style: style600S20.copyWith(
+                                                    color: AppColors
+                                                        .whiteTextColor,
+                                                    letterSpacing: 0.42,
+                                                  ),
+                                                ),
+                                              ],
+                                            ],
+                                          ),
+                                        ),
+                                        hSizedBox8,
+                                        AppButton(
+                                          onTap: () {
+                                            Get.toNamed(Routes.quotationChat,
+                                                arguments: {
+                                                  "productId": controller
+                                                      .productDetail.value.id,
+                                                  "imageUrl": controller
+                                                          .productDetail
+                                                          .value
+                                                          .image ??
+                                                      "",
+                                                });
+                                          },
+                                          textColor: AppColors.blackColor,
+                                          text: "Get Quote",
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ));
   }
 }

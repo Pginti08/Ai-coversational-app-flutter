@@ -11,6 +11,8 @@ import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/features/home/models/product_list_model.dart';
+import 'package:vousvous/features/user-profile/controller/posts_view_controller.dart';
+import 'package:vousvous/features/user-profile/controller/user_profile_controller.dart';
 
 import '../../../../../core/constants/api_constants.dart';
 
@@ -57,20 +59,40 @@ class _ChangeVisibilityBottomSheetState
           });
 
       if (result.isSuccess) {
-        // Update the product model with new visibility status
-        final updatedProduct = widget.product?.copyWith(
-          isPrivate: selectedVisibility.value == "private" ? true : false,
-        );
-
-        if (Get.isBottomSheetOpen ?? false) {
-          Get.back(result: updatedProduct);
-        }
         toast(
           selectedVisibility.value == "private"
               ? "This Post is now private"
               : "This Post is now public",
           type: ToastType.success,
         );
+        if (Get.isBottomSheetOpen ?? false) {
+          Get.back();
+        }
+        // Update the product model with new visibility status
+        final updatedProduct = widget.product?.copyWith(
+          isPrivate: selectedVisibility.value == "private" ? true : false,
+        );
+
+        // Update PostsViewController list if it exists
+        if (Get.isRegistered<PostsViewController>()) {
+          final postsController = Get.find<PostsViewController>();
+          final productIndex = postsController.posts.indexWhere(
+            (p) => p.id == widget.product?.id,
+          );
+          if (productIndex != -1) {
+            postsController.posts[productIndex] = updatedProduct!;
+          }
+        }
+        // Update UserProfileController list if it exists
+        if (Get.isRegistered<UserProfileController>()) {
+          final postsController = Get.find<UserProfileController>();
+          final productIndex = postsController.posts.indexWhere(
+            (p) => p.id == widget.product?.id,
+          );
+          if (productIndex != -1) {
+            postsController.posts[productIndex] = updatedProduct!;
+          }
+        }
       } else {
         toast(result.error.toString());
       }

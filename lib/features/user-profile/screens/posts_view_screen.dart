@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/blur_bottom_sheet.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
@@ -56,25 +58,24 @@ class _PostsViewScreenState extends State<PostsViewScreen> {
               ),
             ],
           ),
-          hSizedBox16,
+          hSizedBox20,
           Expanded(
-            child: Obx(() => ListView.builder(
-                  controller: controller.scrollController,
+            child: Obx(() => ScrollablePositionedList.builder(
+                  itemScrollController: controller.itemScrollController,
+                  itemPositionsListener: controller.itemPositionsListener,
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   itemCount: controller.posts.length +
                       (controller.isLoadingMore.value ? 1 : 0),
                   itemBuilder: (context, index) {
                     // Show loading indicator at the end
                     if (index == controller.posts.length) {
-                      return Container(
-                        padding: EdgeInsets.all(20),
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.primaryColor,
-                            strokeWidth: 2,
-                          ),
-                        ),
-                      );
+                      return Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Center(
+                            child: RotatingLoader(
+                              size: 30,
+                            ),
+                          ));
                     }
                     return Container(
                       margin: EdgeInsets.only(bottom: 30),

@@ -6,6 +6,7 @@ import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/features/home/models/product_list_model.dart';
 import 'package:vousvous/features/home/models/user_detail_model.dart';
+import 'package:vousvous/features/user-profile/controller/posts_view_controller.dart';
 import 'package:vousvous/features/user-profile/models/user_product_list_model.dart';
 
 class UserProfileController extends GetxController {
@@ -24,7 +25,7 @@ class UserProfileController extends GetxController {
   final RxBool isFollowing = false.obs;
   final RxBool isFollowLoading = false.obs;
 
-  final RxList<Product> productsList = <Product>[].obs;
+  final RxList<Product> posts = <Product>[].obs;
 
   final ScrollController scrollController = ScrollController();
 
@@ -78,9 +79,9 @@ class UserProfileController extends GetxController {
     });
   }
 
-  Future<void> getUserDetail() async {
+  Future<void> getUserDetail({bool showLoader = true}) async {
     try {
-      isLoading.value = true;
+      if (showLoader) isLoading.value = true;
 
       var result = await NetworkClient.instance.callApi(
         "${ApiConstants.getUserDetail}",
@@ -96,13 +97,13 @@ class UserProfileController extends GetxController {
     } catch (e) {
       toast(e.toString());
     } finally {
-      isLoading.value = false;
+      if (showLoader) isLoading.value = false;
     }
   }
 
-  Future<void> getOtherUserDetail() async {
+  Future<void> getOtherUserDetail({bool showLoader = true}) async {
     try {
-      isLoading.value = true;
+      if (showLoader) isLoading.value = true;
 
       var result = await NetworkClient.instance.callApi(
         "${ApiConstants.getUserProfile}/${userId}",
@@ -119,7 +120,7 @@ class UserProfileController extends GetxController {
     } catch (e) {
       toast(e.toString());
     } finally {
-      isLoading.value = false;
+      if (showLoader) isLoading.value = false;
     }
   }
 
@@ -153,6 +154,11 @@ class UserProfileController extends GetxController {
         userDetail.value = userDetail.value.copyWith(
           data: userDetail.value.data?.copyWith(isFollowing: true),
         );
+        if (isYou) {
+          getUserDetail(showLoader: false);
+        } else {
+          getOtherUserDetail(showLoader: false);
+        }
       } else {
         toast(result.error.toString());
       }
@@ -174,6 +180,11 @@ class UserProfileController extends GetxController {
         userDetail.value = userDetail.value.copyWith(
           data: userDetail.value.data?.copyWith(isFollowing: false),
         );
+        if (isYou) {
+          getUserDetail(showLoader: false);
+        } else {
+          getOtherUserDetail(showLoader: false);
+        }
       } else {
         toast(result.error.toString());
       }
@@ -185,7 +196,7 @@ class UserProfileController extends GetxController {
   getProductListApi({bool isInitial = true}) async {
     try {
       if (isInitial) {
-        productsList.value = [];
+        posts.value = [];
         page.value = 1;
         nextPageStop.value = true;
         isLoading2.value = true;
@@ -203,10 +214,14 @@ class UserProfileController extends GetxController {
           var userProductListModel = UserProductListModel.fromJson(
             result.data?.data,
           );
-          productsList.value += userProductListModel.data?.items ?? [];
+          posts.value += userProductListModel.data?.items ?? [];
+          if (Get.isRegistered<PostsViewController>()) {
+            Get.find<PostsViewController>().posts.value +=
+                userProductListModel.data?.items ?? [];
+          }
           page.value = page.value + 1;
-          if (productsList.isNotEmpty) {
-            if (productsList.length.toString() ==
+          if (posts.isNotEmpty) {
+            if (posts.length.toString() ==
                 userProductListModel.data?.total?.toString()) {
               nextPageStop.value = false;
             }
@@ -227,7 +242,7 @@ class UserProfileController extends GetxController {
   getOtherUserProductListApi({bool isInitial = true}) async {
     try {
       if (isInitial) {
-        productsList.value = [];
+        posts.value = [];
         page.value = 1;
         nextPageStop.value = true;
         isLoading2.value = true;
@@ -245,10 +260,14 @@ class UserProfileController extends GetxController {
           var userProductListModel = UserProductListModel.fromJson(
             result.data?.data,
           );
-          productsList.value += userProductListModel.data?.items ?? [];
+          posts.value += userProductListModel.data?.items ?? [];
+          if (Get.isRegistered<PostsViewController>()) {
+            Get.find<PostsViewController>().posts.value +=
+                userProductListModel.data?.items ?? [];
+          }
           page.value = page.value + 1;
-          if (productsList.isNotEmpty) {
-            if (productsList.length.toString() ==
+          if (posts.isNotEmpty) {
+            if (posts.length.toString() ==
                 userProductListModel.data?.total?.toString()) {
               nextPageStop.value = false;
             }

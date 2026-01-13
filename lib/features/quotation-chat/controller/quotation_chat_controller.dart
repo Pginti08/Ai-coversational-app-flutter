@@ -9,7 +9,7 @@ import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
-import 'package:vousvous/features/quotation-chat/models/analyze_dress_model.dart';
+import 'package:vousvous/features/product-detail/models/check_quotation_exists_model.dart';
 import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart';
 import 'package:vousvous/features/quotation-chat/widgets/chat_actions_buttons.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -24,7 +24,8 @@ class QuotationChatController extends GetxController {
 
   final RxBool loader = false.obs;
   final RxBool loader1 = false.obs;
-  final Rx<AnalyzeDressModel> analyzeDressModel = AnalyzeDressModel().obs;
+  final Rx<CheckQuotationExistsModel> quotationDetailModel =
+      CheckQuotationExistsModel().obs;
 
   String quotationId = "";
 
@@ -41,7 +42,7 @@ class QuotationChatController extends GetxController {
   final Rx<String?> thinkingMessage = Rx<String?>(null);
 
   // Chat messages list
-  final RxList<Message> messages = <Message>[].obs;
+  final RxList<Item> messages = <Item>[].obs;
 
   //chat actions - ONLY show these when NOT part of a message
   final RxList<Option> buttonOptions = <Option>[].obs;
@@ -59,11 +60,18 @@ class QuotationChatController extends GetxController {
       if (Get.arguments["imageUrl"] != null) {
         imageUrl = Get.arguments["imageUrl"];
       }
+      if (Get.arguments["quotationId"] != null) {
+        quotationId = Get.arguments["quotationId"];
+      }
       if (Get.arguments["status"] != null) {
         status = Get.arguments["status"];
       }
     }
-    analyzeDress(imageUrl);
+    if (isNullOrEmpty(quotationId)) {
+      checkQuotationStatus();
+    } else {
+      getQuotationDetails();
+    }
     _enableWakelock();
     manageScrollController();
   }
@@ -115,21 +123,47 @@ class QuotationChatController extends GetxController {
     );
   }
 
-  Future<void> analyzeDress(String imageUrl) async {
+  Future<void> checkQuotationStatus() async {
+    try {
+      loader1.value = true;
+      var result = await NetworkClient.instance.callApi(
+        isNotNullOrEmpty(productId)
+            ? "${ApiConstants.checkQuotationExists}?productId=${productId}"
+            : "${ApiConstants.checkQuotationExists}?image=${imageUrl}",
+        MethodType.get,
+        baseUrlType: BaseUrl.base,
+      );
+
+      if (result.isSuccess) {
+        var checkExistsQuotationModel =
+            CheckQuotationExistsModel.fromJson(result.data?.data);
+        quotationId = checkExistsQuotationModel.data?.quotationId ?? "";
+        getQuotationDetails();
+      } else {
+        toast(result.error.toString());
+      }
+    } catch (e) {
+      toast(e.toString());
+    } finally {
+      loader1.value = false;
+    }
+  }
+
+  Future<void> getQuotationDetails() async {
     try {
       loader1.value = true;
 
       var result = await NetworkClient.instance.callApi(
-          "${ApiConstants.analyzeDress}", MethodType.post,
-          baseUrlType: BaseUrl.chat,
-          params: {
-            if (isNotNullOrEmpty(productId)) "product_id": productId,
-            if (isNullOrEmpty(productId)) "image_path": imageUrl,
-          });
+        isNotNullOrEmpty(productId)
+            ? "${ApiConstants.checkQuotationExists}?productId=${productId}"
+            : "${ApiConstants.checkQuotationExists}?image=${imageUrl}",
+        MethodType.get,
+        baseUrlType: BaseUrl.base,
+      );
 
       if (result.isSuccess) {
-        analyzeDressModel.value = AnalyzeDressModel.fromJson(result.data?.data);
-        quotationId = analyzeDressModel.value.quotationId ?? "";
+        quotationDetailModel.value =
+            CheckQuotationExistsModel.fromJson(result.data?.data);
         getChatHistoryApi();
       } else {
         toast(result.error.toString());
@@ -152,8 +186,8 @@ class QuotationChatController extends GetxController {
       }
       if (nextPageStop.isTrue) {
         var result = await NetworkClient.instance.callApi(
-          isNotNullOrEmpty(quotationChatHistoryModel.data?.timestamp)
-              ? "/quotations/${quotationId}/chat-history?page=${page.value}&limit=20&timestamp=${quotationChatHistoryModel.data?.timestamp}"
+          isNotNullOrEmpty(quotationChatHistoryModel.data?.timestampDate)
+              ? "/quotations/${quotationId}/chat-history?page=${page.value}&limit=20&timestamp=${quotationChatHistoryModel.data?.timestampDate}"
               : "/quotations/${quotationId}/chat-history?page=${page.value}&limit=20",
           baseUrlType: BaseUrl.base,
           MethodType.get,
@@ -174,25 +208,25 @@ class QuotationChatController extends GetxController {
                 (quotationChatHistoryModel.data?.total ?? 0).toString()) {
               nextPageStop.value = false;
               // Add image message at the end
-              if (isNotNullOrEmpty(imageUrl)) {
-                messages.add(Message(
-                  sender: 'ai',
-                  message: imageUrl,
-                  messageType: 'image',
-                ));
-              }
+              // if (isNotNullOrEmpty(imageUrl)) {
+              //   messages.add(Message(
+              //     sender: 'ai',
+              //     message: imageUrl,
+              //     messageType: 'image',
+              //   ));
+              // }
             }
             isNewChat.value = false;
           } else {
             isNewChat.value = true;
             // Add image message at the end (oldest position) if it's initial load
-            if (isNotNullOrEmpty(imageUrl)) {
-              messages.add(Message(
-                sender: 'ai',
-                message: imageUrl,
-                messageType: 'image',
-              ));
-            }
+            // if (isNotNullOrEmpty(imageUrl)) {
+            //   messages.add(Message(
+            //     sender: 'ai',
+            //     message: imageUrl,
+            //     messageType: 'image',
+            //   ));
+            // }
           }
         } else {
           loader.value = false;
@@ -209,12 +243,8 @@ class QuotationChatController extends GetxController {
 
   void connectSocket() {
     loader.value = true;
-    if (isNullOrEmpty(status) || status.toLowerCase() == "draft") {
-      isThinking.value = true;
-      thinkingMessage.value = "Analyzing...";
-    }
     socket = IO.io(
-      ApiConstants.chatURL,
+      ApiConstants.baseURL,
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .enableForceNew()
@@ -235,9 +265,8 @@ class QuotationChatController extends GetxController {
     });
 
     socket?.onConnect((_) {
-      loader.value = false;
-      socket?.emit("quotation_chat", {
-        "quotation_id": quotationId,
+      socket?.emit("join_room", {
+        quotationId,
       });
       debugPrint('✅ Socket.IO connected');
     });
@@ -269,65 +298,21 @@ class QuotationChatController extends GetxController {
       }
     });
 
-    socket?.on('quotation_chat_response', (data) {
-      isThinking.value = false;
-      if (data is Map) {
-        final reply = data['message']?.toString();
-        final rawOptions = data['options'];
-        final showBodyProfileForm = data['show_body_profile_form'];
-        final showBulkQuantityForm = data['show_bulk_quantity_form'];
-        final finalQuotationCardDetail =
-            isNotNullOrEmpty(data["quotation_card"])
-                ? CardDetail.fromJson(data['quotation_card'])
-                : null;
-
-        // CRITICAL FIX: Check if this message already exists before adding
-        bool messageExists = false;
-        if (isNotNullOrEmpty(reply)) {
-          // Check if any existing message has the same content
-          if (messages.isNotEmpty) {
-            messageExists = (messages.first.message?.toLowerCase() ==
-                    reply?.toLowerCase()) &&
-                (messages.first.sender?.toLowerCase() == 'ai');
-          }
-          // Only add message if it doesn't exist AND has content
-          if (!messageExists) {
-            // If there's a quotation card, create a card message
-            if (finalQuotationCardDetail != null) {
-              messages.insert(
-                0,
-                Message(
-                  sender: 'ai',
-                  message: 'quotation_card',
-                  messageType: 'card',
-                  cardDetail: finalQuotationCardDetail,
-                ),
-              );
-            }
-            // Otherwise create a regular text message
-            else {
-              messages.insert(
-                0,
-                Message(
-                  sender: 'ai',
-                  message: reply,
-                  messageType: 'text',
-                ),
-              );
-            }
-          }
-        }
-
-        // Update UI actions (these are separate from messages)
-        buttonOptions.value = (rawOptions is List)
-            ? rawOptions.map((e) => Option.fromJson(e)).toList()
-            : [];
-
-        showBodyProfile.value = showBodyProfileForm ?? false;
-        showBulkQuantity.value = showBulkQuantityForm ?? false;
-      } else {
-        toast(data.toString());
-      }
+    socket?.on('joined_room', (data) {
+      loader.value = false;
+      debugPrint('✅ Joined Room ${data["roomId"]}');
+    });
+    socket?.on('receive_message', (data) {
+      // Add receiver message
+      messages.insert(
+        0,
+        Item(
+          messageType: data['messageType'],
+          message: data["message"],
+          imageUrl: data["imageUrl"],
+          createdAt: DateTime.tryParse(data['createdAt'].toString()),
+        ),
+      );
     });
 
     socket?.on('error', (data) {
@@ -353,25 +338,23 @@ class QuotationChatController extends GetxController {
     // Add user message
     messages.insert(
       0,
-      Message(
-        sender: "user",
-        message: message,
-        messageType: 'text',
-      ),
+      Item(
+          sender: "user",
+          message: message,
+          messageType: 'text',
+          createdAt: DateTime.now().toUtc()),
     );
 
-    // Show thinking indicator
-    isThinking.value = true;
-    thinkingMessage.value = "Thinking...";
-
-    socket?.emit("quotation_chat", {
+    socket?.emit("send_message", {
       "message": message,
-      "quotation_id": quotationId,
+      "messageType": "text",
+      "roomId": quotationId,
     });
 
     log({
       "message": message,
-      "quotation_id": quotationId,
+      "messageType": "text",
+      "roomId": quotationId,
     }.toString());
   }
 

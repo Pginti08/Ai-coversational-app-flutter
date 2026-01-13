@@ -544,22 +544,16 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                           ),
                                         ),
                                         hSizedBox8,
-                                        AppButton(
-                                          onTap: () {
-                                            Get.toNamed(Routes.quotationChat,
-                                                arguments: {
-                                                  "productId": controller
-                                                      .productDetail.value.id,
-                                                  "imageUrl": controller
-                                                          .productDetail
-                                                          .value
-                                                          .image ??
-                                                      "",
-                                                });
-                                          },
-                                          textColor: AppColors.blackColor,
-                                          text: "Get Quote",
-                                        ),
+                                        Obx(() => AppButton(
+                                              onTap: () {
+                                                controller.checkQuotationStatus(
+                                                    context);
+                                              },
+                                              textColor: AppColors.blackColor,
+                                              text: "Get Quote",
+                                              isLoading:
+                                                  controller.isLoading2.value,
+                                            )),
                                       ],
                                     ),
                                   ),

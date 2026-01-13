@@ -7,15 +7,20 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/core/widgets/blur_bottom_sheet.dart';
 import 'package:vousvous/core/widgets/blur_scaffold.dart';
 import 'package:vousvous/features/liked/liked-product/controller/liked_product_controller.dart';
+import 'package:vousvous/features/product-detail/models/check_quotation_exists_model.dart';
+import 'package:vousvous/features/quotations/screens/select_body_profile_bottom_sheet.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 class LikedProductScreen extends StatefulWidget {
@@ -27,6 +32,49 @@ class LikedProductScreen extends StatefulWidget {
 
 class _LikedProductScreenState extends State<LikedProductScreen> {
   final controller = Get.put(LikedProductController());
+  final RxBool isLoading2 = false.obs;
+
+  Future<void> checkQuotationStatus(BuildContext context) async {
+    try {
+      isLoading2.value = true;
+      var result = await NetworkClient.instance.callApi(
+        "${ApiConstants.checkQuotationExists}?productId=${controller.productDetail.value.id}",
+        MethodType.get,
+        baseUrlType: BaseUrl.base,
+      );
+
+      if (result.isSuccess) {
+        var checkExistsQuotationModel =
+            CheckQuotationExistsModel.fromJson(result.data?.data);
+        if (checkExistsQuotationModel.data?.exists == true) {
+          Get.toNamed(Routes.quotationChat, arguments: {
+            "productId": controller.productDetail.value.id,
+            "quotationId": checkExistsQuotationModel.data?.quotationId,
+          });
+        } else {
+          BlurBottomSheet().show<void>(
+              height: MediaQuery.sizeOf(context).height * 0.8,
+              context: context,
+              borderColor: AppColors.whiteColor.withAlpha(40),
+              backgroundColor: AppColors.scaffoldColor,
+              barrierColor: AppColors.blackColor.withAlpha(50),
+              blurStrength: 30,
+              isCloseButton: true,
+              child: SelectBodyProfileBottomSheet(
+                productId: controller.productDetail.value.id,
+                image: controller.productDetail.value.image,
+                aiAnalysis: checkExistsQuotationModel.data?.aiAnalysis,
+              ));
+        }
+      } else {
+        toast(result.error.toString());
+      }
+    } catch (e) {
+      toast(e.toString());
+    } finally {
+      isLoading2.value = false;
+    }
+  }
 
   // Method to download image and return file path
   Future<String?> _downloadImage(String imageUrl) async {
@@ -160,30 +208,29 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AppButton(
-                      height: 52,
-                      width: 170,
-                      onTap: () {
-                        Get.toNamed(Routes.quotationChat, arguments: {
-                          "imageUrl": controller.imageUrl,
-                          "productId": controller.productId
-                        });
-                      },
-                      gradientBorderColors: AppColors.colorGradient,
-                      isOutlined: true,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Get Quote",
-                              style: style700S14,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                    Obx(() => AppButton(
+                          height: 52,
+                          width: 170,
+                          onTap: () {
+                            checkQuotationStatus(context);
+                          },
+                          gradientBorderColors: AppColors.colorGradient,
+                          isOutlined: true,
+                          isLoading: isLoading2.value,
+                          loaderColor: AppColors.whiteColor,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Get Quote",
+                                  style: style700S14,
+                                )
+                              ],
+                            ),
+                          ),
+                        )),
                     wSizedBox10,
                     AppButton(
                       height: 52,

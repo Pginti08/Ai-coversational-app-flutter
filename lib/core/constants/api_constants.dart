@@ -66,6 +66,8 @@ class ApiConstants {
   static const String analyzeProduct = '/products/ai-analysis';
   static const String follow = '/follow';
   static const String unfollow = '/unfollow';
+  static const String checkQuotationExists = '/quotations/check-exists';
+  static const String createQuotation = '/quotations/create-with-bp';
 
   // Headers
   static const Map<String, String> headers = {

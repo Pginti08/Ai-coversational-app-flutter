@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/services/network_service.dart';
@@ -23,11 +24,11 @@ class FinalQuotationCard extends StatelessWidget {
     this.onMessageUpdate, // Add callback
   });
 
-  final CardDetail updatedBySupport;
+  final UpdatedBySupport updatedBySupport;
   final CardDetail quotation;
-  final Message? message;
+  final Item? message;
 
-  final Function(Message)? onMessageUpdate; // Add callback parameter
+  final Function(Item)? onMessageUpdate; // Add callback parameter
 
   final RxBool isLoading = false.obs;
 
@@ -72,7 +73,7 @@ class FinalQuotationCard extends StatelessWidget {
           if (message != null && onMessageUpdate != null) {
             final updatedMessage = message!.copyWith(
               cardDetail: CardDetail.fromJson(result.data?.data["data"]),
-              updatedBySupport: CardDetail(),
+              updatedBySupport: UpdatedBySupport(),
             );
             onMessageUpdate!(updatedMessage);
           }
@@ -123,7 +124,11 @@ class FinalQuotationCard extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  (quotation.date ?? "-").toUpperCase(),
+                  isNotNullOrEmpty(quotation.date)
+                      ? DateFormat("dd-MMM-yyyy")
+                          .format(quotation.date!)
+                          .toUpperCase()
+                      : "-",
                   style: style700S10.copyWith(
                     letterSpacing: 0.80,
                     color: Color(0xFF666666),
@@ -165,13 +170,7 @@ class FinalQuotationCard extends StatelessWidget {
                                       ? bulkQuantitiesToReadableText(
                                           quotation.bulkQuantities)
                                       : "-",
-                              isNotNullOrEmpty(updatedBySupport.sizeMeasurement)
-                                  ? updatedBySupport.sizeMeasurement!
-                                  : isNotNullOrEmpty(
-                                          updatedBySupport.bulkQuantities)
-                                      ? bulkQuantitiesToReadableText(
-                                          updatedBySupport.bulkQuantities)
-                                      : "")
+                              "")
                         ],
                       ),
                     ),
@@ -200,17 +199,15 @@ class FinalQuotationCard extends StatelessWidget {
                       isNotNullOrEmpty(quotation.quantity)
                           ? quotation.quantity.toString()
                           : "",
-                      isNotNullOrEmpty(updatedBySupport.quantity)
-                          ? updatedBySupport.quantity.toString()
-                          : "",
+                      "",
                     ),
                     wSizedBox10,
-                    _buildInfoRow(
-                        'PRICE',
-                        "${AssetConstants.rupeeSymbol}${quotation.price?.toStringAsFixed(0) ?? '-'}/pc",
-                        isNotNullOrEmpty(updatedBySupport.price)
-                            ? "${AssetConstants.rupeeSymbol}${updatedBySupport.price?.toStringAsFixed(0) ?? '-'}/pc"
-                            : ""),
+                    if (isNotNullOrEmpty(quotation.price) &&
+                        (quotation.price ?? 0) != 0)
+                      _buildInfoRow(
+                          'PRICE',
+                          "${AssetConstants.rupeeSymbol}${quotation.price?.toStringAsFixed(0) ?? '-'}/pc",
+                          ""),
                   ],
                 ),
                 hSizedBox24,

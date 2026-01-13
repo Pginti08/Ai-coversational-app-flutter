@@ -101,12 +101,23 @@ class _UserMenuState extends State<UserMenu> {
                       IconButton(
                           onPressed: () {
                             widget.controller.toggleDrawer();
-                            Get.toNamed(Routes.editProfile);
+                            Get.toNamed(Routes.userProfile);
                           },
-                          icon: SvgPicture.asset(
-                            AssetConstants.edit,
-                            width: 24,
-                          ))
+                          icon: Transform.rotate(
+                              angle: 3.14159,
+                              child: SvgPicture.asset(
+                                AssetConstants.backward,
+                                height: 24,
+                              )))
+                      // IconButton(
+                      //     onPressed: () {
+                      //       widget.controller.toggleDrawer();
+                      //       Get.toNamed(Routes.editProfile);
+                      //     },
+                      //     icon: SvgPicture.asset(
+                      //       AssetConstants.edit,
+                      //       width: 24,
+                      //     ))
                     ],
                   ),
                 ),

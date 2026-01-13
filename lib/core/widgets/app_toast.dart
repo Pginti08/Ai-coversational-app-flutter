@@ -24,7 +24,7 @@ toast(
 }) {
   if (isNotNullOrEmpty(message)) {
     toastification
-      ..dismissAll()
+      ..dismissAll(delayForAnimation: false)
       ..showCustom(
         alignment: Alignment.topCenter,
         direction: TextDirection.ltr,
@@ -43,7 +43,7 @@ toast(
                 padding: const EdgeInsets.all(4),
                 child: CommonContainer(
                   enableBlur: true,
-                  backgroundColor: AppColors.blackColor.withAlpha(30),
+                  backgroundColor: AppColors.blackColor.withAlpha(130),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   borderRadius: 20,

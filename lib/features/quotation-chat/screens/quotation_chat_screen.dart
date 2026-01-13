@@ -8,14 +8,15 @@ import 'package:get/get.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_text_field.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/features/quotation-chat/controller/quotation_chat_controller.dart';
+import 'package:vousvous/features/quotation-chat/utils/date_grouping_helper.dart';
 import 'package:vousvous/features/quotation-chat/widgets/chat_actions_buttons.dart';
-import 'package:vousvous/features/quotation-chat/widgets/quotation_ai_message_tile.dart';
 import 'package:vousvous/features/quotation-chat/widgets/quotation_ai_typing_tile.dart';
-import 'package:vousvous/features/quotation-chat/widgets/quotation_user_message_tile.dart';
+import 'package:vousvous/features/quotation-chat/widgets/quotation_message_tile.dart';
 import 'package:vousvous/features/quotation-chat/widgets/show_body_profile_widget.dart';
 import 'package:vousvous/features/quotation-chat/widgets/show_bulk_quantity_widget.dart';
 
@@ -30,6 +31,7 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
     with AutomaticKeepAliveClientMixin {
   final QuotationChatController controller = Get.put(QuotationChatController());
   final TextEditingController _textController = TextEditingController();
+  final RxString inputText = ''.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +98,8 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Text(
-                          controller.analyzeDressModel.value.analysis?.title ??
+                          controller.quotationDetailModel.value.data?.aiAnalysis
+                                  ?.title ??
                               "",
                           maxLines: 2,
                           style: style400S16.copyWith(
@@ -118,13 +121,16 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
                 final bool showPagination = controller.paginationLoading.value;
                 final int messageCount = controller.messages.length;
 
-                return ListView.builder(
+                return ListView.separated(
                   controller: controller.scrollController,
                   reverse: true,
                   physics: const AlwaysScrollableScrollPhysics()
                       .applyTo(const BouncingScrollPhysics()),
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   itemCount: _getTotalItemCount(),
+                  separatorBuilder: (context, index) {
+                    return hSizedBox10;
+                  },
                   itemBuilder: (context, index) {
                     int currentIndex = index;
 
@@ -164,14 +170,35 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
                     // 3. Handle Messages
                     if (currentIndex >= 0 && currentIndex < messageCount) {
                       final message = controller.messages[currentIndex];
+                      final previousMessage = currentIndex + 1 < messageCount
+                          ? controller.messages[currentIndex + 1]
+                          : null;
 
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 16),
-                        child: message.sender?.toLowerCase() == "user"
-                            ? QuotationUserMessageTile(
-                                key: UniqueKey(), message: message)
-                            : QuotationAiMessageTile(
-                                key: UniqueKey(), message: message),
+                      final showDate = shouldShowDateHeader(
+                        message.createdAt!.toLocal(),
+                        previousMessage?.createdAt!.toLocal(),
+                      );
+
+                      return Column(
+                        children: [
+                          if (showDate)
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 12),
+                              child: Text(
+                                getDateLabel(
+                                  message.createdAt!.toLocal(),
+                                ),
+                                style: style400S12.copyWith(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          Padding(
+                              padding: EdgeInsets.only(bottom: 16),
+                              child: QuotationMessageTile(
+                                  key: UniqueKey(), message: message)),
+                        ],
                       );
                     }
 
@@ -233,6 +260,9 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
                         minLines: 1,
                         keyboardType: TextInputType.multiline,
                         borderColor: Colors.transparent,
+                        onChanged: (value) {
+                          inputText.value = value;
+                        },
                         onSubmitted: (value) {
                           if (_textController.text.trim().isNotEmpty &&
                               !controller.isThinking.value) {
@@ -243,23 +273,31 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
                           }
                         },
                         suffixIcon: isKeyboardVisible
-                            ? GestureDetector(
-                                onTap: () {
-                                  if (_textController.text.trim().isNotEmpty &&
-                                      !controller.isThinking.value) {
-                                    controller.sendMessage(
-                                      message: _textController.text.trim(),
-                                    );
-                                    _textController.clear();
-                                  }
-                                },
-                                child: SvgPicture.asset(AssetConstants.arrowUp),
-                              )
-                            : GestureDetector(
-                                onTap: () {},
-                                child: SvgPicture.asset(
-                                    AssetConstants.voiceCircleIcon),
-                              ),
+                            ? Obx(() {
+                                final bool isDisabled =
+                                    inputText.value.trim().isEmpty ||
+                                        controller.isThinking.value;
+
+                                return IgnorePointer(
+                                  ignoring: isDisabled,
+                                  child: Opacity(
+                                    opacity: isDisabled ? 0.4 : 1,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        controller.sendMessage(
+                                          message: inputText.value.trim(),
+                                        );
+                                        _textController.clear();
+                                        inputText.value = '';
+                                      },
+                                      child: SvgPicture.asset(
+                                        AssetConstants.arrowUp,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              })
+                            : null,
                       ),
                     ],
                   ),

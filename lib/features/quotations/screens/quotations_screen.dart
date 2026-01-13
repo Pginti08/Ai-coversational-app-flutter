@@ -97,12 +97,14 @@ class QuotationsScreen extends StatelessWidget {
                               index == controller.quotationList.length - 1;
 
                           return Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               GestureDetector(
                                 onTap: () {
                                   Get.toNamed(Routes.quotationChat, arguments: {
                                     "imageUrl": quotation.dressImage ?? "",
                                     "productId": quotation.productId ?? "",
+                                    "quotationId": quotation.id,
                                     if (isNotNullOrEmpty(quotation.status))
                                       "status": quotation.status ?? ""
                                   });
@@ -121,6 +123,8 @@ class QuotationsScreen extends StatelessWidget {
                                       wSizedBox10,
                                       Expanded(
                                         child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
@@ -144,24 +148,36 @@ class QuotationsScreen extends StatelessWidget {
                                                                 .whiteTextColor),
                                                       ),
                                                       Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
                                                           Expanded(
                                                             child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
                                                                       .start,
                                                               children: [
-                                                                Text(
-                                                                  "${AssetConstants.rupeeSymbol} ${quotation.price?.toStringAsFixed(0) ?? 0}",
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                  style: style400S14.copyWith(
-                                                                      letterSpacing:
-                                                                          0.28,
-                                                                      color: Color(
-                                                                          0xFFCCCCCC)),
-                                                                ),
+                                                                if (isNotNullOrEmpty(
+                                                                        quotation
+                                                                            .price) &&
+                                                                    (quotation.price ??
+                                                                            0) !=
+                                                                        0)
+                                                                  Text(
+                                                                    "${AssetConstants.rupeeSymbol} ${quotation.price?.toStringAsFixed(0) ?? 0}",
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: style400S14.copyWith(
+                                                                        letterSpacing:
+                                                                            0.28,
+                                                                        color: Color(
+                                                                            0xFFCCCCCC)),
+                                                                  ),
                                                                 hSizedBox6,
                                                                 Text(
                                                                     quotation.status?.replaceAll(
@@ -200,7 +216,8 @@ class QuotationsScreen extends StatelessWidget {
                                                 ),
                                                 if (quotation.status
                                                         ?.toLowerCase() ==
-                                                    "draft")
+                                                    "draft") ...[
+                                                  wSizedBox6,
                                                   CommonContainer(
                                                       isCircle: true,
                                                       borderGradientColors:
@@ -232,6 +249,7 @@ class QuotationsScreen extends StatelessWidget {
                                                       child: SvgPicture.asset(
                                                           AssetConstants
                                                               .remove))
+                                                ]
                                               ],
                                             ),
                                             hSizedBox6,

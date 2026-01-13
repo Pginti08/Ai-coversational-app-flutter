@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart';
 
 bool isNullOrEmpty(dynamic val) {
   final value = val.toString();
@@ -207,4 +208,40 @@ String formatTimeAgo(DateTime? dateTime) {
   } else {
     return DateFormat('dd MMMM yyyy').format(dateTime);
   }
+}
+
+String getDateGroupLabel(DateTime? dateTime) {
+  if (dateTime == null) return "Unknown";
+  
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final yesterday = today.subtract(Duration(days: 1));
+  final messageDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+  
+  if (messageDate == today) {
+    return "Today";
+  } else if (messageDate == yesterday) {
+    return "Yesterday";
+  } else {
+    return DateFormat('dd MMMM yyyy').format(dateTime);
+  }
+}
+
+List<dynamic> groupMessagesByDate(List<Item> messages) {
+  List<dynamic> groupedItems = [];
+  String? lastDateGroup;
+  
+  for (int i = 0; i < messages.length; i++) {
+    final message = messages[i];
+    final dateGroup = getDateGroupLabel(message.createdAt);
+    
+    if (lastDateGroup != dateGroup) {
+      groupedItems.add({'type': 'date_header', 'label': dateGroup});
+      lastDateGroup = dateGroup;
+    }
+    
+    groupedItems.add({'type': 'message', 'data': message});
+  }
+  
+  return groupedItems;
 }

@@ -161,6 +161,11 @@ class _ScannedManuallyBottomSheetState
         if (Get.isBottomSheetOpen ?? false) {
           Get.back();
         }
+        if (!widget.isEdit) {
+          if (Get.isBottomSheetOpen ?? false) {
+            Get.back();
+          }
+        }
         if (Get.isRegistered<BodyProfileController>()) {
           Get.find<BodyProfileController>().getSavedBodyProfile();
         }
@@ -267,20 +272,20 @@ class _ScannedManuallyBottomSheetState
                   return isKeyboardVisible
                       ? const SizedBox.shrink()
                       : Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 8.0),
-                        child: SafeArea(
-                          top: false,
-                          child: Obx(
-                            () => AppButton(
-                              text: "Save Body Profile",
-                              isLoading: isLoading.value,
-                              onTap: () {
-                                validateAndSave();
-                              },
+                          padding: const EdgeInsets.only(top: 8, bottom: 8.0),
+                          child: SafeArea(
+                            top: false,
+                            child: Obx(
+                              () => AppButton(
+                                text: "Save Body Profile",
+                                isLoading: isLoading.value,
+                                onTap: () {
+                                  validateAndSave();
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      );
+                        );
                 },
               ),
             ],

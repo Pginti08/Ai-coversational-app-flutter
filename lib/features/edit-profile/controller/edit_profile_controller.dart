@@ -67,6 +67,7 @@ class EditProfileController extends GetxController {
           if (Get.isRegistered<UserProfileController>()) {
             Get.find<UserProfileController>().getUserDetail();
           }
+          Get.back();
         } else {
           updateProfileImageApi();
         }
@@ -103,6 +104,7 @@ class EditProfileController extends GetxController {
         if (Get.isRegistered<UserProfileController>()) {
           Get.find<UserProfileController>().getUserDetail();
         }
+        Get.back();
       } else {
         toast(result.error.toString());
       }

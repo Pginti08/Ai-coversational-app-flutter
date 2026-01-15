@@ -66,6 +66,8 @@ class ApiConstants {
   static const String analyzeProduct = '/products/ai-analysis';
   static const String follow = '/follow';
   static const String unfollow = '/unfollow';
+  static const String followers = '/followers';
+  static const String following = '/following';
   static const String checkQuotationExists = '/quotations/check-exists';
   static const String createQuotation = '/quotations/create-with-bp';
 

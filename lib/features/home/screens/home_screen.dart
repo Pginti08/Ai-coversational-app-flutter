@@ -99,12 +99,14 @@ class _HomeScreenState extends State<HomeScreen>
         _pullDownHeight = _pullDownHeight.clamp(0.0, 200.0);
       });
 
+      /*
       // Check if user performed the correct guide step
       if (_pullDownHeight > 160) {
         if (controller.currentGuideStep.value == GuideStep.dragDown) {
           controller.currentGuideStep.value = GuideStep.thumbLeft;
         }
       }
+      */
     }
 
     // Update thumb horizontal position
@@ -113,21 +115,9 @@ class _HomeScreenState extends State<HomeScreen>
     // Update selection based on current thumb position
     final newSelection = _getSelectionFromPosition(_thumbPosition, screenWidth);
     if (newSelection != _selectedOption) {
-      // --- USER GUIDE LOGIC: Track thumb movements ---
       setState(() {
         _selectedOption = newSelection;
       });
-
-      // Check if user moved thumb left during thumbLeft guide step
-      if (controller.currentGuideStep.value == GuideStep.thumbLeft) {
-        if (newSelection == ThumbSelection.skip) {
-          // User moved thumb to the left successfully
-          controller.currentGuideStep.value = GuideStep.thumbRight;
-        }
-      }
-
-      // --- END USER GUIDE LOGIC ---
-
       HapticService.medium();
     }
   }
@@ -177,23 +167,29 @@ class _HomeScreenState extends State<HomeScreen>
     switch (_selectedOption) {
       case ThumbSelection.skip:
         Get.toNamed(Routes.skipped);
+        /*
         if (controller.currentGuideStep.value == GuideStep.thumbRight) {
           controller.currentGuideStep.value = GuideStep.dragDown;
         }
+        */
 
         break;
       case ThumbSelection.shuffle:
         controller.getSuggestedProducts();
+        /*
         if (controller.currentGuideStep.value == GuideStep.thumbLeft ||
             controller.currentGuideStep.value == GuideStep.thumbRight) {
           controller.currentGuideStep.value = GuideStep.dragDown;
         }
+        */
         break;
       case ThumbSelection.favorite:
         Get.toNamed(Routes.liked);
+        /*
         if (controller.currentGuideStep.value == GuideStep.thumbRight) {
           controller.currentGuideStep.value = GuideStep.swipeRight;
         }
+        */
         break;
       case ThumbSelection.none:
         break;
@@ -286,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen>
 
           // --- USER GUIDE OVERLAY ---
           // TODO: Guide temporarily disabled
-          _buildGuideOverlay(),
+          // _buildGuideOverlay(),
           // --- END USER GUIDE OVERLAY ---
         ],
       );
@@ -505,15 +501,39 @@ class _HomeScreenState extends State<HomeScreen>
                                                 return true;
                                               }
 
+                                              /*
+                                                if (direction ==
+                                                    CardSwiperDirection.right) {
+                                                  if (controller.currentGuideStep
+                                                          .value ==
+                                                      GuideStep.swipeRight) {
+                                                    controller.currentGuideStep
+                                                            .value =
+                                                        GuideStep.swipeLeft;
+                                                  }
+                                                  controller.likedProduct(
+                                                    outfitList[previousIndex]
+                                                            .id ??
+                                                        "",
+                                                  );
+                                                } else if (direction ==
+                                                    CardSwiperDirection.left) {
+                                                  if (controller.currentGuideStep
+                                                          .value ==
+                                                      GuideStep.swipeLeft) {
+                                                    controller.currentGuideStep
+                                                            .value =
+                                                        GuideStep.openDrawer;
+                                                  }
+                                                  controller.skipProduct(
+                                                    outfitList[previousIndex]
+                                                            .id ??
+                                                        "",
+                                                  );
+                                                }
+                      */
                                               if (direction ==
                                                   CardSwiperDirection.right) {
-                                                if (controller.currentGuideStep
-                                                        .value ==
-                                                    GuideStep.swipeRight) {
-                                                  controller.currentGuideStep
-                                                          .value =
-                                                      GuideStep.swipeLeft;
-                                                }
                                                 controller.likedProduct(
                                                   outfitList[previousIndex]
                                                           .id ??
@@ -521,13 +541,6 @@ class _HomeScreenState extends State<HomeScreen>
                                                 );
                                               } else if (direction ==
                                                   CardSwiperDirection.left) {
-                                                if (controller.currentGuideStep
-                                                        .value ==
-                                                    GuideStep.swipeLeft) {
-                                                  controller.currentGuideStep
-                                                          .value =
-                                                      GuideStep.openDrawer;
-                                                }
                                                 controller.skipProduct(
                                                   outfitList[previousIndex]
                                                           .id ??
@@ -850,7 +863,9 @@ class _HomeScreenState extends State<HomeScreen>
       ],
     );
   }
+}
 
+  /*
   // --- USER GUIDE WIDGETS ---
   Widget _buildGuideOverlay() {
     return Obx(() {
@@ -1060,42 +1075,44 @@ class _HomeScreenState extends State<HomeScreen>
             highlightRect: Rect.zero, guideWidget: const SizedBox.shrink());
     }
   }
-}
 
-// --- HELPER CLASSES FOR GUIDE ---
+  // --- HELPER CLASSES FOR GUIDE ---
 
-/// Helper class to pass guide info
-class _GuideInfo {
-  final Rect highlightRect;
-  final Widget guideWidget;
-  _GuideInfo({required this.highlightRect, required this.guideWidget});
-}
-
-/// CustomClipper to "punch a hole" in the overlay
-class HoleClipper extends CustomClipper<Path> {
-  final Rect holeRect;
-  HoleClipper(this.holeRect);
-
-  @override
-  Path getClip(Size size) {
-    // Create a path for the entire screen
-    final fullScreenPath = Path()
-      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
-
-    // Create a path for the hole, as a rounded rectangle
-    final holePath = Path()
-      ..addRRect(RRect.fromRectAndRadius(holeRect, const Radius.circular(16)));
-
-    // Subtract the hole from the full screen
-    return Path.combine(
-      PathOperation.difference,
-      fullScreenPath,
-      holePath,
-    );
+  /// Helper class to pass guide info
+  class _GuideInfo {
+    final Rect highlightRect;
+    final Widget guideWidget;
+    _GuideInfo({required this.highlightRect, required this.guideWidget});
   }
 
-  @override
-  bool shouldReclip(HoleClipper oldClipper) {
-    return oldClipper.holeRect != holeRect;
+  /// CustomClipper to "punch a hole" in the overlay
+  class HoleClipper extends CustomClipper<Path> {
+    final Rect holeRect;
+    HoleClipper(this.holeRect);
+
+    @override
+    Path getClip(Size size) {
+      // Create a path for the entire screen
+      final fullScreenPath = Path()
+        ..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+
+      // Create a path for the hole, as a rounded rectangle
+      final holePath = Path()
+        ..addRRect(RRect.fromRectAndRadius(holeRect, const Radius.circular(16)));
+
+      // Subtract the hole from the full screen
+      return Path.combine(
+        PathOperation.difference,
+        fullScreenPath,
+        holePath,
+      );
+    }
+
+    @override
+    bool shouldReclip(HoleClipper oldClipper) {
+      return oldClipper.holeRect != holeRect;
+    }
   }
-}
+  */
+
+

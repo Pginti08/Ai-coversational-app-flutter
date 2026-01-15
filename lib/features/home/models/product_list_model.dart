@@ -58,6 +58,8 @@ class Product {
   String? userImage;
   bool? isFollowing;
   bool? isPrivate;
+  bool? isLiked;
+  int? likesCount;
 
   Product({
     this.id,
@@ -75,6 +77,8 @@ class Product {
     this.userImage,
     this.isFollowing,
     this.isPrivate,
+    this.isLiked,
+    this.likesCount,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -92,11 +96,14 @@ class Product {
         updatedAt: json["updatedAt"] == null
             ? null
             : DateTime.parse(json["updatedAt"]),
-        v: json["__v"],
+        v: int.tryParse(json["__v"].toString()),
         userName: json["userName"],
         userImage: json["userImage"],
         isFollowing: json["isFollowing"],
         isPrivate: json["isPrivate"],
+        isLiked: json["isLiked"] ?? (json["interaction"] == "like"),
+        likesCount: int.tryParse(
+            json["likesCount"]?.toString() ?? json["likes"]?.toString() ?? "0"),
       );
 
   Map<String, dynamic> toJson() => {
@@ -115,6 +122,8 @@ class Product {
         "userImage": userImage,
         "isFollowing": isFollowing,
         "isPrivate": isPrivate,
+        "isLiked": isLiked,
+        "likesCount": likesCount,
       };
 
   /// ✅ copyWith
@@ -134,6 +143,8 @@ class Product {
     String? userImage,
     bool? isFollowing,
     bool? isPrivate,
+    bool? isLiked,
+    int? likesCount,
   }) {
     return Product(
       id: id ?? this.id,
@@ -151,6 +162,8 @@ class Product {
       userImage: userImage ?? this.userImage,
       isFollowing: isFollowing ?? this.isFollowing,
       isPrivate: isPrivate ?? this.isPrivate,
+      isLiked: isLiked ?? this.isLiked,
+      likesCount: likesCount ?? this.likesCount,
     );
   }
 }

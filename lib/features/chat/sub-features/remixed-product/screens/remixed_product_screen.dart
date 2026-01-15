@@ -239,7 +239,7 @@ Download VOUSVOUS now and bring your fashion vision to life!
                         height: 52,
                         onTap: () {
                           BlurBottomSheet().show<void>(
-                            height: MediaQuery.sizeOf(context).height * 0.4,
+                            height: MediaQuery.sizeOf(context).height * 0.85,
                             context: context,
                             borderColor: AppColors.whiteColor.withAlpha(40),
                             backgroundColor: AppColors.scaffoldColor,

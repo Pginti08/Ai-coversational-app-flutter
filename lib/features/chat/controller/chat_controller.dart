@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer' show log;
 import 'dart:io';
 
@@ -45,6 +46,26 @@ class ChatController extends GetxController {
   final RxList<Brand> brands = <Brand>[].obs;
 
   final RxBool isNewChat = true.obs;
+
+  Timer? _thinkingTimer;
+  int _loadingMessageIndex = 0;
+  final List<String> _engagingMessages = [
+    "Analyzing your unique style preferences...",
+    "Scanning global fashion trends...",
+    "Curating the perfect color palette...",
+    "Browsing premium fabric collections...",
+    "Sketching a custom design for you...",
+    "Matching accessories to complete the look...",
+    "Reviewing sustainable fashion options...",
+    "Checking for seasonal relevance...",
+    "Adding finishing touches to the design...",
+    "Simulating real-world lighting...",
+    "Refining the texture details...",
+    "Almost ready to unveil your look...",
+  ];
+
+  // To store the shuffled sequence for current session
+  List<String> _currentCycleMessages = [];
 
   @override
   void onInit() {
@@ -134,6 +155,7 @@ class ChatController extends GetxController {
 
       if (sessionList.isNotEmpty) {
         currentSessionId = sessionList.first.id;
+        print("🔥 Session List Loaded: $sessionList");
         if (isNotNullOrEmpty(currentSessionId)) {
           getChatHistoryApi();
         } else {
@@ -163,6 +185,10 @@ class ChatController extends GetxController {
           baseUrlType: BaseUrl.chat,
           MethodType.get,
         );
+
+        print(
+            "🔥 Chat History URL: /sessions/${currentSessionId}/chats?page=${page.value}&limit=20&timestamp=${chatHistoryModel.data?.timestamp} (Base: ${ApiConstants.chatURL})");
+        print("🔥 Chat History Response: ${result.data?.data}");
 
         if (result.isSuccess) {
           loader.value = false;
@@ -197,6 +223,10 @@ class ChatController extends GetxController {
   void connectSocket({bool isConnectExisting = false}) {
     loader.value = true;
 
+    print("🔥 Connecting Socket to: ${ApiConstants.chatURL}");
+    print(
+        "🔥 Token: ${LocalStorageService.instance.getString(StorageConstants.accessToken)}");
+
     socket = IO.io(
       ApiConstants.chatURL,
       IO.OptionBuilder()
@@ -216,7 +246,7 @@ class ChatController extends GetxController {
 
     // 🔥 Log all events
     socket?.onAny((event, data) {
-      log("📩 Event: $event | Data: $data");
+      print("📩 CHAT_DEBUG Event: $event | Data: $data");
     });
 
     socket?.onConnect((_) {
@@ -243,26 +273,26 @@ class ChatController extends GetxController {
     socket?.onError((err) {
       debugPrint('❌ socket error: $err');
       isThinking.value = false;
+      _stopThinkingCycle();
       loader.value = false;
     });
 
     // server events (match your backend event names)
     socket?.on('server_message', (data) {
-      final msg =
-          (data is Map && data['msg'] != null)
-              ? data['msg'].toString()
-              : data.toString();
-      if (msg == "AI is thinking...") {
+      final msg = (data is Map && data['msg'] != null)
+          ? data['msg'].toString()
+          : data.toString();
+      if (msg == "AI is thinking..." || msg == "Analyzing...") {
         thinkingMessage.value = msg.toString();
         isThinking.value = true;
+        _startThinkingCycle();
       }
     });
 
     socket?.on('session_created', (data) {
-      final msg =
-          (data is Map && data['session_id'] != null)
-              ? data['session_id'].toString()
-              : data.toString();
+      final msg = (data is Map && data['session_id'] != null)
+          ? data['session_id'].toString()
+          : data.toString();
       currentSessionId = msg;
     });
 
@@ -271,16 +301,17 @@ class ChatController extends GetxController {
     });
 
     socket?.on('generation_started', (data) {
-      final msg =
-          (data is Map && data['msg'] != null)
-              ? data['msg'].toString()
-              : data.toString();
+      final msg = (data is Map && data['msg'] != null)
+          ? data['msg'].toString()
+          : data.toString();
       thinkingMessage.value = msg.toString();
       isThinking.value = true;
+      _startThinkingCycle();
     });
 
     socket?.on('chat_response', (data) {
       isThinking.value = false;
+      _stopThinkingCycle();
       if (data is Map) {
         final reply = (data['response'] ?? data['message'])?.toString() ?? '';
         // Insert new messages at the beginning (newest first)
@@ -292,13 +323,12 @@ class ChatController extends GetxController {
 
     socket?.on('generation_complete', (data) {
       isThinking.value = false;
+      _stopThinkingCycle();
       if (data is Map) {
-        final String msg =
-            (data['msg'] != null)
-                ? data['msg'].toString()
-                : 'Generation complete';
-        final List<ImageModel> images =
-            (data['filenames'] as List<dynamic>?)
+        final String msg = (data['msg'] != null)
+            ? data['msg'].toString()
+            : 'Generation complete';
+        final List<ImageModel> images = (data['filenames'] as List<dynamic>?)
                 ?.map(
                   (e) => ImageModel(
                     filename: e.toString(),
@@ -315,11 +345,11 @@ class ChatController extends GetxController {
     });
 
     socket?.on('error', (data) {
-      final err =
-          (data is Map && data['error'] != null)
-              ? data['error'].toString()
-              : data.toString();
+      final err = (data is Map && data['error'] != null)
+          ? data['error'].toString()
+          : data.toString();
       isThinking.value = false;
+      _stopThinkingCycle();
       toast('Error: $err');
     });
   }
@@ -330,11 +360,9 @@ class ChatController extends GetxController {
 
     FocusManager.instance.primaryFocus?.unfocus();
 
-    final refImages =
-        isNotNullOrEmpty(userSelectedRemixOutfits)
-            ? userSelectedRemixOutfits
-                .toList() // ✅ copy instead of reference
-            : null;
+    final refImages = isNotNullOrEmpty(userSelectedRemixOutfits)
+        ? userSelectedRemixOutfits.toList() // ✅ copy instead of reference
+        : null;
 
     messages.insert(
       0,
@@ -342,10 +370,9 @@ class ChatController extends GetxController {
         sender: "user",
         message: message,
         sessionId: currentSessionId,
-        refImage:
-            isNotNullOrEmpty(userSelectedRemixOutfits)
-                ? userSelectedRemixOutfits.toList()
-                : isNotNullOrEmpty(uploadImage)
+        refImage: isNotNullOrEmpty(userSelectedRemixOutfits)
+            ? userSelectedRemixOutfits.toList()
+            : isNotNullOrEmpty(uploadImage)
                 ? uploadImage.toList()
                 : null,
       ),
@@ -362,10 +389,9 @@ class ChatController extends GetxController {
     log(
       {
         "prompt": message,
-        "reference_filename":
-            isNotNullOrEmpty(refImages)
-                ? refImages
-                : null, // ✅ send the copy too
+        "reference_filename": isNotNullOrEmpty(refImages)
+            ? refImages
+            : null, // ✅ send the copy too
         "uploaded_reference":
             isNotNullOrEmpty(uploadImage) ? uploadImage : null,
         "session_id": currentSessionId,
@@ -496,6 +522,41 @@ class ChatController extends GetxController {
     }
     // Disable wakelock when controller is disposed
     _disableWakelock();
+    _stopThinkingCycle();
     super.onClose();
+  }
+
+  void _startThinkingCycle() {
+    _stopThinkingCycle(); // reset if already running
+    _loadingMessageIndex = 0;
+
+    // Prepare shuffled cycle
+    // 1. Get all messages except the last one ("Almost ready...")
+    var cycleOptions =
+        _engagingMessages.sublist(0, _engagingMessages.length - 1);
+    // 2. Shuffle them to ensure randomness
+    cycleOptions.shuffle();
+    // 3. Add the last message at the end
+    cycleOptions.add(_engagingMessages.last);
+
+    _currentCycleMessages = cycleOptions;
+
+    // Increased delay to 6 seconds.
+    _thinkingTimer = Timer.periodic(const Duration(seconds: 6), (timer) {
+      if (_loadingMessageIndex < _currentCycleMessages.length) {
+        thinkingMessage.value = _currentCycleMessages[_loadingMessageIndex];
+
+        // Only increment if we haven't reached the last message
+        // If we reached the last message, we stay there (don't loop back)
+        if (_loadingMessageIndex < _currentCycleMessages.length - 1) {
+          _loadingMessageIndex++;
+        }
+      }
+    });
+  }
+
+  void _stopThinkingCycle() {
+    _thinkingTimer?.cancel();
+    _thinkingTimer = null;
   }
 }

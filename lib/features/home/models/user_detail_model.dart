@@ -92,10 +92,10 @@ class Data {
       image: json["image"],
       bio: json["bio"],
       hasSeenGuide: json["hasSeenGuide"],
-      followersCount: json["followersCount"],
-      followingCount: json["followingCount"],
-      productsCount: json["productsCount"],
-      swipeCount: json["swipeCount"],
+      followersCount: int.tryParse(json["followersCount"].toString()),
+      followingCount: int.tryParse(json["followingCount"].toString()),
+      productsCount: int.tryParse(json["productsCount"].toString()),
+      swipeCount: int.tryParse(json["swipeCount"].toString()),
       createdAt:
           json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
       updatedAt:

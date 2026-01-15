@@ -11,6 +11,7 @@ import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
+import 'package:vousvous/core/widgets/image_viewer_screen.dart';
 import 'package:vousvous/core/widgets/shimmer_utils.dart';
 import 'package:vousvous/features/product-detail/controller/product_detail_controller.dart';
 import 'package:vousvous/features/user-profile/controller/user_profile_controller.dart';
@@ -18,10 +19,11 @@ import 'package:vousvous/routes/app_pages.dart';
 
 class UserProfileScreen extends StatelessWidget {
   UserProfileScreen({super.key});
-  final UserProfileController controller = Get.put(UserProfileController());
 
   @override
   Widget build(BuildContext context) {
+    final UserProfileController controller =
+        Get.put(UserProfileController(), tag: Get.arguments?['userId']);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if (Get.isRegistered<ProductDetailController>()) {
@@ -93,31 +95,43 @@ class UserProfileScreen extends StatelessWidget {
                                   Obx(
                                     () => Row(
                                       children: [
-                                        CommonContainer(
-                                          width: 100,
-                                          height: 100,
-                                          isCircle: true,
-                                          borderGradientColors:
-                                              AppColors.colorGradient,
-                                          backgroundColor: AppColors.blackColor
-                                              .withOpacity(1),
-                                          child: AppNetworkImage(
-                                            imageUrl: controller.userDetail
-                                                    .value.data?.image ??
-                                                "",
-                                            shape: BoxShape.circle,
-                                            fit: BoxFit.cover,
-                                            errorWidget: Container(
-                                              width: 100,
-                                              height: 100,
-                                              color: AppColors
-                                                  .lightGreyTextColor
-                                                  .withAlpha(30),
-                                              padding: EdgeInsets.all(24),
-                                              alignment: Alignment.center,
-                                              child: SvgPicture.asset(
-                                                AssetConstants.user,
-                                                color: AppColors.whiteColor,
+                                        GestureDetector(
+                                          onTap: () {
+                                            String? imageUrl = controller
+                                                .userDetail.value.data?.image;
+                                            if (imageUrl != null &&
+                                                imageUrl.isNotEmpty) {
+                                              Get.to(() => ImageViewerScreen(
+                                                  imageUrls: [imageUrl]));
+                                            }
+                                          },
+                                          child: CommonContainer(
+                                            width: 100,
+                                            height: 100,
+                                            isCircle: true,
+                                            borderGradientColors:
+                                                AppColors.colorGradient,
+                                            backgroundColor: AppColors
+                                                .blackColor
+                                                .withOpacity(1),
+                                            child: AppNetworkImage(
+                                              imageUrl: controller.userDetail
+                                                      .value.data?.image ??
+                                                  "",
+                                              shape: BoxShape.circle,
+                                              fit: BoxFit.cover,
+                                              errorWidget: Container(
+                                                width: 100,
+                                                height: 100,
+                                                color: AppColors
+                                                    .lightGreyTextColor
+                                                    .withAlpha(30),
+                                                padding: EdgeInsets.all(24),
+                                                alignment: Alignment.center,
+                                                child: SvgPicture.asset(
+                                                  AssetConstants.user,
+                                                  color: AppColors.whiteColor,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -174,68 +188,111 @@ class UserProfileScreen extends StatelessWidget {
                                                 ),
                                                 wSizedBox10,
                                                 Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                          (controller
-                                                                      .userDetail
-                                                                      .value
-                                                                      .data
-                                                                      ?.followersCount ??
-                                                                  0)
-                                                              .toString(),
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: style500S18.copyWith(
-                                                              letterSpacing:
-                                                                  0.36,
-                                                              color: AppColors
-                                                                  .whiteColor)),
-                                                      Text("Follower",
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: style300S14.copyWith(
-                                                              letterSpacing:
-                                                                  0.42,
-                                                              color: AppColors
-                                                                  .whiteColor)),
-                                                    ],
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Get.toNamed(
+                                                          Routes.followerList,
+                                                          arguments: {
+                                                            "userId": controller
+                                                                    .userId
+                                                                    .isEmpty
+                                                                ? (controller
+                                                                        .userDetail
+                                                                        .value
+                                                                        .data
+                                                                        ?.id ??
+                                                                    "")
+                                                                : controller
+                                                                    .userId,
+                                                          });
+                                                    },
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                            (controller
+                                                                        .userDetail
+                                                                        .value
+                                                                        .data
+                                                                        ?.followersCount ??
+                                                                    0)
+                                                                .toString(),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: style500S18.copyWith(
+                                                                letterSpacing:
+                                                                    0.36,
+                                                                color: AppColors
+                                                                    .whiteColor)),
+                                                        Text("Follower",
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: style300S14.copyWith(
+                                                                letterSpacing:
+                                                                    0.42,
+                                                                color: AppColors
+                                                                    .whiteColor)),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                                 wSizedBox10,
                                                 Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                          (controller
-                                                                      .userDetail
-                                                                      .value
-                                                                      .data
-                                                                      ?.followingCount ??
-                                                                  0)
-                                                              .toString(),
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: style500S18.copyWith(
-                                                              letterSpacing:
-                                                                  0.36,
-                                                              color: AppColors
-                                                                  .whiteColor)),
-                                                      Text("Following",
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: style300S14.copyWith(
-                                                              letterSpacing:
-                                                                  0.42,
-                                                              color: AppColors
-                                                                  .whiteColor)),
-                                                    ],
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Get.toNamed(
+                                                          Routes.followerList,
+                                                          arguments: {
+                                                            "type": "following",
+                                                            "userId": controller
+                                                                    .userId
+                                                                    .isEmpty
+                                                                ? (controller
+                                                                        .userDetail
+                                                                        .value
+                                                                        .data
+                                                                        ?.id ??
+                                                                    "")
+                                                                : controller
+                                                                    .userId,
+                                                          });
+                                                    },
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                            (controller
+                                                                        .userDetail
+                                                                        .value
+                                                                        .data
+                                                                        ?.followingCount ??
+                                                                    0)
+                                                                .toString(),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: style500S18.copyWith(
+                                                                letterSpacing:
+                                                                    0.36,
+                                                                color: AppColors
+                                                                    .whiteColor)),
+                                                        Text("Following",
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: style300S14.copyWith(
+                                                                letterSpacing:
+                                                                    0.42,
+                                                                color: AppColors
+                                                                    .whiteColor)),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -372,6 +429,15 @@ class UserProfileScreen extends StatelessWidget {
                                                       .value
                                                       .data
                                                       ?.image,
+                                                  "userId":
+                                                      controller.userId.isEmpty
+                                                          ? (controller
+                                                                  .userDetail
+                                                                  .value
+                                                                  .data
+                                                                  ?.id ??
+                                                              "")
+                                                          : controller.userId,
                                                 });
                                           },
                                           child: Stack(

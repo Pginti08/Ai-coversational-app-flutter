@@ -32,4 +32,5 @@ abstract class Routes {
   static const String trackingDetail = '/tracking-detail';
   static const String userProfile = '/user-profile';
   static const String postsView = '/posts-view';
+  static const String followerList = '/follower-list';
 }

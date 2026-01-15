@@ -13,6 +13,7 @@ import 'package:vousvous/core/widgets/common_dialog.dart';
 import 'package:vousvous/features/home/models/product_list_model.dart';
 import 'package:vousvous/features/home/models/user_detail_model.dart';
 import 'package:vousvous/features/home/screens/home_screen.dart';
+import 'package:vousvous/features/user-profile/controller/user_profile_controller.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 class HomeController extends GetxController {
@@ -91,8 +92,9 @@ class HomeController extends GetxController {
   }
 
   void checkUserGuideStatus() {
-    // Get the status from your local storage or user model
-    // This is just an example, adapt it to your actual service
+    // Guide disabled
+    currentGuideStep.value = GuideStep.none;
+    /*
     final userHasSeenGuide =
         LocalStorageService.instance.userInfo.value.data?.hasSeenGuide ?? true;
     hasSeenGuide.value = userHasSeenGuide;
@@ -103,6 +105,7 @@ class HomeController extends GetxController {
     } else {
       currentGuideStep.value = GuideStep.done;
     }
+    */
   }
 
   Future<void> markGuideSeen() async {
@@ -211,6 +214,9 @@ class HomeController extends GetxController {
 
   Future<void> likedProduct(String productId) async {
     try {
+      // 🛡️ Update session and disk
+      UserProfileController.updateLikeSession(productId, true);
+
       await NetworkClient.instance.callApi(
         "/product/$productId/like",
         MethodType.post,

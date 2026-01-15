@@ -80,7 +80,8 @@ class _ScannedManuallyBottomSheetState
   }
 
   void validateAndSave() {
-    final error1 = validateCommonField(nameController.text.trim(), "name");
+    final error1 =
+        validateCommonField(nameController.text.trim(), "profile name");
     final error2 = validateMeasurementField(
       heightController.text.trim(),
       "height",
@@ -197,10 +198,10 @@ class _ScannedManuallyBottomSheetState
               ),
               hSizedBox16,
               AppTextField(
-                label: "Name".toUpperCase(),
+                label: "Profile Name".toUpperCase(),
                 controller: nameController,
                 isRequired: true,
-                hint: "Enter Name",
+                hint: "Enter body profile name",
                 isGradientBorder: true,
                 fillColor: AppColors.whiteColor.withAlpha(12),
                 hintStyle: style400S16.copyWith(color: Color(0xFF444444)),

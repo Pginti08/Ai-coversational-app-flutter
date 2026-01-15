@@ -75,4 +75,21 @@ class LocalStorageService {
 
   /// Read User Info - returns the same reactive instance
   Rx<UserDetailModel> get userInfo => _userInfo;
+
+  // 🛡️ Persistent Like Storage
+  Future<void> saveLikedIds(List<String> ids) async {
+    await _prefs?.setStringList('liked_product_ids', ids);
+  }
+
+  List<String> getLikedIds() {
+    return _prefs?.getStringList('liked_product_ids') ?? [];
+  }
+
+  Future<void> saveUnlikedIds(List<String> ids) async {
+    await _prefs?.setStringList('unliked_product_ids', ids);
+  }
+
+  List<String> getUnlikedIds() {
+    return _prefs?.getStringList('unliked_product_ids') ?? [];
+  }
 }

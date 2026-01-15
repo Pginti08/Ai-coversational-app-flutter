@@ -68,6 +68,9 @@ PODS:
     - Flutter
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
+  - gal (1.0.0):
+    - Flutter
+    - FlutterMacOS
   - GoogleDataTransport (10.1.0):
     - nanopb (~> 3.30910.0)
     - PromisesObjC (~> 2.4)
@@ -98,10 +101,6 @@ PODS:
   - image_cropper (0.0.4):
     - Flutter
     - TOCropViewController (~> 2.8.0)
-  - image_gallery_saver (2.0.2):
-    - Flutter
-  - image_gallery_saver_plus (0.0.1):
-    - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
   - nanopb (3.30910.0):
@@ -142,9 +141,8 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_file_manager_ios (from `.symlinks/plugins/flutter_file_manager_ios/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
+  - gal (from `.symlinks/plugins/gal/darwin`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
-  - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
-  - image_gallery_saver_plus (from `.symlinks/plugins/image_gallery_saver_plus/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -190,12 +188,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_file_manager_ios/ios"
   flutter_keyboard_visibility:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
+  gal:
+    :path: ".symlinks/plugins/gal/darwin"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
-  image_gallery_saver:
-    :path: ".symlinks/plugins/image_gallery_saver/ios"
-  image_gallery_saver_plus:
-    :path: ".symlinks/plugins/image_gallery_saver_plus/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   package_info_plus:
@@ -233,11 +229,10 @@ SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_file_manager_ios: 799b040e45c8d2ed1226440f630ca69b65547e66
   flutter_keyboard_visibility: 4625131e43015dbbe759d9b20daaf77e0e3f6619
+  gal: baecd024ebfd13c441269ca7404792a7152fde89
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   image_cropper: 64567491beea6cd1bc4b11948e2babb590de5826
-  image_gallery_saver: 14711d79da40581063e8842a11acf1969d781ed7
-  image_gallery_saver_plus: e597bf65a7846979417a3eae0763b71b6dfec6c3
   image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499

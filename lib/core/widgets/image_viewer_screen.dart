@@ -1,11 +1,12 @@
-import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gal/gal.dart';
 import 'package:get/get.dart';
-import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
@@ -47,42 +48,40 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
 
   Future<void> _saveToGallery() async {
     try {
-      // Request permission
-      // if (Platform.isAndroid) {
-      //   final permission = await Permission.storage.request();
-      //   if (!permission.isGranted) {
-      //     toast("Storage permission required");
-      //     return;
-      //   }
-      // } else if (Platform.isIOS) {
-      //   final permission = await Permission.photos.request();
-      //   if (!permission.isGranted) {
-      //     toast("Photos permission required");
-      //     return;
-      //   }
-      // }
+      // 1. Check/Request Permission
+      final hasAccess = await Gal.hasAccess();
+      if (!hasAccess) {
+        await Gal.requestAccess();
+      }
 
-      // Download image
+      // 2. Download image bytes
       final imageUrl = fullImageUrl(widget.imageUrls[_currentIndex]);
-      var response = await Dio().get(
+      final response = await Dio().get(
         imageUrl,
         options: Options(responseType: ResponseType.bytes),
       );
 
-      // Save to gallery
-      final result = await ImageGallerySaverPlus.saveImage(
-        Uint8List.fromList(response.data),
-        quality: 100,
-        name: "vousvous_${DateTime.now().millisecondsSinceEpoch}",
-      );
+      // 3. Save to a temporary file
+      final tempDir = await getTemporaryDirectory();
+      final path =
+          '${tempDir.path}/vousvous_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final file = File(path);
+      await file.writeAsBytes(response.data);
 
-      if (result['isSuccess']) {
-        toast("Image saved to gallery", type: ToastType.success);
-      } else {
-        toast("Failed to save image");
-      }
+      // 4. Use gal to put the file into the gallery
+      await Gal.putImage(path);
+
+      toast("Image saved successfully!", type: ToastType.success);
+
+      // Clean up: delete the temp file
+      if (await file.exists()) await file.delete();
     } catch (e) {
-      toast("Error saving image: $e");
+      debugPrint("Gal Save Error: $e");
+      if (e is GalException) {
+        toast("Permission denied or gallery error");
+      } else {
+        toast("Error saving image: $e");
+      }
     }
   }
 

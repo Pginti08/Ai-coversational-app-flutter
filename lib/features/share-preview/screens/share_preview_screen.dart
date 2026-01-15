@@ -48,21 +48,28 @@ class _SharePreviewScreenState extends State<SharePreviewScreen> {
         var checkExistsQuotationModel =
             CheckQuotationExistsModel.fromJson(result.data?.data);
         if (checkExistsQuotationModel.data?.exists == true) {
-          // Remove QuotationChat controller from memory (Good practice)
+          // 1️⃣ Remove controller
           if (Get.isRegistered<QuotationChatController>()) {
             Get.delete<QuotationChatController>();
           }
 
-          // Pop any previous instances of the page from the history stack
-          Get.until((route) => route.settings.name != Routes.quotationChat);
+// 2️⃣ Pop until no quotationChat exists in stack
+          while (Get.routing.route?.settings.name == Routes.quotationChat) {
+            Get.back();
+          }
 
-          Get.toNamed(Routes.quotationChat,
-              arguments: {
-                "productId": controller.productId,
-                "imageUrl": controller.imageUrl,
-                "quotationId": checkExistsQuotationModel.data?.quotationId,
-              },
-              preventDuplicates: false);
+// 3️⃣ Push fresh quotation chat
+          await Future.delayed(
+              Duration(milliseconds: 100)); // Give time to clean up
+          Get.toNamed(
+            Routes.quotationChat,
+            arguments: {
+              "productId": controller.productId,
+              "imageUrl": controller.imageUrl,
+              "quotationId": checkExistsQuotationModel.data?.quotationId,
+            },
+            preventDuplicates: false,
+          );
         } else {
           BlurBottomSheet().show<void>(
               height: MediaQuery.sizeOf(context).height * 0.8,
@@ -156,27 +163,28 @@ class _SharePreviewScreenState extends State<SharePreviewScreen> {
                       ),
                       wSizedBox10
                     ],
-                    AppButton(
-                      height: 52,
-                      width: 170,
-                      onTap: () {
-                        checkQuotationStatus(context);
-                      },
-                      gradientBorderColors: AppColors.colorGradient,
-                      isOutlined: true,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Get Quote",
-                              style: style700S14,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                    Obx(() => AppButton(
+                          height: 52,
+                          width: 170,
+                          onTap: () {
+                            checkQuotationStatus(context);
+                          },
+                          isLoading: isLoading2.value,
+                          gradientBorderColors: AppColors.colorGradient,
+                          isOutlined: true,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Get Quote",
+                                  style: style700S14,
+                                )
+                              ],
+                            ),
+                          ),
+                        )),
                   ],
                 ),
               ),

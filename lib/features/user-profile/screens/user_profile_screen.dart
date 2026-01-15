@@ -81,6 +81,8 @@ class UserProfileScreen extends StatelessWidget {
               Expanded(
                 child: ListView(
                   controller: controller.scrollController,
+                  physics: const AlwaysScrollableScrollPhysics()
+                      .applyTo(const BouncingScrollPhysics()),
                   padding: EdgeInsets.zero,
                   children: [
                     Obx(

@@ -229,6 +229,7 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                 imageUrl:
                                     controller.productDetail.value.image ?? "",
                                 fit: BoxFit.cover,
+                                isOpenImageViewer: true,
                               ),
                             ),
                           ),

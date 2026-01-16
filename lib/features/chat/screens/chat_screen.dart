@@ -546,7 +546,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                     context: context,
                                     borderColor:
                                         AppColors.whiteColor.withAlpha(40),
-                                    backgroundColor: AppColors.scaffoldColor,
+                                    backgroundColor:
+                                        AppColors.scaffoldColor.withAlpha(200),
                                     barrierColor:
                                         AppColors.blackColor.withAlpha(50),
                                     blurStrength: 30,

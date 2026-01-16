@@ -67,7 +67,7 @@ class ScanWithAiBottomSheet extends StatelessWidget {
           borderColor: AppColors.whiteColor.withAlpha(
             40,
           ),
-          backgroundColor: AppColors.scaffoldColor,
+          backgroundColor: AppColors.scaffoldColor.withAlpha(200),
           barrierColor: AppColors.blackColor.withAlpha(50),
           blurStrength: 30,
           isCloseButton: true,

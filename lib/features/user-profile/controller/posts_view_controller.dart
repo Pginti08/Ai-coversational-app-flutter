@@ -169,7 +169,7 @@ class PostsViewController extends GetxController {
               height: MediaQuery.sizeOf(context).height * 0.8,
               context: context,
               borderColor: AppColors.whiteColor.withAlpha(40),
-              backgroundColor: AppColors.scaffoldColor,
+              backgroundColor: AppColors.scaffoldColor.withAlpha(200),
               barrierColor: AppColors.blackColor.withAlpha(50),
               blurStrength: 30,
               isCloseButton: true,
@@ -249,9 +249,7 @@ class PostsViewController extends GetxController {
           userProfileController.posts.refresh();
         }
 
-        if (nextLikedState && result.isSuccess) {
-          toast("Liked!", type: ToastType.success);
-        }
+        if (nextLikedState && result.isSuccess) {}
       } else {
         debugPrint("❌ Like API Failed: ${result.error}");
         toast(result.error.toString());
@@ -283,12 +281,34 @@ class PostsViewController extends GetxController {
   }
 
   Future<bool> updatePost(String productId,
-      {String? title, String? description, bool? isPrivate}) async {
+      {String? title,
+      String? description,
+      bool? isPrivate,
+      String? type,
+      String? color,
+      String? material}) async {
     try {
-      Map<String, dynamic> params = {};
-      if (title != null) params['title'] = title;
-      if (description != null) params['description'] = description;
+      // Validate required fields
+      if (title == null || title.trim().isEmpty) {
+        toast("Title is required");
+        return false;
+      }
+
+      if (description == null || description.trim().isEmpty) {
+        toast("Description is required");
+        return false;
+      }
+
+      Map<String, dynamic> params = {
+        'title': title,
+        'description': description,
+      };
+
       if (isPrivate != null) params['isPrivate'] = isPrivate;
+      if (type != null && type.trim().isNotEmpty) params['type'] = type;
+      if (color != null && color.trim().isNotEmpty) params['color'] = color;
+      if (material != null && material.trim().isNotEmpty)
+        params['material'] = material;
 
       var result = await NetworkClient.instance.callApi(
         "${ApiConstants.product}/$productId",

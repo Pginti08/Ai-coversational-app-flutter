@@ -38,10 +38,8 @@ class ShowBulkQuantityWidget extends StatelessWidget {
                 ),
                 height: MediaQuery.sizeOf(context).height * 0.65,
                 context: context,
-                borderColor: AppColors.whiteColor.withAlpha(
-                  40,
-                ),
-                backgroundColor: AppColors.scaffoldColor,
+                borderColor: AppColors.whiteColor.withAlpha(40),
+                backgroundColor: AppColors.scaffoldColor.withAlpha(200),
                 barrierColor: AppColors.blackColor.withAlpha(50),
                 blurStrength: 30,
                 isCloseButton: true,

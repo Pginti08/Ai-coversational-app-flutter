@@ -75,7 +75,7 @@ class _SharePreviewScreenState extends State<SharePreviewScreen> {
               height: MediaQuery.sizeOf(context).height * 0.8,
               context: context,
               borderColor: AppColors.whiteColor.withAlpha(40),
-              backgroundColor: AppColors.scaffoldColor,
+              backgroundColor: AppColors.scaffoldColor.withAlpha(200),
               barrierColor: AppColors.blackColor.withAlpha(50),
               blurStrength: 30,
               isCloseButton: true,

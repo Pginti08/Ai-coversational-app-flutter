@@ -31,7 +31,7 @@ class BodyProfileTypeBottomSheet extends StatelessWidget {
                   borderColor: AppColors.whiteColor.withAlpha(
                     40,
                   ),
-                  backgroundColor: AppColors.scaffoldColor,
+                  backgroundColor: AppColors.scaffoldColor.withAlpha(200),
                   barrierColor: AppColors.blackColor.withAlpha(50),
                   blurStrength: 30,
                   isCloseButton: true,
@@ -63,10 +63,8 @@ class BodyProfileTypeBottomSheet extends StatelessWidget {
                 BlurBottomSheet().show<void>(
                   height: MediaQuery.sizeOf(context).height * 0.7,
                   context: context,
-                  borderColor: AppColors.whiteColor.withAlpha(
-                    40,
-                  ),
-                  backgroundColor: AppColors.scaffoldColor,
+                  borderColor: AppColors.whiteColor.withAlpha(40),
+                  backgroundColor: AppColors.scaffoldColor.withAlpha(200),
                   barrierColor: AppColors.blackColor.withAlpha(50),
                   blurStrength: 30,
                   isCloseButton: true,

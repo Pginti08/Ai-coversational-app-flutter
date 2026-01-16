@@ -74,7 +74,7 @@ class BlurBottomSheet {
                     children: [
                       if (isCloseButton) ...[
                         _buildCloseButton(context, onClose, backgroundColor),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 12),
                       ],
                       Flexible(
                         child: ClipRRect(

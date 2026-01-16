@@ -61,7 +61,7 @@ class UserProfileScreen extends StatelessWidget {
                             : Text(
                                 controller.userDetail.value.data?.name ?? "-",
                                 textAlign: TextAlign.center,
-                                style: style600S14.copyWith(
+                                style: style600S16.copyWith(
                                     letterSpacing: 0.96,
                                     color: Color(0xFFCCCCCC)))),
                       ],
@@ -72,7 +72,10 @@ class UserProfileScreen extends StatelessWidget {
                         onPressed: () {
                           Get.back();
                         },
-                        icon: SvgPicture.asset(AssetConstants.backward),
+                        icon: SvgPicture.asset(
+                          AssetConstants.backward,
+                          height: 26,
+                        ),
                       ),
                     ),
                   ],
@@ -208,37 +211,40 @@ class UserProfileScreen extends StatelessWidget {
                                                                     .userId,
                                                           });
                                                     },
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                            (controller
-                                                                        .userDetail
-                                                                        .value
-                                                                        .data
-                                                                        ?.followersCount ??
-                                                                    0)
-                                                                .toString(),
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: style500S18.copyWith(
-                                                                letterSpacing:
-                                                                    0.36,
-                                                                color: AppColors
-                                                                    .whiteColor)),
-                                                        Text("Follower",
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: style300S14.copyWith(
-                                                                letterSpacing:
-                                                                    0.42,
-                                                                color: AppColors
-                                                                    .whiteColor)),
-                                                      ],
+                                                    child: Container(
+                                                      color: Colors.transparent,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                              (controller
+                                                                          .userDetail
+                                                                          .value
+                                                                          .data
+                                                                          ?.followersCount ??
+                                                                      0)
+                                                                  .toString(),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: style500S18.copyWith(
+                                                                  letterSpacing:
+                                                                      0.36,
+                                                                  color: AppColors
+                                                                      .whiteColor)),
+                                                          Text("Follower",
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: style300S14.copyWith(
+                                                                  letterSpacing:
+                                                                      0.42,
+                                                                  color: AppColors
+                                                                      .whiteColor)),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -263,37 +269,40 @@ class UserProfileScreen extends StatelessWidget {
                                                                     .userId,
                                                           });
                                                     },
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                            (controller
-                                                                        .userDetail
-                                                                        .value
-                                                                        .data
-                                                                        ?.followingCount ??
-                                                                    0)
-                                                                .toString(),
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: style500S18.copyWith(
-                                                                letterSpacing:
-                                                                    0.36,
-                                                                color: AppColors
-                                                                    .whiteColor)),
-                                                        Text("Following",
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: style300S14.copyWith(
-                                                                letterSpacing:
-                                                                    0.42,
-                                                                color: AppColors
-                                                                    .whiteColor)),
-                                                      ],
+                                                    child: Container(
+                                                      color: Colors.transparent,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                              (controller
+                                                                          .userDetail
+                                                                          .value
+                                                                          .data
+                                                                          ?.followingCount ??
+                                                                      0)
+                                                                  .toString(),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: style500S18.copyWith(
+                                                                  letterSpacing:
+                                                                      0.36,
+                                                                  color: AppColors
+                                                                      .whiteColor)),
+                                                          Text("Following",
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: style300S14.copyWith(
+                                                                  letterSpacing:
+                                                                      0.42,
+                                                                  color: AppColors
+                                                                      .whiteColor)),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),

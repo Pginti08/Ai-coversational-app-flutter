@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
+import 'package:vousvous/core/widgets/app_network_image.dart';
+import 'package:vousvous/core/widgets/app_text_field.dart';
 import 'package:vousvous/features/home/models/product_list_model.dart';
 import 'package:vousvous/features/user-profile/controller/posts_view_controller.dart';
-import 'package:vousvous/core/widgets/common_container.dart';
 
 class EditPostBottomSheet extends StatefulWidget {
   final Product product;
@@ -20,7 +23,10 @@ class EditPostBottomSheet extends StatefulWidget {
 class _EditPostBottomSheetState extends State<EditPostBottomSheet> {
   late TextEditingController titleController;
   late TextEditingController descriptionController;
-  late RxBool isPrivate;
+  late TextEditingController typeController;
+  late TextEditingController colorController;
+  late TextEditingController materialController;
+  late RxString selectedVisibility;
   final RxBool isLoading = false.obs;
 
   @override
@@ -29,13 +35,20 @@ class _EditPostBottomSheetState extends State<EditPostBottomSheet> {
     titleController = TextEditingController(text: widget.product.title ?? "");
     descriptionController =
         TextEditingController(text: widget.product.description ?? "");
-    isPrivate = (widget.product.isPrivate ?? false).obs;
+    typeController = TextEditingController(text: "");
+    colorController = TextEditingController(text: "");
+    materialController = TextEditingController(text: "");
+    selectedVisibility =
+        (widget.product.isPrivate ?? false ? "private" : "public").obs;
   }
 
   @override
   void dispose() {
     titleController.dispose();
     descriptionController.dispose();
+    typeController.dispose();
+    colorController.dispose();
+    materialController.dispose();
     super.dispose();
   }
 
@@ -44,139 +57,260 @@ class _EditPostBottomSheetState extends State<EditPostBottomSheet> {
     final PostsViewController controller = Get.find<PostsViewController>();
 
     return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.scaffoldColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       child: SafeArea(
+        top: false,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            hSizedBox20,
             // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Edit Post",
-                      style: style700S18.copyWith(color: Colors.white)),
-                  IconButton(
-                    onPressed: () => Get.back(),
-                    icon: const Icon(Icons.close, color: Colors.white60),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  "Edit Post",
+                  style: style700S16.copyWith(
+                    color: AppColors.whiteColor,
+                    fontSize: 20,
                   ),
-                ],
+                ),
               ),
             ),
-
-            // Scrollable Content
-            Expanded(
+            hSizedBox16,
+            Flexible(
               child: SingleChildScrollView(
                 padding: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 0,
-                  bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                  left: 12,
+                  right: 12,
+                  top: 12,
+                  bottom: 12,
                 ),
-                physics: const BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Title",
-                        style:
-                            style600S14.copyWith(color: AppColors.whiteColor)),
-                    hSizedBox8,
-                    CommonContainer(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 4),
-                      borderRadius: 12,
-                      borderGradientColors: [
-                        AppColors.grey2Color,
-                        AppColors.grey2Color
-                      ],
-                      child: TextField(
-                        controller: titleController,
-                        style:
-                            style500S14.copyWith(color: AppColors.whiteColor),
-                        maxLines: 2,
-                        minLines: 1,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Enter title",
-                          hintStyle: style400S14.copyWith(
-                              color: AppColors.greyTextColor),
-                        ),
-                      ),
-                    ),
-                    hSizedBox16,
-                    Text("Description",
-                        style:
-                            style600S14.copyWith(color: AppColors.whiteColor)),
-                    hSizedBox8,
-                    CommonContainer(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      borderRadius: 12,
-                      borderGradientColors: [
-                        AppColors.grey2Color,
-                        AppColors.grey2Color
-                      ],
-                      child: TextField(
-                        controller: descriptionController,
-                        style:
-                            style500S14.copyWith(color: AppColors.whiteColor),
-                        maxLines: 6,
-                        minLines: 3,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Enter description",
-                          hintStyle: style400S14.copyWith(
-                              color: AppColors.greyTextColor),
-                        ),
-                      ),
-                    ),
-                    hSizedBox16,
-                    Obx(() => Row(
-                          children: [
-                            Text("Private Post",
-                                style:
-                                    style600S14.copyWith(color: Colors.white)),
-                            const Spacer(),
-                            Switch(
-                              value: isPrivate.value,
-                              onChanged: (val) => isPrivate.value = val,
-                              activeColor: Colors.orange,
-                              activeTrackColor: Colors.orange.withAlpha(100),
+                    hSizedBox10,
+                    // Image and Visibility Row
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Image
+                        Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Colors.white.withAlpha(50),
+                              width: 1,
                             ),
-                          ],
-                        )),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: AppNetworkImage(
+                              imageUrl: widget.product.image ?? "",
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        wSizedBox16,
+                        // Visibility
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                "Visibility",
+                                style: style600S14.copyWith(
+                                  color: AppColors.whiteColor,
+                                  fontSize: 13,
+                                ),
+                              ),
+                              hSizedBox12,
+                              _visibilityTile(
+                                label: "Public",
+                                icon: AssetConstants.public,
+                                value: "public",
+                              ),
+                              hSizedBox10,
+                              _visibilityTile(
+                                label: "Private",
+                                icon: AssetConstants.private,
+                                value: "private",
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
                     hSizedBox24,
-                    Obx(() => AppButton(
-                          onTap: () async {
-                            if (titleController.text.trim().isEmpty) {
-                              Get.snackbar("Error", "Title cannot be empty",
-                                  snackPosition: SnackPosition.BOTTOM,
-                                  backgroundColor: Colors.red,
-                                  colorText: Colors.white);
-                              return;
-                            }
-                            isLoading.value = true;
-                            bool success = await controller.updatePost(
-                              widget.product.id!,
-                              title: titleController.text.trim(),
-                              description: descriptionController.text.trim(),
-                              isPrivate: isPrivate.value,
-                            );
-                            isLoading.value = false;
-                            if (success) Get.back();
-                          },
-                          isLoading: isLoading.value,
-                          child: Text("Save Changes",
-                              style: style700S16.copyWith(color: Colors.black)),
-                        )),
-                    hSizedBox30,
+
+                    // Title Field
+                    _buildLabel("Title"),
+                    hSizedBox4,
+                    AppTextField(
+                      controller: titleController,
+                      hint: "Enter title",
+                      fillColor: AppColors.grey2Color.withAlpha(60),
+                      borderColor: Colors.white.withAlpha(20),
+                      borderRadius: 16,
+                    ),
+
+                    hSizedBox16,
+
+                    // Description Field
+                    _buildLabel("Description"),
+                    hSizedBox4,
+                    AppTextField(
+                      controller: descriptionController,
+                      hint: "Enter description",
+                      maxLines: 3,
+                      minLines: 2,
+                      fillColor: AppColors.grey2Color.withAlpha(60),
+                      borderColor: Colors.white.withAlpha(20),
+                      borderRadius: 16,
+                    ),
+
+                    hSizedBox16,
+
+                    // Type, Material in Row
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildLabel("Type"),
+                              hSizedBox4,
+                              AppTextField(
+                                controller: typeController,
+                                hint: "Enter type",
+                                fillColor: AppColors.grey2Color.withAlpha(60),
+                                borderColor: Colors.white.withAlpha(20),
+                                borderRadius: 16,
+                              ),
+                            ],
+                          ),
+                        ),
+                        wSizedBox12,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildLabel("Material"),
+                              hSizedBox4,
+                              AppTextField(
+                                controller: materialController,
+                                hint: "Enter material",
+                                fillColor: AppColors.grey2Color.withAlpha(60),
+                                borderColor: Colors.white.withAlpha(20),
+                                borderRadius: 16,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    hSizedBox16,
+
+                    _buildLabel("Color"),
+                    hSizedBox4,
+                    AppTextField(
+                      controller: colorController,
+                      hint: "Enter color",
+                      fillColor: AppColors.grey2Color.withAlpha(60),
+                      borderColor: Colors.white.withAlpha(20),
+                      borderRadius: 16,
+                    ),
+
+                    hSizedBox24,
                   ],
                 ),
+              ),
+            ),
+            // Save Button
+            Obx(
+              () => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4)
+                    .copyWith(bottom: 8),
+                child: AppButton(
+                  onTap: () async {
+                    isLoading.value = true;
+                    bool success = await controller.updatePost(
+                      widget.product.id!,
+                      title: titleController.text.trim(),
+                      description: descriptionController.text.trim(),
+                      isPrivate: selectedVisibility.value == "private",
+                      type: typeController.text.trim(),
+                      color: colorController.text.trim(),
+                      material: materialController.text.trim(),
+                    );
+                    isLoading.value = false;
+                    if (success) Get.back();
+                  },
+                  isLoading: isLoading.value,
+                  child: Text(
+                    "Save Changes",
+                    style: style700S16.copyWith(color: Colors.black),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: style600S14.copyWith(
+        color: AppColors.whiteColor.withAlpha(230),
+        fontSize: 13,
+      ),
+    );
+  }
+
+  Widget _visibilityTile({
+    required String label,
+    required String icon,
+    required String value,
+  }) {
+    final isSelected = selectedVisibility.value == value;
+
+    return GestureDetector(
+      onTap: () => selectedVisibility.value = value,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.whiteColor.withAlpha(20)
+              : AppColors.grey2Color.withAlpha(40),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.whiteColor.withAlpha(100)
+                : Colors.white.withAlpha(20),
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              icon,
+              color: isSelected ? Colors.white : AppColors.greyTextColor,
+              width: 18,
+            ),
+            wSizedBox8,
+            Text(
+              label,
+              style: style600S14.copyWith(
+                color: isSelected ? Colors.white : AppColors.greyTextColor,
+                fontSize: 13,
               ),
             ),
           ],

@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
@@ -10,9 +15,12 @@ import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/core/widgets/blur_bottom_sheet.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
+import 'package:vousvous/core/widgets/common_dialog.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
+import 'package:vousvous/features/home/models/product_list_model.dart';
 import 'package:vousvous/features/user-profile/controller/posts_view_controller.dart';
 import 'package:vousvous/features/user-profile/screens/edit_post_bottom_sheet.dart';
 
@@ -23,8 +31,92 @@ class PostsViewScreen extends StatefulWidget {
   State<PostsViewScreen> createState() => _PostsViewScreenState();
 }
 
+// Method to download image and return file path
+Future<String?> _downloadImage(String imageUrl) async {
+  try {
+    final response = await http.get(Uri.parse(imageUrl));
+    if (response.statusCode == 200) {
+      final documentDirectory = await getTemporaryDirectory();
+      final file = File('${documentDirectory.path}/shared_product_image.jpg');
+      await file.writeAsBytes(response.bodyBytes);
+      return file.path;
+    }
+  } catch (e) {
+    print('Error downloading image: $e');
+  }
+  return null;
+}
+
 class _PostsViewScreenState extends State<PostsViewScreen> {
   final PostsViewController controller = Get.put(PostsViewController());
+
+  Future<void> _shareProduct(Product productDetail) async {
+    try {
+      // 1. Setup Data
+      final imageUrl = productDetail.image ?? "";
+      final productTitle = productDetail.title ?? '-';
+      final productId = productDetail.id ?? '';
+      final userName = productDetail.userName ?? '-';
+
+      // 2. Create Link
+      final String customLink =
+          'https://vousvous.com/share?productId=$productId&imageUrl=$imageUrl';
+
+      // 3. Create Message
+      final String shareMessage = '''
+✨ *${productTitle.toUpperCase()}* ✨
+
+Check out this stunning outfit on *VOUSVOUS*! 👗✨
+
+Designed by: $userName
+
+🎨 Design your dream dress with intelligent styling
+🔥 Discover unique fashion creations
+💎 Connect with expert designers
+🛍️ Get instant quotes effortlessly
+
+Download *VOUSVOUS* now and bring your fashion vision to life!
+
+👉 $customLink
+
+#VOUSVOUS #DreamDress #IntelligentStyling #FashionDesign #StyleInspiration #OOTD
+''';
+
+      final String shareSubject =
+          '✨ ${productTitle.toUpperCase()} - Fashion App';
+
+      // 4. Prepare Files (if image exists)
+      List<XFile> filesToShare = [];
+
+      if (imageUrl.isNotEmpty) {
+        final String? imagePath = await _downloadImage(imageUrl);
+        if (imagePath != null && imagePath.isNotEmpty) {
+          filesToShare.add(XFile(imagePath));
+        }
+      }
+
+      // 5. Handle iPad Position (Optional but recommended)
+      // iPad requires a source rect to anchor the share popup
+      final box = context.findRenderObject() as RenderBox?;
+      final Rect? shareOrigin =
+          box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+
+      // 6. Execute Share using the NEW API
+      // "Share.share" and "Share.shareXFiles" are replaced by "SharePlus.instance.share"
+      // using a "ShareParams" object.
+      await SharePlus.instance.share(
+        ShareParams(
+          text: shareMessage,
+          subject: shareSubject,
+          files: filesToShare, // Can be empty for text-only share
+          sharePositionOrigin: shareOrigin, // Crucial for iPad
+        ),
+      );
+    } catch (e) {
+      debugPrint('Error sharing: $e');
+      toast('Error sharing: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +146,10 @@ class _PostsViewScreenState extends State<PostsViewScreen> {
                   onPressed: () {
                     Get.back();
                   },
-                  icon: SvgPicture.asset(AssetConstants.backward),
+                  icon: SvgPicture.asset(
+                    AssetConstants.backward,
+                    height: 24,
+                  ),
                 ),
               ),
             ],
@@ -172,15 +267,12 @@ class _PostsViewScreenState extends State<PostsViewScreen> {
                                     }
                                   },
                                 ),
-                                wSizedBox12,
+                                wSizedBox6,
                                 _actionButton(
-                                  icon: AssetConstants.share,
-                                  color: Colors.white,
-                                  onTap: () => shareUrl(
-                                    text:
-                                        "Check out this outfit: ${post.title}\n${post.image}",
-                                  ),
-                                ),
+                                    icon: AssetConstants.share,
+                                    color: Colors.white,
+                                    width: 20,
+                                    onTap: () => _shareProduct(post)),
                                 const Spacer(),
                                 // Remix (Magic Pen) Button
                                 CommonContainer(
@@ -307,12 +399,10 @@ class _PostsViewScreenState extends State<PostsViewScreen> {
       {required String icon,
       required Color color,
       String? label,
-      VoidCallback? onTap}) {
+      double? width,
+      void Function()? onTap}) {
     return GestureDetector(
-      onTap: () {
-        debugPrint("💓 Action button tapped: $icon");
-        if (onTap != null) onTap();
-      },
+      onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
@@ -322,7 +412,7 @@ class _PostsViewScreenState extends State<PostsViewScreen> {
             SvgPicture.asset(
               icon,
               colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-              width: 24,
+              width: width ?? 24,
             ),
             if (label != null && label.isNotEmpty) ...[
               wSizedBox4,
@@ -335,58 +425,47 @@ class _PostsViewScreenState extends State<PostsViewScreen> {
   }
 
   void _showPostOptions(BuildContext context, dynamic post) {
-    showModalBottomSheet(
+    BlurBottomSheet().show<void>(
+      height: MediaQuery.sizeOf(context).height * 0.175,
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: BoxDecoration(
-          color: AppColors.scaffoldColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          border: Border.all(color: AppColors.whiteColor.withAlpha(40)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            hSizedBox10,
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.white24,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            hSizedBox20,
-            _menuTile(
-              icon: Icons.edit_outlined,
-              label: "Edit Post",
-              onTap: () {
-                Get.back();
-                BlurBottomSheet().show<void>(
-                  heightType: BottomSheetHeightType.maxHeight,
-                  height: MediaQuery.sizeOf(context).height * 0.85,
-                  context: context,
-                  borderColor: AppColors.whiteColor.withAlpha(40),
-                  backgroundColor: AppColors.scaffoldColor,
-                  barrierColor: AppColors.blackColor.withAlpha(150),
-                  blurStrength: 30,
-                  isCloseButton: false,
-                  child: EditPostBottomSheet(product: post),
-                );
-              },
-            ),
-            _menuTile(
-              icon: Icons.delete_outline,
-              label: "Delete Post",
-              color: Colors.red,
-              onTap: () {
-                Get.back();
-                _showDeleteConfirmation(context, post.id!);
-              },
-            ),
-            hSizedBox20,
-          ],
-        ),
+      borderColor: AppColors.whiteColor.withAlpha(40),
+      backgroundColor: AppColors.scaffoldColor.withAlpha(200),
+      barrierColor: AppColors.blackColor.withAlpha(150),
+      blurStrength: 20,
+      isCloseButton: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          hSizedBox10,
+          _menuTile(
+            icon: Icons.edit_outlined,
+            label: "Edit Post",
+            onTap: () {
+              Get.back();
+              BlurBottomSheet().show<void>(
+                heightType: BottomSheetHeightType.maxHeight,
+                height: MediaQuery.sizeOf(context).height,
+                context: context,
+                borderColor: AppColors.whiteColor.withAlpha(40),
+                backgroundColor: AppColors.scaffoldColor.withAlpha(200),
+                barrierColor: AppColors.blackColor.withAlpha(150),
+                blurStrength: 20,
+                isCloseButton: true,
+                child: EditPostBottomSheet(product: post),
+              );
+            },
+          ),
+          _menuTile(
+            icon: Icons.delete_outline,
+            label: "Delete Post",
+            color: Colors.red,
+            onTap: () {
+              Get.back();
+              _showDeleteConfirmation(context, post.id!);
+            },
+          ),
+          hSizedBox20,
+        ],
       ),
     );
   }
@@ -397,6 +476,10 @@ class _PostsViewScreenState extends State<PostsViewScreen> {
       required VoidCallback onTap,
       Color color = Colors.white}) {
     return ListTile(
+      tileColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      selectedTileColor: Colors.transparent,
       leading: Icon(icon, color: color),
       title: Text(label, style: style600S16.copyWith(color: color)),
       onTap: onTap,
@@ -404,28 +487,15 @@ class _PostsViewScreenState extends State<PostsViewScreen> {
   }
 
   void _showDeleteConfirmation(BuildContext context, String productId) {
-    Get.dialog(
-      AlertDialog(
-        backgroundColor: AppColors.scaffoldColor,
-        title: Text("Delete Post",
-            style: style700S18.copyWith(color: Colors.white)),
-        content: Text("Are you sure you want to delete this post?",
-            style: style400S14.copyWith(color: Colors.white70)),
-        actions: [
-          TextButton(
-              onPressed: () => Get.back(),
-              child: Text("Cancel",
-                  style: style600S14.copyWith(color: Colors.white60))),
-          TextButton(
-            onPressed: () {
-              Get.back();
-              controller.deletePost(productId);
-            },
-            child:
-                Text("Delete", style: style600S14.copyWith(color: Colors.red)),
-          ),
-        ],
-      ),
+    commonDialog(
+      title: "Delete Post",
+      description: "Are you sure you want to delete this post?",
+      successButtonTitle: "Delete",
+      cancelButtonTitle: "Cancel",
+      onSuccess: () {
+        Get.back();
+        controller.deletePost(productId);
+      },
     );
   }
 }

@@ -390,47 +390,47 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                                 ),
                                               ),
                                             ),
-                                            Obx(() => controller
-                                                    .isFollowing.value
-                                                ? AppButton(
-                                                    onTap: controller
-                                                            .isFollowLoading
-                                                            .value
-                                                        ? null
-                                                        : () {
-                                                            controller
-                                                                .toggleFollow();
-                                                          },
-                                                    height: 30,
-                                                    text: controller
-                                                            .isFollowLoading
-                                                            .value
-                                                        ? "..."
-                                                        : "Following",
-                                                    isOutlined: true,
-                                                    textColor:
-                                                        AppColors.whiteColor,
-                                                    gradientBorderColors:
-                                                        AppColors.colorGradient,
-                                                    fontSize: 13,
-                                                  )
-                                                : AppButton(
-                                                    onTap: controller
-                                                            .isFollowLoading
-                                                            .value
-                                                        ? null
-                                                        : () {
-                                                            controller
-                                                                .toggleFollow();
-                                                          },
-                                                    height: 30,
-                                                    text: controller
-                                                            .isFollowLoading
-                                                            .value
-                                                        ? "..."
-                                                        : "Follow",
-                                                    fontSize: 13,
-                                                  ))
+                                            // Obx(() => controller
+                                            //         .isFollowing.value
+                                            //     ? AppButton(
+                                            //         onTap: controller
+                                            //                 .isFollowLoading
+                                            //                 .value
+                                            //             ? null
+                                            //             : () {
+                                            //                 controller
+                                            //                     .toggleFollow();
+                                            //               },
+                                            //         height: 30,
+                                            //         text: controller
+                                            //                 .isFollowLoading
+                                            //                 .value
+                                            //             ? "..."
+                                            //             : "Following",
+                                            //         isOutlined: true,
+                                            //         textColor:
+                                            //             AppColors.whiteColor,
+                                            //         gradientBorderColors:
+                                            //             AppColors.colorGradient,
+                                            //         fontSize: 13,
+                                            //       )
+                                            //     : AppButton(
+                                            //         onTap: controller
+                                            //                 .isFollowLoading
+                                            //                 .value
+                                            //             ? null
+                                            //             : () {
+                                            //                 controller
+                                            //                     .toggleFollow();
+                                            //               },
+                                            //         height: 30,
+                                            //         text: controller
+                                            //                 .isFollowLoading
+                                            //                 .value
+                                            //             ? "..."
+                                            //             : "Follow",
+                                            //         fontSize: 13,
+                                            //       ))
                                           ],
                                         ),
 
@@ -471,8 +471,7 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                                         children: [
                                                           hSizedBox10,
                                                           Text(
-                                                            '''
-        ${controller.productDetail.value.description ?? ""}''',
+                                                            '${controller.productDetail.value.description ?? ""}',
                                                             style: style400S16.copyWith(
                                                                 color: const Color(
                                                                     0xFFCCCCCC),

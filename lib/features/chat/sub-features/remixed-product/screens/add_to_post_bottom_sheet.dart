@@ -9,8 +9,8 @@ import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
+import 'package:vousvous/core/widgets/app_text_field.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
-import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/features/quotation-chat/models/analyze_dress_model.dart';
 
 import '../../../../../core/constants/api_constants.dart';
@@ -36,6 +36,9 @@ class _AddToPostBottomSheetState extends State<AddToPostBottomSheet> {
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController typeController = TextEditingController();
+  final TextEditingController colorController = TextEditingController();
+  final TextEditingController materialController = TextEditingController();
 
   String productType = "";
 
@@ -51,6 +54,9 @@ class _AddToPostBottomSheetState extends State<AddToPostBottomSheet> {
   void dispose() {
     titleController.dispose();
     descriptionController.dispose();
+    typeController.dispose();
+    colorController.dispose();
+    materialController.dispose();
     super.dispose();
   }
 
@@ -70,6 +76,9 @@ class _AddToPostBottomSheetState extends State<AddToPostBottomSheet> {
         titleController.text = analyzeDressModel.analysis?.title ?? "";
         descriptionController.text =
             analyzeDressModel.analysis?.description ?? "";
+        typeController.text = analyzeDressModel.analysis?.type ?? "";
+        colorController.text = analyzeDressModel.analysis?.color ?? "";
+        materialController.text = analyzeDressModel.analysis?.material ?? "";
         productType = analyzeDressModel.analysis?.type ?? "";
       } else {
         toast(result.error.toString());
@@ -101,8 +110,10 @@ class _AddToPostBottomSheetState extends State<AddToPostBottomSheet> {
           params: {
             'image': widget.imageUrl,
             'title': titleController.text.trim(),
-            'type': productType,
+            'type': typeController.text.trim(),
             'description': descriptionController.text.trim(),
+            'color': colorController.text.trim(),
+            'material': materialController.text.trim(),
             'isPrivate': selectedVisibility.value == "private",
           });
 
@@ -123,169 +134,232 @@ class _AddToPostBottomSheetState extends State<AddToPostBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Obx(() {
-        if (isAnalyzing.value) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const RotatingLoader(size: 40),
-                hSizedBox20,
-                Text(
-                  "Analyzing your design...",
-                  style: style600S16.copyWith(color: AppColors.whiteColor),
+    return Container(
+      child: SafeArea(
+        top: false,
+        child: Obx(() {
+          if (isAnalyzing.value) {
+            return SizedBox(
+              height: 300,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const RotatingLoader(size: 40),
+                    hSizedBox20,
+                    Text(
+                      "Analyzing your design...",
+                      style: style600S16.copyWith(color: AppColors.whiteColor),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }
+              ),
+            );
+          }
 
-        return SingleChildScrollView(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 12,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          return Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              hSizedBox8,
-
-              // Image Preview
-              Center(
-                child: Container(
-                  height: 220,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.white.withAlpha(100),
-                    ),
-                    color: AppColors.blackColor.withAlpha(50),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: AppNetworkImage(
-                      imageUrl: widget.imageUrl,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
-
               hSizedBox20,
-
-              // Title Field
-              Text(
-                "Title",
-                style: style600S14.copyWith(color: AppColors.whiteColor),
-              ),
-              hSizedBox8,
-              CommonContainer(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                borderRadius: 12,
-                borderGradientColors: [
-                  AppColors.grey2Color,
-                  AppColors.grey2Color,
-                ],
-                child: TextField(
-                  controller: titleController,
-                  style: style500S14.copyWith(color: AppColors.whiteColor),
-                  maxLines: 2,
-                  minLines: 1,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Enter title",
-                    hintStyle: style400S14.copyWith(
-                      color: AppColors.greyTextColor,
+              // Header
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    "Add to Post",
+                    style: style700S16.copyWith(
+                      color: AppColors.whiteColor,
+                      fontSize: 20,
                     ),
                   ),
                 ),
               ),
-
-              hSizedBox16,
-
-              // Description Field
-              Text(
-                "Description",
-                style: style600S14.copyWith(color: AppColors.whiteColor),
-              ),
               hSizedBox8,
-              CommonContainer(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                borderRadius: 12,
-                borderGradientColors: [
-                  AppColors.grey2Color,
-                  AppColors.grey2Color,
-                ],
-                child: TextField(
-                  controller: descriptionController,
-                  style: style500S14.copyWith(color: AppColors.whiteColor),
-                  maxLines: 4,
-                  minLines: 3,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Enter description",
-                    hintStyle: style400S14.copyWith(
-                      color: AppColors.greyTextColor,
-                    ),
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    left: 12,
+                    right: 12,
+                    top: 12,
+                    bottom: 12,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      hSizedBox10,
+                      // Image and Visibility Row
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Image
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: Colors.white.withAlpha(50),
+                                  width: 1,
+                                ),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: AppNetworkImage(
+                                  imageUrl: widget.imageUrl,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                          wSizedBox16,
+                          // Visibility
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  "Visibility",
+                                  style: style600S14.copyWith(
+                                    color: AppColors.whiteColor,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                hSizedBox12,
+                                _visibilityTile(
+                                  label: "Public",
+                                  icon: AssetConstants.public,
+                                  value: "public",
+                                ),
+                                hSizedBox10,
+                                _visibilityTile(
+                                  label: "Private",
+                                  icon: AssetConstants.private,
+                                  value: "private",
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      hSizedBox24,
+
+                      // Title Field
+                      _buildLabel("Title"),
+                      hSizedBox4,
+                      AppTextField(
+                        controller: titleController,
+                        hint: "Enter title",
+                        fillColor: AppColors.grey2Color.withAlpha(60),
+                        borderColor: Colors.white.withAlpha(20),
+                        borderRadius: 16,
+                      ),
+
+                      hSizedBox16,
+
+                      // Description Field
+                      _buildLabel("Description"),
+                      hSizedBox4,
+                      AppTextField(
+                        controller: descriptionController,
+                        hint: "Enter description",
+                        maxLines: 3,
+                        minLines: 2,
+                        fillColor: AppColors.grey2Color.withAlpha(60),
+                        borderColor: Colors.white.withAlpha(20),
+                        borderRadius: 16,
+                      ),
+
+                      hSizedBox16,
+
+                      // Type, Material in Row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildLabel("Type"),
+                                hSizedBox4,
+                                AppTextField(
+                                  controller: typeController,
+                                  hint: "Enter type",
+                                  fillColor: AppColors.grey2Color.withAlpha(60),
+                                  borderColor: Colors.white.withAlpha(20),
+                                  borderRadius: 16,
+                                ),
+                              ],
+                            ),
+                          ),
+                          wSizedBox12,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildLabel("Material"),
+                                hSizedBox4,
+                                AppTextField(
+                                  controller: materialController,
+                                  hint: "Enter material",
+                                  fillColor: AppColors.grey2Color.withAlpha(60),
+                                  borderColor: Colors.white.withAlpha(20),
+                                  borderRadius: 16,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      hSizedBox16,
+
+                      _buildLabel("Color"),
+                      hSizedBox4,
+                      AppTextField(
+                        controller: colorController,
+                        hint: "Enter color",
+                        fillColor: AppColors.grey2Color.withAlpha(60),
+                        borderColor: Colors.white.withAlpha(20),
+                        borderRadius: 16,
+                      ),
+
+                      hSizedBox24,
+                    ],
                   ),
                 ),
               ),
-
-              hSizedBox16,
-
-              // Visibility Section
-              Text(
-                "Visibility",
-                style: style600S14.copyWith(color: AppColors.whiteColor),
-              ),
-              hSizedBox8,
-
-              Row(
-                children: [
-                  Expanded(
-                    child: _visibilityTile(
-                      label: "Public",
-                      icon: AssetConstants.public,
-                      value: "public",
-                    ),
-                  ),
-                  wSizedBox12,
-                  Expanded(
-                    child: _visibilityTile(
-                      label: "Private",
-                      icon: AssetConstants.private,
-                      value: "private",
-                    ),
-                  ),
-                ],
-              ),
-
-              hSizedBox20,
-
               // Post Button
               Obx(
-                () => AppButton(
-                  onTap: createProduct,
-                  isLoading: loader.value,
-                  child: Text(
-                    "Post",
-                    style: style700S16.copyWith(color: Colors.black),
+                () => Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4)
+                          .copyWith(bottom: 8),
+                  child: AppButton(
+                    onTap: createProduct,
+                    isLoading: loader.value,
+                    child: Text(
+                      "Add to Post",
+                      style: style700S16.copyWith(color: Colors.black),
+                    ),
                   ),
                 ),
               ),
-
-              hSizedBox20,
             ],
-          ),
-        );
-      }),
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: style600S14.copyWith(
+        color: AppColors.whiteColor.withAlpha(230),
+        fontSize: 13,
+      ),
     );
   }
 
@@ -296,28 +370,40 @@ class _AddToPostBottomSheetState extends State<AddToPostBottomSheet> {
   }) {
     final isSelected = selectedVisibility.value == value;
 
-    return CommonContainer(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      borderRadius: 12,
-      borderGradientColors: isSelected
-          ? AppColors.colorGradient
-          : [
-              AppColors.grey2Color,
-              AppColors.grey2Color,
-            ],
+    return GestureDetector(
       onTap: () => selectedVisibility.value = value,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(icon, color: Colors.white, width: 20),
-          wSizedBox6,
-          Text(
-            label,
-            style: style600S14.copyWith(
-              color: isSelected ? Colors.white : AppColors.greyTextColor,
-            ),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.whiteColor.withAlpha(20)
+              : AppColors.grey2Color.withAlpha(40),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.whiteColor.withAlpha(100)
+                : Colors.white.withAlpha(20),
+            width: isSelected ? 1.5 : 1,
           ),
-        ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              icon,
+              color: isSelected ? Colors.white : AppColors.greyTextColor,
+              width: 18,
+            ),
+            wSizedBox8,
+            Text(
+              label,
+              style: style600S14.copyWith(
+                color: isSelected ? Colors.white : AppColors.greyTextColor,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -35,9 +35,10 @@ class _EditPostBottomSheetState extends State<EditPostBottomSheet> {
     titleController = TextEditingController(text: widget.product.title ?? "");
     descriptionController =
         TextEditingController(text: widget.product.description ?? "");
-    typeController = TextEditingController(text: "");
-    colorController = TextEditingController(text: "");
-    materialController = TextEditingController(text: "");
+    typeController = TextEditingController(text: widget.product.type ?? "");
+    colorController = TextEditingController(text: widget.product.color ?? "");
+    materialController =
+        TextEditingController(text: widget.product.material ?? "");
     selectedVisibility =
         (widget.product.isPrivate ?? false ? "private" : "public").obs;
   }

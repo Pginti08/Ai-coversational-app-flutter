@@ -83,8 +83,7 @@ class NetworkClient {
                 await _clearStorageAndLogout();
                 return handler.next(e);
               }
-            } else if ((e.response?.statusCode == 401)) {
-              await _clearStorageAndLogout();
+            } else {
               return handler.next(e);
             }
           }

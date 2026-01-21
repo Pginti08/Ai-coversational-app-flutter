@@ -2,11 +2,13 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+    
     <application
         android:label="${appName}"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:networkSecurityConfig="@xml/network_security_config">
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -15,22 +17,28 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
-            <!-- Specifies an Android theme to apply to this Activity as soon as
-                 the Android process has started. This theme is visible to the user
-                 while the Flutter UI initializes. After that, this theme continues
-                 to determine the Window background behind the Flutter UI. -->
+            
+            <!-- Flutter theme metadata -->
             <meta-data
-              android:name="io.flutter.embedding.android.NormalTheme"
-              android:resource="@style/NormalTheme"
-              />            
-              <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
+            
+            <!-- ⚠️ IMPORTANT: Keep this as "false" to use app_links package -->
+            <meta-data
                 android:name="flutter_deeplinking_enabled"
                 android:value="false" />
+            
+            <!-- Main launcher intent -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- Deep Link intent filter -->
+            
+            <!-- ============================================ -->
+            <!-- HTTPS App Links (Verified Deep Links)       -->
+            <!-- ============================================ -->
+            
+            <!-- Primary: /share path -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -40,17 +48,58 @@
                     android:scheme="https"
                     android:host="vousvous.com"
                     android:pathPrefix="/share" />
-
             </intent-filter>
+            
+            <!-- Optional: Support www subdomain -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                
+                <data
+                    android:scheme="https"
+                    android:host="www.vousvous.com"
+                    android:pathPrefix="/share" />
+            </intent-filter>
+            
+            <!-- Optional: Root domain -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                
+                <data
+                    android:scheme="https"
+                    android:host="vousvous.com" />
+            </intent-filter>
+            
+            <!-- ============================================ -->
+            <!-- Fallback: Custom URL Scheme                  -->
+            <!-- (For cases where HTTPS links don't work)     -->
+            <!-- ============================================ -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                
+                <data
+                    android:scheme="vousvous"
+                    android:host="share" />
+            </intent-filter>
+            
         </activity>
+        
+        
+        <!-- UCrop Activity -->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.UCrop"/>
-        <!-- Don't delete the meta-data below.
-             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        
+        <!-- Flutter metadata -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+            
     </application>
 </manifest>

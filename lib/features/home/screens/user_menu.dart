@@ -176,12 +176,19 @@ class _UserMenuState extends State<UserMenu> {
                     },
                   ),
                   menuTiles(
-                    name: "Invite Friends",
-                    icon: AssetConstants.share,
+                    name: "Refer a Friend",
+                    icon: AssetConstants.gift,
                     onTap: () {
-                      Get.toNamed(Routes.inviteFriend);
+                      Get.toNamed(Routes.referFriend);
                     },
                   ),
+                  // menuTiles(
+                  //   name: "Invite Friends",
+                  //   icon: AssetConstants.share,
+                  //   onTap: () {
+                  //     Get.toNamed(Routes.inviteFriend);
+                  //   },
+                  // ),
                   menuTiles(
                     name: "Logout",
                     icon: AssetConstants.logout,

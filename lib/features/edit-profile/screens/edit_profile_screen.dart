@@ -16,9 +16,58 @@ import 'package:vousvous/core/widgets/custom_image_picker_cropper.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/features/edit-profile/controller/edit_profile_controller.dart';
 
+/// TextInputFormatter to convert text to lowercase
+class LowerCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return TextEditingValue(
+      text: newValue.text.toLowerCase(),
+      selection: newValue.selection,
+    );
+  }
+}
+
 class EditProfileScreen extends StatelessWidget {
   EditProfileScreen({super.key});
   final EditProfileController controller = Get.put(EditProfileController());
+
+  /// Get color based on username status
+  Color _getUsernameStatusColor() {
+    switch (controller.usernameStatus.value) {
+      case UsernameStatus.checking:
+        return AppColors.hintTextColor; // Grey
+      case UsernameStatus.success:
+        return Colors.green;
+      case UsernameStatus.error:
+        return Colors.red;
+      case UsernameStatus.empty:
+        return AppColors.hintTextColor;
+    }
+  }
+
+  /// Get suffix icon based on username status
+  Widget? _getUsernameSuffixIcon() {
+    switch (controller.usernameStatus.value) {
+      case UsernameStatus.checking:
+        return SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: AppColors.primaryColor,
+          ),
+        );
+      case UsernameStatus.success:
+        return Icon(Icons.check_circle, color: Colors.green, size: 22);
+      case UsernameStatus.error:
+        return Icon(Icons.cancel, color: Colors.red, size: 22);
+      case UsernameStatus.empty:
+        return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +101,10 @@ class EditProfileScreen extends StatelessWidget {
                       onPressed: () {
                         Get.back();
                       },
-                      icon: SvgPicture.asset(AssetConstants.backward),
+                      icon: SvgPicture.asset(
+                        AssetConstants.backward,
+                        height: 24,
+                      ),
                     ),
                   ),
                 ],
@@ -162,14 +214,51 @@ class EditProfileScreen extends StatelessWidget {
                             },
                           )),
                       hSizedBox16,
+                      // Username field with availability check
+                      Obx(() => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AppTextField(
+                                label: "Username".toUpperCase(),
+                                controller: controller.usernameController,
+                                isRequired: true,
+                                hint: "Enter Username",
+                                isGradientBorder: true,
+                                fillColor: AppColors.whiteColor.withAlpha(10),
+                                hintStyle: style400S16.copyWith(
+                                    color: Color(0xFF444444)),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[a-zA-Z0-9_]')),
+                                  LowerCaseTextFormatter(),
+                                ],
+                                onChanged: controller.onUsernameChanged,
+                                suffixIcon: _getUsernameSuffixIcon(),
+                              ),
+                              if (controller
+                                  .usernameStatusMessage.value.isNotEmpty)
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 4, top: 4),
+                                  child: Text(
+                                    controller.usernameStatusMessage.value,
+                                    style: style400S12.copyWith(
+                                      color: _getUsernameStatusColor(),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          )),
+                      hSizedBox16,
                       AppTextField(
                         label: "Mobile Number".toUpperCase(),
                         controller: controller.mobileNoController,
                         isRequired: true,
                         hint: "Enter Mobile Number",
                         isGradientBorder: true,
-                        fillColor: AppColors.whiteColor.withAlpha(10),
+                        fillColor: AppColors.whiteColor.withAlpha(5),
                         readOnly: true,
+                        enabled: false,
                         hintStyle:
                             style400S16.copyWith(color: Color(0xFF444444)),
                         maxLength: 10,
@@ -184,6 +273,11 @@ class EditProfileScreen extends StatelessWidget {
                             hSizedBox2,
                           ],
                         ),
+                        suffixIcon: Icon(
+                          Icons.lock_outline,
+                          color: AppColors.hintTextColor.withAlpha(150),
+                          size: 20,
+                        ),
                       ),
                       hSizedBox16,
                       Obx(() => AppTextField(
@@ -191,7 +285,7 @@ class EditProfileScreen extends StatelessWidget {
                             controller: controller.bioController,
                             isRequired: true,
                             hint: "Enter Bio",
-                            maxLines: 2,
+                            maxLines: 3,
                             isGradientBorder: true,
                             fillColor: AppColors.whiteColor.withAlpha(10),
                             hintStyle:

@@ -70,6 +70,7 @@ class ApiConstants {
   static const String following = '/following';
   static const String checkQuotationExists = '/quotations/check-exists';
   static const String createQuotation = '/quotations/create-with-bp';
+  static const String checkUsername = '/user/check-username';
 
   // Headers
   static const Map<String, String> headers = {

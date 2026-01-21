@@ -9,6 +9,7 @@ import 'package:readmore/readmore.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
@@ -56,11 +57,11 @@ class _PostsViewScreenState extends State<PostsViewScreen> {
       final imageUrl = productDetail.image ?? "";
       final productTitle = productDetail.title ?? '-';
       final productId = productDetail.id ?? '';
-      final userName = productDetail.userName ?? '-';
+      final userName = productDetail.username ?? '-';
 
       // 2. Create Link
       final String customLink =
-          'https://vousvous.com/share?productId=$productId&imageUrl=$imageUrl';
+          'https://vousvous.com/share?refferalCode=${LocalStorageService.instance.userInfo.value.data?.referralCode}&productId=$productId&imageUrl=$imageUrl';
 
       // 3. Create Message
       final String shareMessage = '''

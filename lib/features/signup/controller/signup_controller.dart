@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/services/deep_link_service.dart';
 import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/utils/validators.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/routes/app_pages.dart';
@@ -11,18 +13,41 @@ class SignupController extends GetxController {
   final RxString countryCode = '+91'.obs;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
+  final TextEditingController referralCodeController = TextEditingController();
 
   final RxString nameError = ''.obs;
   final RxString mobileError = ''.obs;
 
-  bool fromInvitePost = false;
+  final RxBool hasPrefilledReferralCode = false.obs;
 
   @override
   void onInit() {
-    if (Get.arguments != null && Get.arguments["fromInvitePost"] != null) {
-      fromInvitePost = Get.arguments["fromInvitePost"];
+    // Get referral code from deep link arguments
+    if (Get.arguments != null && Get.arguments["referralCode"] != null) {
+      final code = Get.arguments["referralCode"];
+      if (code != null && code.isNotEmpty) {
+        referralCodeController.text = code;
+      }
     }
+    // Fallback: check pending referral code from storage
+    _loadPendingReferralCode();
     super.onInit();
+  }
+
+  Future<void> _loadPendingReferralCode() async {
+    // Only load if no referral code is already set
+    if (referralCodeController.text.isEmpty) {
+      try {
+        final deepLinkHandler = Get.find<DeepLinkHandler>();
+        final pendingCode = await deepLinkHandler.getPendingReferralCode();
+        if (pendingCode != null && pendingCode.isNotEmpty) {
+          referralCodeController.text = pendingCode;
+          hasPrefilledReferralCode.value = true;
+        }
+      } catch (e) {
+        print('❌ Error loading pending referral code: $e');
+      }
+    }
   }
 
   void validateAndSignUp() {
@@ -51,7 +76,8 @@ class SignupController extends GetxController {
             "name": nameController.text.trim(),
             "phone": mobileNumber,
             "code": countryCode.value,
-            "fromInvitePost": fromInvitePost,
+            if (isNotNullOrEmpty(referralCodeController.text.trim()))
+              "referralCode": referralCodeController.text.trim(),
           });
 
       if (result.isSuccess) {

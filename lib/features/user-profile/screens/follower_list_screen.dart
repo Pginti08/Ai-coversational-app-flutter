@@ -5,6 +5,7 @@ import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
@@ -84,7 +85,9 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(type == 'following' ? "Following" : "Followers",
+                        Text(
+                            (type == 'following' ? "Following" : "Followers")
+                                .toUpperCase(),
                             textAlign: TextAlign.center,
                             style: style600S14.copyWith(
                                 letterSpacing: 0.96, color: Color(0xFFCCCCCC))),
@@ -171,14 +174,13 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              follower.name ?? "User",
+                                              follower.username ?? "-",
                                               style: style600S16.copyWith(
                                                   color: AppColors.whiteColor),
                                             ),
-                                            if (follower.bio != null &&
-                                                follower.bio!.isNotEmpty)
+                                            if (isNotNullOrEmpty(follower.name))
                                               Text(
-                                                follower.bio!,
+                                                follower.name ?? "",
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: style400S12.copyWith(

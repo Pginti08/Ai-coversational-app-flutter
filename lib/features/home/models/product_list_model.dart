@@ -50,11 +50,15 @@ class Product {
   double? minPrice;
   double? maxPrice;
   String? description;
+  String? type;
+  String? color;
+  String? material;
   String? currency;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
-  String? userName;
+  String? name;
+  String? username;
   String? userImage;
   bool? isFollowing;
   bool? isPrivate;
@@ -69,11 +73,15 @@ class Product {
     this.minPrice,
     this.maxPrice,
     this.description,
+    this.type,
+    this.color,
+    this.material,
     this.currency,
     this.createdAt,
     this.updatedAt,
     this.v,
-    this.userName,
+    this.name,
+    this.username,
     this.userImage,
     this.isFollowing,
     this.isPrivate,
@@ -89,6 +97,9 @@ class Product {
         minPrice: double.tryParse(json["minPrice"].toString()),
         maxPrice: double.tryParse(json["maxPrice"].toString()),
         description: json["description"],
+        type: json["type"],
+        color: json["color"],
+        material: json["material"],
         currency: json["currency"],
         createdAt: json["createdAt"] == null
             ? null
@@ -97,7 +108,8 @@ class Product {
             ? null
             : DateTime.parse(json["updatedAt"]),
         v: int.tryParse(json["__v"].toString()),
-        userName: json["userName"],
+        name: json["name"],
+        username: json["username"],
         userImage: json["userImage"],
         isFollowing: json["isFollowing"],
         isPrivate: json["isPrivate"],
@@ -114,11 +126,15 @@ class Product {
         "minPrice": minPrice,
         "maxPrice": maxPrice,
         "description": description,
+        "type": type,
+        "color": color,
+        "material": material,
         "currency": currency,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
         "__v": v,
-        "userName": userName,
+        "name": name,
+        "username": username,
         "userImage": userImage,
         "isFollowing": isFollowing,
         "isPrivate": isPrivate,
@@ -135,11 +151,15 @@ class Product {
     double? minPrice,
     double? maxPrice,
     String? description,
+    String? type,
+    String? color,
+    String? material,
     String? currency,
     DateTime? createdAt,
     DateTime? updatedAt,
     int? v,
-    String? userName,
+    String? name,
+    String? username,
     String? userImage,
     bool? isFollowing,
     bool? isPrivate,
@@ -154,11 +174,15 @@ class Product {
       minPrice: minPrice ?? this.minPrice,
       maxPrice: maxPrice ?? this.maxPrice,
       description: description ?? this.description,
+      type: type ?? this.type,
+      color: color ?? this.color,
+      material: material ?? this.material,
       currency: currency ?? this.currency,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       v: v ?? this.v,
-      userName: userName ?? this.userName,
+      name: name ?? this.name,
+      username: username ?? this.username,
       userImage: userImage ?? this.userImage,
       isFollowing: isFollowing ?? this.isFollowing,
       isPrivate: isPrivate ?? this.isPrivate,

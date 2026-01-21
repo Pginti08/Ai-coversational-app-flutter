@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
@@ -78,11 +79,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       final imageUrl = controller.productDetail.value.image ?? "";
       final productTitle = controller.productDetail.value.title ?? '-';
       final productId = controller.productDetail.value.id ?? '';
-      final userName = controller.productDetail.value.userName ?? '-';
+      final userName = controller.productDetail.value.username ?? '-';
 
       // 2. Create Link
       final String customLink =
-          'https://vousvous.com/share?productId=$productId&imageUrl=$imageUrl';
+          'https://vousvous.com/share?refferalCode=${LocalStorageService.instance.userInfo.value.data?.referralCode}&productId=$productId&imageUrl=$imageUrl';
 
       // 3. Create Message
       final String shareMessage = '''
@@ -374,7 +375,7 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                                         controller
                                                                 .productDetail
                                                                 .value
-                                                                .userName ??
+                                                                .username ??
                                                             "",
                                                         overflow: TextOverflow
                                                             .ellipsis,

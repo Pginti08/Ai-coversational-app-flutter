@@ -64,6 +64,9 @@ class Data {
   DateTime? createdAt;
   DateTime? updatedAt;
   bool? isFollowing;
+  String? username;
+  String? referralCode;
+  String? usedReferralCode;
 
   Data({
     this.id,
@@ -81,6 +84,9 @@ class Data {
     this.createdAt,
     this.updatedAt,
     this.isFollowing,
+    this.username,
+    this.referralCode,
+    this.usedReferralCode,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -100,7 +106,10 @@ class Data {
           json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
       updatedAt:
           json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-      isFollowing: json["isFollowing"]);
+      isFollowing: json["isFollowing"],
+      username: json["username"],
+      referralCode: json["referralCode"],
+      usedReferralCode: json["usedReferralCode"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -117,7 +126,10 @@ class Data {
         "swipeCount": swipeCount,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
-        "isFollowing": isFollowing
+        "isFollowing": isFollowing,
+        "username": username,
+        "referralCode": referralCode,
+        "usedReferralCode": usedReferralCode,
       };
 
   // ✅ copyWith method
@@ -136,7 +148,10 @@ class Data {
       int? swipeCount,
       DateTime? createdAt,
       DateTime? updatedAt,
-      bool? isFollowing}) {
+      bool? isFollowing,
+      String? username,
+      String? referralCode,
+      String? usedReferralCode}) {
     return Data(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -152,6 +167,9 @@ class Data {
         swipeCount: swipeCount ?? this.swipeCount,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
-        isFollowing: isFollowing ?? this.isFollowing);
+        isFollowing: isFollowing ?? this.isFollowing,
+        username: username ?? this.username,
+        referralCode: referralCode ?? this.referralCode,
+        usedReferralCode: usedReferralCode ?? this.usedReferralCode);
   }
 }

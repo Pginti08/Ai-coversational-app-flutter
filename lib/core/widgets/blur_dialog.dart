@@ -22,13 +22,13 @@ class BlurDialog {
     double maxHeightFraction = 0.8, // Fraction of screen height
     double? minWidth,
     double? minHeight,
+    bool barrierDismissible = true, // Set to false for force dialogs
   }) {
     return Get.dialog(
       GestureDetector(
-        onTap: onTapOutside ??
-            () {
-              Get.back();
-            },
+        onTap: barrierDismissible
+            ? (onTapOutside ?? () => Get.back())
+            : null, // Disable tap outside for force dialogs
         child: Material(
           color: Colors.transparent,
           child: BackdropFilter(
@@ -85,6 +85,7 @@ class BlurDialog {
         ),
       ),
       barrierColor: overlayColor ?? AppColors.blackColor.withAlpha(150),
+      barrierDismissible: barrierDismissible,
     );
   }
 }

@@ -37,15 +37,23 @@ class FollowerListModel {
 class Follower {
   String? id;
   String? name;
+  String? username;
   String? image;
   String? bio;
   bool? isFollowing;
 
-  Follower({this.id, this.name, this.image, this.bio, this.isFollowing});
+  Follower(
+      {this.id,
+      this.name,
+      this.image,
+      this.username,
+      this.bio,
+      this.isFollowing});
 
   Follower.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
+    username = json['username'];
     image = json['image'];
     bio = json['bio'];
     isFollowing = json['isFollowing'];
@@ -55,6 +63,7 @@ class Follower {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
+    data['username'] = this.username;
     data['image'] = this.image;
     data['bio'] = this.bio;
     data['isFollowing'] = this.isFollowing;

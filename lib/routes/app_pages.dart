@@ -12,7 +12,6 @@ import 'package:vousvous/features/invite-friend/screens/invite_friend_screen.dar
 import 'package:vousvous/features/liked/liked-product/liked_product_screen.dart';
 import 'package:vousvous/features/liked/screens/liked_screen.dart';
 import 'package:vousvous/features/login/screens/login_screen.dart';
-import 'package:vousvous/features/my-designs/screens/my_designs_screen.dart';
 import 'package:vousvous/features/orders-detail/screens/order_detail_screen.dart';
 import 'package:vousvous/features/orders-detail/screens/tracking_detail_screen.dart';
 import 'package:vousvous/features/orders/screens/orders_screen.dart';
@@ -20,14 +19,15 @@ import 'package:vousvous/features/otp-verify/screens/otp_verify_screen.dart';
 import 'package:vousvous/features/product-detail/product_detail_screen.dart';
 import 'package:vousvous/features/quotation-chat/screens/quotation_chat_screen.dart';
 import 'package:vousvous/features/quotations/screens/quotations_screen.dart';
+import 'package:vousvous/features/refer-friend/screens/refer_friend_screen.dart';
 import 'package:vousvous/features/saved-address/screens/saved_address_screen.dart';
 import 'package:vousvous/features/share-preview/screens/share_preview_screen.dart';
 import 'package:vousvous/features/signup/screens/signup_screen.dart';
 import 'package:vousvous/features/skipped/screens/skipped_screen.dart';
 import 'package:vousvous/features/splash/screens/splash_screen.dart';
+import 'package:vousvous/features/user-profile/screens/follower_list_screen.dart';
 import 'package:vousvous/features/user-profile/screens/posts_view_screen.dart';
 import 'package:vousvous/features/user-profile/screens/user_profile_screen.dart';
-import 'package:vousvous/features/user-profile/screens/follower_list_screen.dart';
 import 'package:vousvous/features/welcome/screens/welcome_screen.dart';
 
 part 'app_routes.dart';
@@ -113,13 +113,13 @@ class AppPages {
       name: Routes.skipped,
       page: () => SkippedScreen(),
     ),
-    GetPage(
-      opaque: false,
-      transition: Transition.fadeIn,
-      fullscreenDialog: true,
-      name: Routes.myDesigns,
-      page: () => MyDesignsScreen(),
-    ),
+    // GetPage(
+    //   opaque: false,
+    //   transition: Transition.fadeIn,
+    //   fullscreenDialog: true,
+    //   name: Routes.myDesigns,
+    //   page: () => MyDesignsScreen(),
+    // ),
     GetPage(
       opaque: false,
       transition: Transition.fadeIn,
@@ -245,6 +245,13 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.followerList,
       page: () => FollowerListScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.referFriend,
+      page: () => ReferFriendScreen(),
     ),
   ];
 }

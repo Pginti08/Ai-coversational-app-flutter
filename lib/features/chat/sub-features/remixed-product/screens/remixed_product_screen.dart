@@ -105,7 +105,8 @@ class _RemixedProductScreenState extends State<RemixedProductScreen> {
           LocalStorageService.instance.userInfo.value.data?.name ?? "-";
 
       // 3. Create product link
-      final String customLink = 'https://vousvous.com/share?imageUrl=$imageUrl';
+      final String customLink =
+          'https://vousvous.com/share?refferalCode=${LocalStorageService.instance.userInfo.value.data?.referralCode}&imageUrl=$imageUrl';
 
       // 4. Create share message - SIMPLIFIED for WhatsApp compatibility
       final String shareMessage = '''✨ Generated Design ✨

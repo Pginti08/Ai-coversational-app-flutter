@@ -15,11 +15,13 @@ void commonDialog({
   String successButtonTitle = "OK",
   String cancelButtonTitle = "Cancel",
   bool showCancel = true,
+  bool isDismissible = true, // Set to false for force update dialogs
   RxBool? isLoading, // ← FIXED: do not assign default false.obs here
 }) {
   final RxBool loading = isLoading ?? false.obs; // ← SAFELY handle null
 
   BlurDialog().show(
+    barrierDismissible: isDismissible,
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,

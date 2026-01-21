@@ -46,7 +46,10 @@ class BodyProfileScreen extends StatelessWidget {
                     onPressed: () {
                       Get.back();
                     },
-                    icon: SvgPicture.asset(AssetConstants.backward),
+                    icon: SvgPicture.asset(
+                      AssetConstants.backward,
+                      height: 24,
+                    ),
                   ),
                 ),
               ],

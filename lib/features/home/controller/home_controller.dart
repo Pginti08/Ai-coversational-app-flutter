@@ -270,7 +270,7 @@ class HomeController extends GetxController {
 
   getNewAppVersion() async {
     if ((!kDebugMode && Flavor.getFlavor == FlavorType.production)) {
-      const appleId = '12345678';
+      const appleId = '6742832317';
       const playStoreId = 'com.vrozart.vousvous';
 
       try {
@@ -279,15 +279,16 @@ class HomeController extends GetxController {
             .then((data) async {
           if (data.canUpdate!) {
             commonDialog(
-              title: "Update Available",
+              title: "Update Required",
               description:
-                  "A new and improved version of the app is available.\nPlease update to continue and enjoy a better experience.",
+                  "A new and improved version of the app is available.\nPlease update to continue using the app.",
               successButtonTitle: "Update Now",
-              cancelButtonTitle: "Later",
+              showCancel: false, // Force update - no cancel button
+              isDismissible: false, // Force update - cannot dismiss
               onSuccess: () async {
                 try {
                   final url = Platform.isIOS
-                      ? "https://apps.apple.com/app/tulah/id12345678"
+                      ? "https://apps.apple.com/app/tulah/id6742832317"
                       : "https://play.google.com/store/apps/details?id=com.vrozart.vousvous";
 
                   await launchUrl(
@@ -303,7 +304,9 @@ class HomeController extends GetxController {
             debugPrint("no new version available");
           }
         });
-      } catch (e) {}
+      } catch (e) {
+        debugPrint("❌ Failed to check for updates: $e");
+      }
     }
   }
 }

@@ -59,7 +59,8 @@ class UserProfileScreen extends StatelessWidget {
                                 ),
                               )
                             : Text(
-                                controller.userDetail.value.data?.name ?? "-",
+                                controller.userDetail.value.data?.username ??
+                                    "-",
                                 textAlign: TextAlign.center,
                                 style: style600S16.copyWith(
                                     letterSpacing: 0.96,
@@ -74,7 +75,7 @@ class UserProfileScreen extends StatelessWidget {
                         },
                         icon: SvgPicture.asset(
                           AssetConstants.backward,
-                          height: 26,
+                          height: 24,
                         ),
                       ),
                     ),
@@ -314,19 +315,24 @@ class UserProfileScreen extends StatelessWidget {
                                     ),
                                   ),
                                   hSizedBox10,
-                                  if (isNotNullOrEmpty(
-                                      controller.userDetail.value.data?.bio))
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        controller.userDetail.value.data?.bio ??
-                                            "",
-                                        textAlign: TextAlign.start,
-                                        style: style400S14.copyWith(
-                                          color: const Color(0xFFACACAC),
+                                  Obx(() {
+                                    if (isNotNullOrEmpty(
+                                        controller.userDetail.value.data?.bio))
+                                      return Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          controller
+                                                  .userDetail.value.data?.bio ??
+                                              "",
+                                          textAlign: TextAlign.start,
+                                          style: style400S14.copyWith(
+                                            color: const Color(0xFFACACAC),
+                                          ),
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    else
+                                      return const SizedBox.shrink();
+                                  }),
                                   hSizedBox16,
                                   controller.isYou == true
                                       ? AppButton(
@@ -434,7 +440,7 @@ class UserProfileScreen extends StatelessWidget {
                                                       .userDetail
                                                       .value
                                                       .data
-                                                      ?.name,
+                                                      ?.username,
                                                   "userAvatar": controller
                                                       .userDetail
                                                       .value

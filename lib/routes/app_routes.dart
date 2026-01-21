@@ -33,4 +33,5 @@ abstract class Routes {
   static const String userProfile = '/user-profile';
   static const String postsView = '/posts-view';
   static const String followerList = '/follower-list';
+  static const String referFriend = '/refer-friend';
 }

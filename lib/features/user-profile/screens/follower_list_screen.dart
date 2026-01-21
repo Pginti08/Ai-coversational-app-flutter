@@ -149,93 +149,102 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                                     // Navigate to user profile
                                     if (follower.id != null) {
                                       Get.toNamed(Routes.userProfile,
-                                          arguments: {"userId": follower.id});
+                                          arguments: {"userId": follower.id},
+                                          preventDuplicates: true);
                                     }
                                   },
-                                  child: Row(
-                                    children: [
-                                      CommonContainer(
-                                        width: 50,
-                                        height: 50,
-                                        isCircle: true,
-                                        backgroundColor: AppColors.grey2Color,
-                                        child: AppNetworkImage(
-                                          imageUrl: follower.image ?? "",
-                                          shape: BoxShape.circle,
-                                          fit: BoxFit.cover,
-                                          errorWidget: const Icon(Icons.person,
-                                              color: Colors.white),
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    child: Row(
+                                      children: [
+                                        CommonContainer(
+                                          width: 50,
+                                          height: 50,
+                                          isCircle: true,
+                                          backgroundColor: AppColors.grey2Color,
+                                          child: AppNetworkImage(
+                                            imageUrl: follower.image ?? "",
+                                            shape: BoxShape.circle,
+                                            fit: BoxFit.cover,
+                                            errorWidget: const Icon(
+                                                Icons.person,
+                                                color: Colors.white),
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              follower.username ?? "-",
-                                              style: style600S16.copyWith(
-                                                  color: AppColors.whiteColor),
-                                            ),
-                                            if (isNotNullOrEmpty(follower.name))
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
                                               Text(
-                                                follower.name ?? "",
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: style400S12.copyWith(
-                                                    color: AppColors
-                                                        .greyTextColor),
+                                                follower.username ?? "-",
+                                                style: style600S16.copyWith(
+                                                    color:
+                                                        AppColors.whiteColor),
                                               ),
-                                          ],
+                                              if (isNotNullOrEmpty(
+                                                  follower.name))
+                                                Text(
+                                                  follower.name ?? "",
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: style400S12.copyWith(
+                                                      color: AppColors
+                                                          .greyTextColor),
+                                                ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      if (follower.id !=
-                                          (LocalStorageService.instance.userInfo
-                                                  .value.data?.id ??
-                                              "")) ...[
-                                        const SizedBox(width: 10),
-                                        // Logic:
-                                        // If isFollowing == true => "Following" (Outlined)
-                                        // If isFollowing == false
-                                        //    If (isMyProfile && type == followers) => "Follow Back" (Primary)
-                                        //    Else => "Follow" (Primary)
-                                        AppButton(
-                                          onTap: () {
-                                            controller
-                                                .toggleFollowFromList(index);
-                                          },
-                                          height: 32,
-                                          width: 100,
-                                          borderRadius: 8,
-                                          fontSize: 12,
-                                          text: (follower.isFollowing ?? false)
-                                              ? "Following"
-                                              : (controller.isYou &&
-                                                      type == 'followers')
-                                                  ? "Follow Back"
-                                                  : "Follow",
-                                          isOutlined:
-                                              (follower.isFollowing ?? false),
-                                          backgroundColor:
-                                              (follower.isFollowing ?? false)
-                                                  ? Colors.transparent
-                                                  : null,
-                                          gradientColors:
-                                              (follower.isFollowing ?? false)
-                                                  ? null
-                                                  : AppColors.colorGradient,
-                                          borderColor:
-                                              (follower.isFollowing ?? false)
-                                                  ? AppColors.greyTextColor
-                                                  : null,
-                                          textColor:
-                                              (follower.isFollowing ?? false)
-                                                  ? AppColors.whiteColor
-                                                  : AppColors.blackColor,
-                                        ),
+                                        if (follower.id !=
+                                            (LocalStorageService.instance
+                                                    .userInfo.value.data?.id ??
+                                                "")) ...[
+                                          const SizedBox(width: 10),
+                                          // Logic:
+                                          // If isFollowing == true => "Following" (Outlined)
+                                          // If isFollowing == false
+                                          //    If (isMyProfile && type == followers) => "Follow Back" (Primary)
+                                          //    Else => "Follow" (Primary)
+                                          AppButton(
+                                            onTap: () {
+                                              controller
+                                                  .toggleFollowFromList(index);
+                                            },
+                                            height: 32,
+                                            width: 100,
+                                            borderRadius: 8,
+                                            fontSize: 12,
+                                            text:
+                                                (follower.isFollowing ?? false)
+                                                    ? "Following"
+                                                    : (controller.isYou &&
+                                                            type == 'followers')
+                                                        ? "Follow Back"
+                                                        : "Follow",
+                                            isOutlined:
+                                                (follower.isFollowing ?? false),
+                                            backgroundColor:
+                                                (follower.isFollowing ?? false)
+                                                    ? Colors.transparent
+                                                    : null,
+                                            gradientColors:
+                                                (follower.isFollowing ?? false)
+                                                    ? null
+                                                    : AppColors.colorGradient,
+                                            borderColor:
+                                                (follower.isFollowing ?? false)
+                                                    ? AppColors.greyTextColor
+                                                    : null,
+                                            textColor:
+                                                (follower.isFollowing ?? false)
+                                                    ? AppColors.whiteColor
+                                                    : AppColors.blackColor,
+                                          ),
+                                        ],
                                       ],
-                                    ],
+                                    ),
                                   ),
                                 );
                               },

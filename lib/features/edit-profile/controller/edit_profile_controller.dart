@@ -188,8 +188,11 @@ class EditProfileController extends GetxController {
           if (Get.isRegistered<HomeController>()) {
             Get.find<HomeController>().getUserDetail();
           }
-          if (Get.isRegistered<UserProfileController>()) {
-            Get.find<UserProfileController>().getUserDetail();
+          if (Get.isRegistered<UserProfileController>(
+              tag: LocalStorageService.instance.userInfo.value.data?.id)) {
+            Get.find<UserProfileController>(
+                    tag: LocalStorageService.instance.userInfo.value.data?.id)
+                .getUserDetail();
           }
           Get.back();
         } else {
@@ -225,8 +228,11 @@ class EditProfileController extends GetxController {
         if (Get.isRegistered<HomeController>()) {
           Get.find<HomeController>().getUserDetail();
         }
-        if (Get.isRegistered<UserProfileController>()) {
-          Get.find<UserProfileController>().getUserDetail();
+        if (Get.isRegistered<UserProfileController>(
+            tag: LocalStorageService.instance.userInfo.value.data?.id)) {
+          Get.find<UserProfileController>(
+                  tag: LocalStorageService.instance.userInfo.value.data?.id)
+              .getUserDetail();
         }
         Get.back();
       } else {

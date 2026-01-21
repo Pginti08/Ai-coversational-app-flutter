@@ -270,7 +270,7 @@ class HomeController extends GetxController {
 
   getNewAppVersion() async {
     if ((!kDebugMode && Flavor.getFlavor == FlavorType.production)) {
-      const appleId = '6742832317';
+      const appleId = '6758098618';
       const playStoreId = 'com.vrozart.vousvous';
 
       try {
@@ -288,7 +288,7 @@ class HomeController extends GetxController {
               onSuccess: () async {
                 try {
                   final url = Platform.isIOS
-                      ? "https://apps.apple.com/app/tulah/id6742832317"
+                      ? "https://apps.apple.com/app/tulah/id6758098618"
                       : "https://play.google.com/store/apps/details?id=com.vrozart.vousvous";
 
                   await launchUrl(

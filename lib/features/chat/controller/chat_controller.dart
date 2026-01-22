@@ -40,6 +40,9 @@ class ChatController extends GetxController {
 
   RxList<String> userSelectedRemixOutfits = <String>[].obs;
   RxList<String> uploadImage = <String>[].obs;
+  final RxString selectedQuality = 'SD'.obs;
+  final RxBool showQualityOptions = false.obs;
+  final RxBool qualityTouched = false.obs;
 
   // Chat messages list
   final RxList<Message> messages = <Message>[].obs;
@@ -378,8 +381,17 @@ class ChatController extends GetxController {
       ),
     );
 
+    // Map premium labels to backend values
+    final String apiQuality = {
+          'SD': '1k',
+          'HD': '2k',
+          'HD+': '4k',
+        }[selectedQuality.value] ??
+        '1k';
+
     socket?.emit("user_message", {
       "prompt": message,
+      "quality": apiQuality,
       "reference_filename":
           isNotNullOrEmpty(refImages) ? refImages : null, // ✅ send the copy too
       "uploaded_reference": isNotNullOrEmpty(uploadImage) ? uploadImage : null,
@@ -389,6 +401,7 @@ class ChatController extends GetxController {
     log(
       {
         "prompt": message,
+        "quality": apiQuality,
         "reference_filename": isNotNullOrEmpty(refImages)
             ? refImages
             : null, // ✅ send the copy too

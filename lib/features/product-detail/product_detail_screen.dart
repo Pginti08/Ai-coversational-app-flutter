@@ -391,47 +391,69 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                                 ),
                                               ),
                                             ),
-                                            // Obx(() => controller
-                                            //         .isFollowing.value
-                                            //     ? AppButton(
-                                            //         onTap: controller
-                                            //                 .isFollowLoading
-                                            //                 .value
-                                            //             ? null
-                                            //             : () {
-                                            //                 controller
-                                            //                     .toggleFollow();
-                                            //               },
-                                            //         height: 30,
-                                            //         text: controller
-                                            //                 .isFollowLoading
-                                            //                 .value
-                                            //             ? "..."
-                                            //             : "Following",
-                                            //         isOutlined: true,
-                                            //         textColor:
-                                            //             AppColors.whiteColor,
-                                            //         gradientBorderColors:
-                                            //             AppColors.colorGradient,
-                                            //         fontSize: 13,
-                                            //       )
-                                            //     : AppButton(
-                                            //         onTap: controller
-                                            //                 .isFollowLoading
-                                            //                 .value
-                                            //             ? null
-                                            //             : () {
-                                            //                 controller
-                                            //                     .toggleFollow();
-                                            //               },
-                                            //         height: 30,
-                                            //         text: controller
-                                            //                 .isFollowLoading
-                                            //                 .value
-                                            //             ? "..."
-                                            //             : "Follow",
-                                            //         fontSize: 13,
-                                            //       ))
+                                            Obx(() {
+                                              final currentUserId =
+                                                  LocalStorageService.instance
+                                                      .userInfo
+                                                      .value
+                                                      .data
+                                                      ?.id;
+                                              final postUserId = controller
+                                                  .productDetail.value.userId;
+
+                                              final isOwnPost =
+                                                  isNotNullOrEmpty(
+                                                          currentUserId) &&
+                                                      currentUserId ==
+                                                          postUserId;
+
+                                              if (isOwnPost) {
+                                                return const SizedBox.shrink();
+                                              }
+
+                                              return controller
+                                                      .isFollowing.value
+                                                  ? AppButton(
+                                                      onTap: controller
+                                                              .isFollowLoading
+                                                              .value
+                                                          ? null
+                                                          : () {
+                                                              controller
+                                                                  .toggleFollow();
+                                                            },
+                                                      height: 30,
+                                                      text: controller
+                                                              .isFollowLoading
+                                                              .value
+                                                          ? "..."
+                                                          : "Following",
+                                                      isOutlined: true,
+                                                      textColor: AppColors
+                                                          .whiteColor,
+                                                      gradientBorderColors:
+                                                          AppColors
+                                                              .colorGradient,
+                                                      fontSize: 13,
+                                                    )
+                                                  : AppButton(
+                                                      onTap: controller
+                                                              .isFollowLoading
+                                                              .value
+                                                          ? null
+                                                          : () {
+                                                              controller
+                                                                  .toggleFollow();
+                                                            },
+                                                      height: 30,
+                                                      text: controller
+                                                              .isFollowLoading
+                                                              .value
+                                                          ? "..."
+                                                          : "Follow",
+                                                      fontSize: 13,
+                                                    );
+                                            }),
                                           ],
                                         ),
 

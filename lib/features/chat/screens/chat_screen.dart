@@ -12,6 +12,7 @@ import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/services/haptic_service.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/app_text_field.dart';
@@ -362,6 +363,104 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  Widget _buildQualityDropdown() {
+    return PopupMenuButton<String>(
+      padding: EdgeInsets.zero,
+      offset: const Offset(0, -145),
+      color: const Color(0xFF1E1E1E),
+      elevation: 20,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Colors.white.withAlpha(30)),
+      ),
+      onSelected: (value) {
+        controller.selectedQuality.value = value;
+        controller.qualityTouched.value = true;
+        HapticService.light();
+      },
+      itemBuilder: (context) => ['SD', 'HD', 'HD+'].map((q) {
+        final isSelected = controller.selectedQuality.value == q;
+        return PopupMenuItem<String>(
+          value: q,
+          child: Row(
+            children: [
+              Text(
+                q,
+                style: style700S12.copyWith(
+                  color: isSelected ? Colors.white : Colors.white60,
+                  fontSize: 13,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              if (isSelected && controller.qualityTouched.value) ...[
+                const Spacer(),
+                const Icon(Icons.check_circle_rounded,
+                    size: 14, color: Color(0xFF68C3E7)),
+              ]
+            ],
+          ),
+        );
+      }).toList(),
+      child: Obx(() {
+        final isSelected = controller.qualityTouched.value;
+        final quality = controller.selectedQuality.value;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          height: 32,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.whiteColor.withAlpha(50)
+                : Colors.black.withAlpha(80),
+            borderRadius: BorderRadius.circular(100),
+            border: Border.all(
+              color: isSelected
+                  ? AppColors.whiteColor.withAlpha(60)
+                  : AppColors.whiteColor.withAlpha(20),
+              width: 1,
+            ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: const Color(0xFF68C3E7).withAlpha(50),
+                      blurRadius: 10,
+                      spreadRadius: -1,
+                    )
+                  ]
+                : null,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ShaderMask(
+                shaderCallback: (bounds) => LinearGradient(
+                  colors: isSelected
+                      ? AppColors.colorGradient
+                      : [Colors.white70, Colors.white38],
+                ).createShader(bounds),
+                child: Text(
+                  quality,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 12,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: 16,
+                color: isSelected ? Colors.white : Colors.white38,
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
   Widget bottomTypingWidget() {
     return KeyboardVisibilityBuilder(builder: (context, isKeyboardVisible) {
       return Obx(() => Column(
@@ -597,6 +696,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       controller.uploadImage.clear();
                                     }
                                   },
+                                  suffixIcon: _buildQualityDropdown(),
                                 ),
                               ),
                               wSizedBox10,

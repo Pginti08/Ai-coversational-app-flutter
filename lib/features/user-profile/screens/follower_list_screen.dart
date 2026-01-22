@@ -30,23 +30,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
   void initState() {
     super.initState();
     String? tag;
-    // We expect "tag" to be passed if we want to find a specific controller instance
-    // Or we can try to find the one related to the previous screen?
-    // Actually, FollowerListScreen is pushed from UserProfileScreen.
-    // UserProfileScreen now uses a tag.
-    // So we should pass the tag to FollowerListScreen as well.
-    // But if we don't change navigation arguments everywhere, we might break it.
-    // Let's assume the previous screen is the one holding the controller.
-
-    // However, simplest fix without changing all navigation calls:
-    // If Get.arguments has a userId, we use that as tag?
-    // Wait, UserProfileController is put with tag = userId.
-    // So if we are viewing followers of userId 'X', we need to find controller with tag 'X'.
-    // BUT, UserProfileController logic for followers is inside it.
-
-    // Let's look at how we navigate to FollowerListScreen.
-    // We might need to pass the userId/tag in arguments.
-
+    
     if (Get.arguments != null) {
       if (Get.arguments["type"] != null) {
         type = Get.arguments["type"];

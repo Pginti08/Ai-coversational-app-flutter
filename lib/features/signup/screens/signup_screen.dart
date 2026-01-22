@@ -123,7 +123,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       isGradientBorder: true,
                       fillColor: AppColors.whiteColor.withAlpha(8),
                       hintStyle: style400S16.copyWith(color: Color(0xFF444444)),
-                      maxLength: 6,
+                      maxLength: 7,
                       textCapitalization: TextCapitalization.characters,
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(

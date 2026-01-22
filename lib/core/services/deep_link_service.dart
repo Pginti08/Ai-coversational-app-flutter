@@ -154,32 +154,32 @@ class DeepLinkHandler {
       print('🔐 User logged in: $isLoggedIn');
 
       if (isLoggedIn) {
-        // User is logged in
-        if (productId != null || imageUrl != null) {
+        // User is logged in: Only navigate if BOTH productId AND imageUrl are present
+        if (isNotNullOrEmpty(productId) && isNotNullOrEmpty(imageUrl)) {
           print('➡️ Navigating to share screen');
           navigateToShareScreen(imageUrl: imageUrl, productId: productId);
-        } else if (referralCode != null) {
-          print(
-              '➡️ User already logged in, ignoring referral code, going to home');
-          Get.offAllNamed(Routes.home);
         } else {
-          print('➡️ No specific content, going to home');
-          Get.offAllNamed(Routes.home);
+          print(
+              'ℹ️ Logged in but missing productId or imageUrl, doing nothing');
+          // Do nothing - stay on current screen
         }
       } else {
-        // User not logged in - go to signup with referral code prefilled
-        print('➡️ Navigating to signup with referral code');
-        Get.offAllNamed(Routes.signup, arguments: {
-          "fromInvitePost": true,
-          "deepLink": uri.toString(),
-          if (referralCode != null) "referralCode": referralCode,
-        });
+        // User not logged in: Only navigate to signup if referralCode is present
+        if (isNotNullOrEmpty(referralCode)) {
+          print('➡️ Navigating to signup with referral code');
+          Get.offAllNamed(Routes.signup, arguments: {
+            "fromInvitePost": true,
+            "deepLink": uri.toString(),
+            "referralCode": referralCode,
+          });
+        } else {
+          print('ℹ️ Not logged in and no referral code, doing nothing');
+          // Do nothing - stay on current screen
+        }
       }
     } else {
-      print('➡️ Unknown path, going to signup');
-      Get.offAllNamed(Routes.signup, arguments: {
-        "fromInvitePost": true,
-      });
+      print('ℹ️ Unknown path, doing nothing');
+      // Do nothing for unknown paths
     }
   }
 

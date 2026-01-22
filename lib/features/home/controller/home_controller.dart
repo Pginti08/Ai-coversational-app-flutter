@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:app_version_update/app_version_update.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/constants/flavors.dart';
@@ -269,44 +269,132 @@ class HomeController extends GetxController {
       (requiredSwipes - totalSwipes.value).clamp(0, requiredSwipes);
 
   getNewAppVersion() async {
+    debugPrint("🔄 getNewAppVersion called");
+    debugPrint("   kDebugMode: $kDebugMode");
+    debugPrint("   Flavor: ${Flavor.getFlavor}");
+
     if ((!kDebugMode && Flavor.getFlavor == FlavorType.production)) {
-      const appleId = '6758098618';
-      const playStoreId = 'com.vrozart.vousvous';
-
       try {
-        await AppVersionUpdate.checkForUpdates(
-                appleId: appleId, playStoreId: playStoreId)
-            .then((data) async {
-          if (data.canUpdate!) {
-            commonDialog(
-              title: "Update Required",
-              description:
-                  "A new and improved version of the app is available.\nPlease update to continue using the app.",
-              successButtonTitle: "Update Now",
-              showCancel: false, // Force update - no cancel button
-              isDismissible: false, // Force update - cannot dismiss
-              onSuccess: () async {
-                try {
-                  final url = Platform.isIOS
-                      ? "https://apps.apple.com/app/tulah/id6758098618"
-                      : "https://play.google.com/store/apps/details?id=com.vrozart.vousvous";
+        debugPrint("📡 Checking for app updates...");
 
-                  await launchUrl(
-                    Uri.parse(url),
-                    mode: LaunchMode.externalApplication,
-                  );
-                } catch (e) {
-                  debugPrint("❌ Failed to open store: $e");
-                }
-              },
-            );
-          } else {
-            debugPrint("no new version available");
-          }
-        });
+        // Get current installed version
+        final packageInfo = await PackageInfo.fromPlatform();
+        final currentVersion = packageInfo.version;
+        debugPrint("   Current installed version: $currentVersion");
+
+        // Get store version
+        String? storeVersion;
+
+        if (Platform.isAndroid) {
+          // Fetch version from Play Store
+          storeVersion = await _getPlayStoreVersion();
+        } else if (Platform.isIOS) {
+          // Fetch version from App Store
+          storeVersion = await _getAppStoreVersion();
+        }
+
+        debugPrint("   Store version: $storeVersion");
+
+        if (storeVersion != null &&
+            _isUpdateAvailable(currentVersion, storeVersion)) {
+          debugPrint("✅ Update available! $currentVersion -> $storeVersion");
+          commonDialog(
+            title: "Update Required",
+            description:
+                "A new and improved version of the app is available.\nPlease update to continue using the app.",
+            successButtonTitle: "Update Now",
+            showCancel: false,
+            isDismissible: false,
+            onSuccess: () async {
+              try {
+                final url = Platform.isIOS
+                    ? "https://apps.apple.com/app/vousvous/id6758098618"
+                    : "https://play.google.com/store/apps/details?id=com.vrozart.vousvous";
+
+                await launchUrl(
+                  Uri.parse(url),
+                  mode: LaunchMode.externalApplication,
+                );
+              } catch (e) {
+                debugPrint("❌ Failed to open store: $e");
+              }
+            },
+          );
+        } else {
+          debugPrint("ℹ️ No update available");
+        }
       } catch (e) {
         debugPrint("❌ Failed to check for updates: $e");
       }
+    } else {
+      debugPrint(
+          "⚠️ Skipping update check - Debug: $kDebugMode, Flavor: ${Flavor.getFlavor}");
+    }
+  }
+
+  /// Get version from Play Store
+  Future<String?> _getPlayStoreVersion() async {
+    try {
+      const packageName = 'com.vrozart.vousvous';
+      final url =
+          'https://play.google.com/store/apps/details?id=$packageName&hl=en';
+
+      final response = await NetworkClient.instance.dio.get(url);
+      if (response.statusCode == 200) {
+        final html = response.data.toString();
+        // Look for version pattern in Play Store page
+        // Pattern: [[[" followed by version number like "1.0.5"
+        final versionRegex = RegExp(r'\[\[\[\"\d+\.\d+\.\d+');
+        final match = versionRegex.firstMatch(html);
+        if (match != null) {
+          final version = match.group(0)?.replaceAll('[[[\"', '');
+          return version;
+        }
+      }
+    } catch (e) {
+      debugPrint("❌ Error fetching Play Store version: $e");
+    }
+    return null;
+  }
+
+  /// Get version from App Store
+  Future<String?> _getAppStoreVersion() async {
+    try {
+      const appId = '6758098618';
+      final url = 'https://itunes.apple.com/lookup?id=$appId&country=in';
+
+      final response = await NetworkClient.instance.dio.get(url);
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data['resultCount'] > 0) {
+          return data['results'][0]['version'];
+        }
+      }
+    } catch (e) {
+      debugPrint("❌ Error fetching App Store version: $e");
+    }
+    return null;
+  }
+
+  /// Compare versions to check if update is available
+  bool _isUpdateAvailable(String currentVersion, String storeVersion) {
+    try {
+      final current = currentVersion.split('.').map(int.parse).toList();
+      final store = storeVersion.split('.').map(int.parse).toList();
+
+      // Pad with zeros if needed
+      while (current.length < 3) current.add(0);
+      while (store.length < 3) store.add(0);
+
+      // Compare major.minor.patch
+      for (int i = 0; i < 3; i++) {
+        if (store[i] > current[i]) return true;
+        if (store[i] < current[i]) return false;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("❌ Error comparing versions: $e");
+      return false;
     }
   }
 }

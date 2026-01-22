@@ -45,7 +45,8 @@ class ReferFriendController extends GetxController {
       HapticFeedback.lightImpact();
 
       final message = '''
-🎨 Join VousVous - Your Fashion Companion!
+Join VousVous - Design your dream dress
+with intelligent styling!
 
 Use my referral code: ${referralCode.value}
 

@@ -8,7 +8,7 @@
 
   <!-- App Links Meta Tags -->
   <meta property="al:ios:url" content="vousvous://share" />
-  <meta property="al:ios:app_store_id" content="YOUR_IOS_APP_ID" />
+  <meta property="al:ios:app_store_id" content="6758098618" />
   <meta property="al:ios:app_name" content="VousVous" />
   <meta property="al:android:url" content="vousvous://share" />
   <meta property="al:android:package" content="com.vrozart.vousvous" />
@@ -209,18 +209,28 @@
     // Configuration
     const CONFIG = {
       androidPackage: "com.vrozart.vousvous",
-      iosAppId: "YOUR_IOS_APP_ID",
+      iosAppId: "6758098618",
       playStoreUrl: "https://play.google.com/store/apps/details?id=com.vrozart.vousvous",
-      appStoreUrl: "https://apps.apple.com/app/6758098618",
+      appStoreUrl: "https://apps.apple.com/app/vousvous/id6758098618",
       deepLinkScheme: "vousvous://share"
     };
 
     // Detect platform
     function getPlatform() {
       const ua = navigator.userAgent || "";
+      const platform = navigator.platform || "";
+
+      // Check for iOS - more comprehensive detection
+      const isIOS = /iPad|iPhone|iPod/.test(ua) ||
+        (platform === 'MacIntel' && navigator.maxTouchPoints > 1) || // iPad on iOS 13+
+        /Mac/.test(platform) && 'ontouchend' in document; // Alternative iPad check
+
+      // Check for Android
+      const isAndroid = /android/i.test(ua);
+
       return {
-        isIOS: /iPad|iPhone|iPod/.test(ua) && !window.MSStream,
-        isAndroid: /android/i.test(ua)
+        isIOS: isIOS && !window.MSStream,
+        isAndroid: isAndroid
       };
     }
 

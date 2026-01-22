@@ -300,11 +300,7 @@ class ReferFriendScreen extends StatelessWidget {
                 'Your friend downloads the app and signs up using your code',
           ),
           hSizedBox12,
-          _buildStep(
-            number: '3',
-            title: 'Both Earn Rewards',
-            description: 'You and your friend both get exclusive rewards!',
-          ),
+          // NOTE: Step 3 removed as per latest UX requirement
         ],
       ),
     );

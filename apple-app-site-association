@@ -1,0 +1,23 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "985URDNJHV.com.vrozart.vousvous.dev",
+        "paths": ["/share/*", "/product/*", "/referral/*"]
+      },
+      {
+        "appID": "985URDNJHV.com.vrozart.vousvous.staging",
+        "paths": ["/share/*", "/product/*", "/referral/*"]
+      },
+      {
+        "appID": "985URDNJHV.com.vrozart.vousvous.demo",
+        "paths": ["/share/*", "/product/*", "/referral/*"]
+      },
+      {
+        "appID": "985URDNJHV.com.vrozart.vousvous",
+        "paths": ["/share/*", "/product/*", "/referral/*"]
+      }
+    ]
+  }
+}

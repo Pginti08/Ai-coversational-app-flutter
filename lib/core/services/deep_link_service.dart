@@ -168,8 +168,6 @@ class DeepLinkHandler {
         if (isNotNullOrEmpty(referralCode)) {
           print('➡️ Navigating to signup with referral code');
           Get.offAllNamed(Routes.signup, arguments: {
-            "fromInvitePost": true,
-            "deepLink": uri.toString(),
             "referralCode": referralCode,
           });
         } else {

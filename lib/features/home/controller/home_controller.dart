@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -57,7 +59,9 @@ class HomeController extends GetxController {
 
   @override
   void onReady() {
-    getNewAppVersion();
+    if ((!kDebugMode && Flavor.getFlavor == FlavorType.production)) {
+      getNewAppVersion();
+    }
     super.onReady();
   }
 
@@ -268,133 +272,168 @@ class HomeController extends GetxController {
   int get remainingSwipesToCustomize =>
       (requiredSwipes - totalSwipes.value).clamp(0, requiredSwipes);
 
-  getNewAppVersion() async {
+  Future<void> getNewAppVersion() async {
     debugPrint("🔄 getNewAppVersion called");
-    debugPrint("   kDebugMode: $kDebugMode");
-    debugPrint("   Flavor: ${Flavor.getFlavor}");
 
-    if ((!kDebugMode && Flavor.getFlavor == FlavorType.production)) {
-      try {
-        debugPrint("📡 Checking for app updates...");
+    try {
+      final remoteConfig = FirebaseRemoteConfig.instance;
 
-        // Get current installed version
-        final packageInfo = await PackageInfo.fromPlatform();
-        final currentVersion = packageInfo.version;
-        debugPrint("   Current installed version: $currentVersion");
+      // Configure Remote Config
+      await remoteConfig.setConfigSettings(
+        RemoteConfigSettings(
+          fetchTimeout: const Duration(seconds: 10),
+          minimumFetchInterval: const Duration(hours: 1),
+        ),
+      );
 
-        // Get store version
-        String? storeVersion;
+      // Fetch and activate
+      final activated = await remoteConfig.fetchAndActivate();
+      debugPrint("🔥 Remote Config activated: $activated");
 
-        if (Platform.isAndroid) {
-          // Fetch version from Play Store
-          storeVersion = await _getPlayStoreVersion();
-        } else if (Platform.isIOS) {
-          // Fetch version from App Store
-          storeVersion = await _getAppStoreVersion();
+      final rawJson = remoteConfig.getString('app_update_config');
+      if (rawJson.isEmpty) {
+        debugPrint("⚠️ app_update_config is empty");
+        return;
+      }
+
+      debugPrint("📄 Raw JSON: $rawJson");
+
+      final data = jsonDecode(rawJson) as Map<String, dynamic>;
+      final platformKey = Platform.isAndroid ? 'android' : 'ios';
+      final config = data[platformKey] as Map<String, dynamic>;
+
+      final minVersion = config['minimum_version'] as String;
+      final latestVersion = config['latest_version'] as String;
+      final storeUrl = config['store_url'] as String;
+
+      final maintenance = config['maintenance'] as Map<String, dynamic>;
+      final maintenanceActive = maintenance['active'] as bool;
+      final maintenanceMessage = maintenance['message'] as String;
+
+      final packageInfo = await PackageInfo.fromPlatform();
+      final currentVersion = packageInfo.version;
+
+      debugPrint("📦 Current Version: $currentVersion");
+      debugPrint("⬇️ Minimum Version: $minVersion");
+      debugPrint("⬆️ Latest Version: $latestVersion");
+      debugPrint("🔧 Maintenance Active: $maintenanceActive");
+
+      // 1️⃣ Check maintenance mode first
+      if (maintenanceActive) {
+        debugPrint("🚧 Maintenance mode active");
+        _showMaintenanceDialog(maintenanceMessage);
+        return;
+      }
+
+      // 2️⃣ Force update if below minimum version
+      if (_isVersionLessThan(currentVersion, minVersion)) {
+        debugPrint("⚠️ Force update required");
+        _showForceUpdateDialog(storeUrl);
+        return;
+      }
+
+      // 3️⃣ Optional update if below latest version
+      if (_isVersionLessThan(currentVersion, latestVersion)) {
+        debugPrint("ℹ️ Optional update available");
+        _showOptionalUpdateDialog(storeUrl);
+        return;
+      }
+
+      debugPrint("✅ App is up to date");
+    } catch (e, stackTrace) {
+      debugPrint("❌ Update check failed: $e");
+      debugPrint("Stack trace: $stackTrace");
+    }
+  }
+
+// Helper method to compare versions
+  bool _isVersionLessThan(String current, String target) {
+    try {
+      final currentParts = current.split('.').map(int.parse).toList();
+      final targetParts = target.split('.').map(int.parse).toList();
+
+      // Pad with zeros if lengths differ
+      while (currentParts.length < targetParts.length) {
+        currentParts.add(0);
+      }
+      while (targetParts.length < currentParts.length) {
+        targetParts.add(0);
+      }
+
+      // Compare each part
+      for (int i = 0; i < currentParts.length; i++) {
+        if (currentParts[i] < targetParts[i]) {
+          return true;
+        } else if (currentParts[i] > targetParts[i]) {
+          return false;
         }
+      }
 
-        debugPrint("   Store version: $storeVersion");
+      return false; // Versions are equal
+    } catch (e) {
+      debugPrint("❌ Version comparison error: $e");
+      return false;
+    }
+  }
 
-        if (storeVersion != null &&
-            _isUpdateAvailable(currentVersion, storeVersion)) {
-          debugPrint("✅ Update available! $currentVersion -> $storeVersion");
-          commonDialog(
-            title: "Update Required",
-            description:
-                "A new and improved version of the app is available.\nPlease update to continue using the app.",
-            successButtonTitle: "Update Now",
-            showCancel: false,
-            isDismissible: false,
-            onSuccess: () async {
-              try {
-                final url = Platform.isIOS
-                    ? "https://apps.apple.com/app/vousvous/id6758098618"
-                    : "https://play.google.com/store/apps/details?id=com.vrozart.vousvous";
+// Show maintenance dialog
+  void _showMaintenanceDialog(String message) {
+    commonDialog(
+      title: "🔧 Maintenance",
+      description: message,
+      showCancel: false,
+      isDismissible: false,
+      successButtonTitle: "OK",
+      onSuccess: () {},
+    );
+  }
 
-                await launchUrl(
-                  Uri.parse(url),
-                  mode: LaunchMode.externalApplication,
-                );
-              } catch (e) {
-                debugPrint("❌ Failed to open store: $e");
-              }
-            },
+// Show force update dialog
+  void _showForceUpdateDialog(String storeUrl) {
+    commonDialog(
+      title: "⚠️ Update Required",
+      description: "Please update the app to continue using all features.",
+      showCancel: false,
+      isDismissible: false,
+      successButtonTitle: "Update Now",
+      onSuccess: () async {
+        final uri = Uri.parse(storeUrl);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(
+            uri,
+            mode: LaunchMode.externalApplication,
           );
         } else {
-          debugPrint("ℹ️ No update available");
+          debugPrint("❌ Cannot launch URL: $storeUrl");
         }
-      } catch (e) {
-        debugPrint("❌ Failed to check for updates: $e");
-      }
-    } else {
-      debugPrint(
-          "⚠️ Skipping update check - Debug: $kDebugMode, Flavor: ${Flavor.getFlavor}");
-    }
+      },
+    );
   }
 
-  /// Get version from Play Store
-  Future<String?> _getPlayStoreVersion() async {
-    try {
-      const packageName = 'com.vrozart.vousvous';
-      final url =
-          'https://play.google.com/store/apps/details?id=$packageName&hl=en';
-
-      final response = await NetworkClient.instance.dio.get(url);
-      if (response.statusCode == 200) {
-        final html = response.data.toString();
-        // Look for version pattern in Play Store page
-        // Pattern: [[[" followed by version number like "1.0.5"
-        final versionRegex = RegExp(r'\[\[\[\"\d+\.\d+\.\d+');
-        final match = versionRegex.firstMatch(html);
-        if (match != null) {
-          final version = match.group(0)?.replaceAll('[[[\"', '');
-          return version;
+// Show optional update dialog
+  void _showOptionalUpdateDialog(String storeUrl) {
+    commonDialog(
+      title: "🎉 Update Available",
+      description:
+          "A newer version of the app is available. Would you like to update?",
+      showCancel: true,
+      cancelButtonTitle: "Later",
+      successButtonTitle: "Update",
+      isDismissible: true,
+      onSuccess: () async {
+        final uri = Uri.parse(storeUrl);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(
+            uri,
+            mode: LaunchMode.externalApplication,
+          );
+        } else {
+          debugPrint("❌ Cannot launch URL: $storeUrl");
         }
-      }
-    } catch (e) {
-      debugPrint("❌ Error fetching Play Store version: $e");
-    }
-    return null;
-  }
-
-  /// Get version from App Store
-  Future<String?> _getAppStoreVersion() async {
-    try {
-      const appId = '6758098618';
-      final url = 'https://itunes.apple.com/lookup?id=$appId&country=in';
-
-      final response = await NetworkClient.instance.dio.get(url);
-      if (response.statusCode == 200) {
-        final data = response.data;
-        if (data['resultCount'] > 0) {
-          return data['results'][0]['version'];
-        }
-      }
-    } catch (e) {
-      debugPrint("❌ Error fetching App Store version: $e");
-    }
-    return null;
-  }
-
-  /// Compare versions to check if update is available
-  bool _isUpdateAvailable(String currentVersion, String storeVersion) {
-    try {
-      final current = currentVersion.split('.').map(int.parse).toList();
-      final store = storeVersion.split('.').map(int.parse).toList();
-
-      // Pad with zeros if needed
-      while (current.length < 3) current.add(0);
-      while (store.length < 3) store.add(0);
-
-      // Compare major.minor.patch
-      for (int i = 0; i < 3; i++) {
-        if (store[i] > current[i]) return true;
-        if (store[i] < current[i]) return false;
-      }
-      return false;
-    } catch (e) {
-      debugPrint("❌ Error comparing versions: $e");
-      return false;
-    }
+      },
+      onCancel: () {
+        debugPrint("ℹ️ User chose to update later");
+      },
+    );
   }
 }

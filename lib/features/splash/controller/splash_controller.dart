@@ -16,39 +16,26 @@ class SplashController extends GetxController {
     // Wait for splash animation
     await Future.delayed(const Duration(milliseconds: 2800));
 
-    // Check if user is logged in
-    final isLoggedIn = isNotNullOrEmpty(
-      LocalStorageService.instance.getString(StorageConstants.accessToken),
-    );
+    // User not logged in - check for pending referral code from Play Store
 
-    if (isLoggedIn) {
+    final deepLinkHandler = Get.find<DeepLinkHandler>();
+    final pendingReferralCode = await deepLinkHandler.getPendingReferralCode();
+
+    if (isNotNullOrEmpty(pendingReferralCode)) {
+      print('🎯 Found pending referral code: $pendingReferralCode');
+      print('➡️ Navigating to signup with prefilled referral code');
+
+      // Navigate to signup with referral code
+      Get.offAllNamed(Routes.signup, arguments: {
+        "referralCode": pendingReferralCode,
+      });
+    } else if (isNotNullOrEmpty(
+        LocalStorageService.instance.getString(StorageConstants.accessToken))) {
       // User is already logged in, go to home
       Get.offAllNamed(Routes.home);
-      return;
+    } else {
+      // No referral code or token - go to welcome
+      Get.offAllNamed(Routes.welcome);
     }
-
-    // User not logged in - check for pending referral code from Play Store
-    try {
-      final deepLinkHandler = Get.find<DeepLinkHandler>();
-      final pendingReferralCode =
-          await deepLinkHandler.getPendingReferralCode();
-
-      if (isNotNullOrEmpty(pendingReferralCode)) {
-        print('🎯 Found pending referral code: $pendingReferralCode');
-        print('➡️ Navigating to signup with prefilled referral code');
-
-        // Navigate to signup with referral code
-        Get.offAllNamed(Routes.signup, arguments: {
-          "fromInvitePost": true,
-          "referralCode": pendingReferralCode,
-        });
-        return;
-      }
-    } catch (e) {
-      print('❌ Error checking pending referral code: $e');
-    }
-
-    // No referral code or error - go to welcome
-    Get.offAllNamed(Routes.welcome);
   }
 }

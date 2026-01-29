@@ -374,9 +374,10 @@ class ChatController extends GetxController {
         sessionId: currentSessionId,
         refImage: isNotNullOrEmpty(userSelectedRemixOutfits)
             ? userSelectedRemixOutfits.toList()
-            : isNotNullOrEmpty(uploadImage)
-                ? uploadImage.toList()
-                : null,
+            : null,
+        images: isNotNullOrEmpty(uploadImage)
+            ? uploadImage.map((e) => ImageModel(filename: e, text: "")).toList()
+            : null,
       ),
     );
 

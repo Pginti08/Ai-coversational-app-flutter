@@ -47,7 +47,6 @@ class _UserMenuState extends State<UserMenu> {
                       .copyWith(right: 0),
                   borderRadius: 16,
                   backgroundColor: AppColors.whiteColor.withAlpha(20),
-                  enableBlur: true,
                   child: Row(
                     children: [
                       Obx(() => AppNetworkImage(

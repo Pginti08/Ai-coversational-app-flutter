@@ -9,7 +9,7 @@ class BlurDialog {
   // Alternative method with more explicit sizing control
   Future<T?> show<T>({
     required Widget child,
-    double blurAmount = 10,
+    double blurAmount = 5,
     VoidCallback? onTapOutside,
     Color? overlayColor,
     double borderRadius = 24,

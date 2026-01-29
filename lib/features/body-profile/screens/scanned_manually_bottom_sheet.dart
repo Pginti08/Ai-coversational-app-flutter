@@ -38,6 +38,9 @@ class _ScannedManuallyBottomSheetState
     extends State<ScannedManuallyBottomSheet> {
   final RxBool isLoading = false.obs;
 
+  // Unit selection: true = CM, false = IN
+  final RxBool isCmSelected = true.obs;
+
   final TextEditingController nameController = TextEditingController();
 
   final TextEditingController heightController = TextEditingController();
@@ -62,21 +65,37 @@ class _ScannedManuallyBottomSheetState
 
   final RxString shoulderError = ''.obs;
 
+  String get selectedUnit => isCmSelected.value ? "CM" : "IN";
+
   @override
   void initState() {
+    if (widget.savedBodyProfile != null) {
+      isCmSelected.value =
+          (widget.savedBodyProfile?.unit ?? "CM").toUpperCase() == "CM";
+    }
+
     nameController.text = widget.savedBodyProfile?.name ?? "";
-    heightController.text =
-        (widget.savedBodyProfile?.height?.toInt() ?? "").toString();
-    bustController.text =
-        (widget.savedBodyProfile?.bust?.toInt() ?? "").toString();
-    waistController.text =
-        (widget.savedBodyProfile?.waist?.toInt() ?? "").toString();
-    hipController.text =
-        (widget.savedBodyProfile?.hips?.toInt() ?? "").toString();
-    shoulderController.text =
-        (widget.savedBodyProfile?.shoulders?.toInt() ?? "").toString();
+    heightController.text = _formatDouble(widget.savedBodyProfile?.height);
+    bustController.text = _formatDouble(widget.savedBodyProfile?.bust);
+    waistController.text = _formatDouble(widget.savedBodyProfile?.waist);
+    hipController.text = _formatDouble(widget.savedBodyProfile?.hips);
+    shoulderController.text = _formatDouble(widget.savedBodyProfile?.shoulders);
 
     super.initState();
+  }
+
+  String _formatDouble(dynamic value) {
+    if (value == null) return "";
+    if (value is double) {
+      // Remove trailing zeros
+      return value.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
+    }
+    return value.toString();
+  }
+
+  double? _parseDouble(String value) {
+    if (value.isEmpty) return null;
+    return double.tryParse(value);
   }
 
   void validateAndSave() {
@@ -113,16 +132,16 @@ class _ScannedManuallyBottomSheetState
       // Create JSON string from current field values
       final Map<String, dynamic> bodyProfileMap = {
         "name": nameController.text.trim(),
-        "height": int.tryParse(heightController.text.trim()) ?? 0,
-        "heightUnit": "CM",
-        "bust": int.tryParse(bustController.text.trim()) ?? 0,
-        "bustUnit": "CM",
-        "waist": int.tryParse(waistController.text.trim()) ?? 0,
-        "waistUnit": "CM",
-        "hips": int.tryParse(hipController.text.trim()) ?? 0,
-        "hipsUnit": "CM",
-        "shoulders": int.tryParse(shoulderController.text.trim()) ?? 0,
-        "shouldersUnit": "CM",
+        "height": _parseDouble(heightController.text.trim()) ?? 0,
+        "heightUnit": selectedUnit,
+        "bust": _parseDouble(bustController.text.trim()) ?? 0,
+        "bustUnit": selectedUnit,
+        "waist": _parseDouble(waistController.text.trim()) ?? 0,
+        "waistUnit": selectedUnit,
+        "hips": _parseDouble(hipController.text.trim()) ?? 0,
+        "hipsUnit": selectedUnit,
+        "shoulders": _parseDouble(shoulderController.text.trim()) ?? 0,
+        "shouldersUnit": selectedUnit,
       };
 
       final String jsonString = json.encode(bodyProfileMap);
@@ -149,12 +168,12 @@ class _ScannedManuallyBottomSheetState
         baseUrlType: BaseUrl.base,
         params: {
           "name": nameController.text.trim(),
-          "height": int.tryParse(heightController.text.trim()),
-          "bust": int.tryParse(bustController.text.trim()),
-          "waist": int.tryParse(waistController.text.trim()),
-          "hips": int.tryParse(hipController.text.trim()),
-          "shoulders": int.tryParse(shoulderController.text.trim()),
-          "unit": "CM",
+          "height": _parseDouble(heightController.text.trim()),
+          "bust": _parseDouble(bustController.text.trim()),
+          "waist": _parseDouble(waistController.text.trim()),
+          "hips": _parseDouble(hipController.text.trim()),
+          "shoulders": _parseDouble(shoulderController.text.trim()),
+          "unit": selectedUnit,
         },
       );
 
@@ -213,53 +232,52 @@ class _ScannedManuallyBottomSheetState
                   }
                 },
               ),
-              hSizedBox24,
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Measurements".toUpperCase(),
-                  style: style700S12.copyWith(
-                    letterSpacing: 0.96,
-                    color: Color(0xFFCCCCCC),
+              hSizedBox20,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Measurements".toUpperCase(),
+                    style: style700S12.copyWith(
+                      letterSpacing: 0.96,
+                      color: Color(0xFFCCCCCC),
+                    ),
                   ),
-                ),
+                  // Unit Toggle
+                  _buildUnitToggle(),
+                ],
               ),
-              hSizedBox10,
+              hSizedBox16,
               Expanded(
                 child: ListView(
                   padding: EdgeInsets.zero,
                   children: [
                     measurementsTextField(
                       title: "Height",
-                      unit: "CM",
                       textEditingController: heightController,
                       fieldError: heightError,
                     ),
                     hSizedBox18,
                     measurementsTextField(
                       title: "Bust",
-                      unit: "CM",
                       textEditingController: bustController,
                       fieldError: bustError,
                     ),
                     hSizedBox18,
                     measurementsTextField(
                       title: "Waist",
-                      unit: "CM",
                       textEditingController: waistController,
                       fieldError: waistError,
                     ),
                     hSizedBox18,
                     measurementsTextField(
                       title: "Hips",
-                      unit: "CM",
                       textEditingController: hipController,
                       fieldError: hipError,
                     ),
                     hSizedBox18,
                     measurementsTextField(
                       title: "Shoulders",
-                      unit: "CM",
                       textEditingController: shoulderController,
                       fieldError: shoulderError,
                     ),
@@ -296,9 +314,77 @@ class _ScannedManuallyBottomSheetState
     );
   }
 
+  Widget _buildUnitToggle() {
+    return Container(
+      height: 36,
+      width: 100, // Fixed width for the toggle
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor.withAlpha(12),
+        borderRadius: BorderRadius.circular(100),
+        border: Border.all(
+          color: AppColors.whiteColor.withAlpha(20),
+        ),
+      ),
+      child: Stack(
+        children: [
+          // Sliding Background
+          Obx(
+            () => AnimatedAlign(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+              alignment: isCmSelected.value
+                  ? Alignment.centerLeft
+                  : Alignment.centerRight,
+              child: Container(
+                width:
+                    45, // Half of (140 - 6 padding) roughly, adjusted for fit
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: AppColors.colorGradient),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+              ),
+            ),
+          ),
+          // Buttons
+          Row(
+            children: [
+              _toggleItem("CM", true),
+              _toggleItem("IN", false),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _toggleItem(String label, bool isCm) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => isCmSelected.value = isCm,
+        behavior: HitTestBehavior.translucent,
+        child: Center(
+          child: Obx(
+            () {
+              final bool selected = isCmSelected.value == isCm;
+              return Text(
+                label,
+                style: style700S12.copyWith(
+                  letterSpacing: 0.96,
+                  color:
+                      selected ? AppColors.blackColor : const Color(0xFF666666),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget measurementsTextField({
     required String title,
-    required String unit,
     required TextEditingController textEditingController,
     required RxString fieldError,
   }) {
@@ -328,7 +414,7 @@ class _ScannedManuallyBottomSheetState
                   ),
                 ),
                 SizedBox(
-                  width: 50,
+                  width: 70,
                   child: AppTextField(
                     focusNode: focusNode, // Assign FocusNode here
                     contentPadding: EdgeInsets.all(0),
@@ -336,9 +422,13 @@ class _ScannedManuallyBottomSheetState
                     textAlign: TextAlign.end,
                     borderColor: Colors.transparent,
                     controller: textEditingController,
-                    maxLength: 3,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    maxLength: 6, // Allow for decimal values like 123.45
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d*\.?\d{0,2}')),
+                    ],
                     textStyle: style600S20.copyWith(
                       letterSpacing: 0.42,
                       color: AppColors.whiteTextColor,
@@ -350,12 +440,14 @@ class _ScannedManuallyBottomSheetState
                     },
                   ),
                 ),
-                Text(
-                  unit.toUpperCase(),
-                  style: style700S12.copyWith(
-                    fontSize: 10,
-                    letterSpacing: 0.80,
-                    color: const Color(0xFF666666),
+                Obx(
+                  () => Text(
+                    selectedUnit,
+                    style: style700S12.copyWith(
+                      fontSize: 10,
+                      letterSpacing: 0.80,
+                      color: const Color(0xFF666666),
+                    ),
                   ),
                 ),
               ],

@@ -7,9 +7,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
-import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
+import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/core/widgets/stacked_card_widget.dart';
 import 'package:vousvous/core/widgets/swipe_to_reply.dart';
 import 'package:vousvous/features/chat/controller/chat_controller.dart';
@@ -33,26 +34,16 @@ class AiMessageTile extends StatefulWidget {
 class _AiMessageTileState extends State<AiMessageTile> {
   @override
   Widget build(BuildContext context) {
-    final hasOutfits =
-        widget.message.images != null && widget.message.images!.isNotEmpty;
+    final hasOutfits = isNotNullOrEmpty(widget.message.images);
 
     return SwipeToReply(
       onReply: () {
         // If it's a single image message, also auto-select for remix
-        if (hasOutfits && widget.message.images!.length == 1) {
+        if (hasOutfits) {
           widget.chatController.userSelectedRemixOutfits.clear();
-          widget.chatController.userSelectedRemixOutfits.value = [
-            "${widget.message.images!.first.filename ?? ""}"
-          ];
-          widget.chatController.typeFocusNode.requestFocus();
-        } else if (hasOutfits && widget.message.images!.length > 1) {
-          // For multiple images, we could select all or the first one,
-          // but usually users pick from the card deck.
-          // Let's select the first one for now as a fallback.
-          widget.chatController.userSelectedRemixOutfits.clear();
-          widget.chatController.userSelectedRemixOutfits.value = [
-            "${widget.message.images!.first.filename ?? ""}"
-          ];
+          widget.chatController.userSelectedRemixOutfits.value =
+              widget.message.images?.map((e) => e.filename ?? "").toList() ??
+                  [];
           widget.chatController.typeFocusNode.requestFocus();
         }
       },
@@ -108,7 +99,7 @@ class _AiMessageTileState extends State<AiMessageTile> {
                     Positioned(
                       top: 10,
                       right: 10,
-                      child: AppButton(
+                      child: CommonContainer(
                         height:
                             36, // Fixed height and width to ensure circular shape
                         width: 36,
@@ -121,18 +112,15 @@ class _AiMessageTileState extends State<AiMessageTile> {
                           ];
                           widget.chatController.typeFocusNode.requestFocus();
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                AssetConstants.magicpen,
-                                color: AppColors.whiteColor,
-                                width: 18,
-                              ),
-                            ],
-                          ),
+                        isCircle: true,
+                        gradientColors: AppColors.colorGradient,
+                        borderColor: AppColors.hintTextColor,
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+
+                        child: SvgPicture.asset(
+                          AssetConstants.magicpen,
+                          color: AppColors.whiteColor,
+                          width: 18,
                         ),
                       ),
                     )

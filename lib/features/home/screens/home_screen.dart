@@ -216,11 +216,8 @@ class _HomeScreenState extends State<HomeScreen>
                 child: AnimatedOpacity(
                   duration: PerformanceService.instance.animationDuration,
                   opacity: isOpen ? 1.0 : 0.0,
-                  child: BackdropFilter(
-                    filter: PerformanceService.instance.getScaledBlurFilter(8),
-                    child: Container(
-                      color: Colors.black.withOpacity(0.5),
-                    ),
+                  child: Container(
+                    color: Colors.black.withAlpha(150),
                   ),
                 ),
               ),
@@ -595,12 +592,8 @@ class _HomeScreenState extends State<HomeScreen>
           return Stack(
             children: [
               // Blur background
-              BackdropFilter(
-                filter: PerformanceService.instance
-                    .getScaledBlurFilter(currentProgress * 10),
-                child: Container(
-                  color: Colors.black.withOpacity(currentProgress * 0.2),
-                ),
+              Container(
+                color: Colors.black.withOpacity(currentProgress * 0.2),
               ),
 
               // Options panel at top

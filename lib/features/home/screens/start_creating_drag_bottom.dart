@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
-import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/routes/app_pages.dart';
@@ -77,88 +76,85 @@ class _StartCreatingDragBottomState extends State<StartCreatingDragBottom>
         topLeft: Radius.circular(24),
         topRight: Radius.circular(24),
       ),
-      child: BackdropFilter(
-        filter: PerformanceService.instance.getScaledBlurFilter(10),
-        child: GestureDetector(
-          onTap: () {
-            Get.toNamed(Routes.chat);
-          },
-          onVerticalDragUpdate: _handleDragUpdate,
-          onVerticalDragEnd: _handleDragEnd,
-          child: Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12)
-                .copyWith(bottom: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withAlpha(10),
-              border: GradientBoxBorder(
-                width: 1,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: AppColors.glassBorderGradient,
-                ),
-              ),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(24),
-                topRight: Radius.circular(24),
+      child: GestureDetector(
+        onTap: () {
+          Get.toNamed(Routes.chat);
+        },
+        onVerticalDragUpdate: _handleDragUpdate,
+        onVerticalDragEnd: _handleDragEnd,
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12)
+              .copyWith(bottom: 8),
+          decoration: BoxDecoration(
+            color: Colors.white.withAlpha(10),
+            border: GradientBoxBorder(
+              width: 1,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: AppColors.glassBorderGradient,
               ),
             ),
-            child: SafeArea(
-              top: false,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Stretch container (animated) - placed at top
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Stretch container (animated) - placed at top
 
-                  // Drag indicator with visual feedback
-                  AnimatedContainer(
-                    duration: Duration(milliseconds: 200),
-                    width: 40,
-                    height: 4,
-                    decoration: ShapeDecoration(
-                      color: _stretchHeight > 0
-                          ? Colors.white.withAlpha(120)
-                          : Colors.white.withAlpha(50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                // Drag indicator with visual feedback
+                AnimatedContainer(
+                  duration: Duration(milliseconds: 200),
+                  width: 40,
+                  height: 4,
+                  decoration: ShapeDecoration(
+                    color: _stretchHeight > 0
+                        ? Colors.white.withAlpha(120)
+                        : Colors.white.withAlpha(50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  AnimatedBuilder(
-                    animation: _stretchAnimation,
-                    builder: (context, child) {
-                      double currentHeight = _animationController.isAnimating
-                          ? _stretchAnimation.value
-                          : _stretchHeight;
+                ),
+                AnimatedBuilder(
+                  animation: _stretchAnimation,
+                  builder: (context, child) {
+                    double currentHeight = _animationController.isAnimating
+                        ? _stretchAnimation.value
+                        : _stretchHeight;
 
-                      return AnimatedContainer(
-                        duration: const Duration(milliseconds: 50),
-                        height: currentHeight,
-                        color: Colors.transparent,
-                      );
-                    },
-                  ),
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 50),
+                      height: currentHeight,
+                      color: Colors.transparent,
+                    );
+                  },
+                ),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Start Creating...",
-                        style: style400S16.copyWith(letterSpacing: 0.32),
-                      ),
-                      // IconButton(
-                      //   onPressed: () {
-                      //     Get.toNamed(Routes.chat);
-                      //   },
-                      //   icon: SvgPicture.asset(
-                      //     AssetConstants.voiceCircleIcon,
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                ],
-              ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Start Creating...",
+                      style: style400S16.copyWith(letterSpacing: 0.32),
+                    ),
+                    // IconButton(
+                    //   onPressed: () {
+                    //     Get.toNamed(Routes.chat);
+                    //   },
+                    //   icon: SvgPicture.asset(
+                    //     AssetConstants.voiceCircleIcon,
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),

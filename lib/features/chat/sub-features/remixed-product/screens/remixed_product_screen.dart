@@ -19,6 +19,8 @@ import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/core/widgets/blur_bottom_sheet.dart';
 import 'package:vousvous/core/widgets/blur_scaffold.dart';
+import 'package:vousvous/core/widgets/common_container.dart';
+import 'package:vousvous/features/chat/controller/chat_controller.dart';
 import 'package:vousvous/features/chat/sub-features/remixed-product/controller/remixed_product_controller.dart';
 import 'package:vousvous/features/chat/sub-features/remixed-product/screens/add_to_post_bottom_sheet.dart';
 import 'package:vousvous/features/product-detail/models/check_quotation_exists_model.dart';
@@ -183,22 +185,55 @@ Download VOUSVOUS now and bring your fashion vision to life!
             ),
             hSizedBox10,
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: Colors.white.withAlpha(100),
-                    strokeAlign: BorderSide.strokeAlignOutside,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: Colors.white.withAlpha(100),
+                        strokeAlign: BorderSide.strokeAlignOutside,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: AppNetworkImage(
+                        imageUrl: controller.imageUrl,
+                        fit: BoxFit.cover,
+                        isOpenImageViewer: true,
+                      ),
+                    ),
                   ),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: AppNetworkImage(
-                    imageUrl: controller.imageUrl,
-                    fit: BoxFit.cover,
-                    isOpenImageViewer: true,
-                  ),
-                ),
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: CommonContainer(
+                      height:
+                          36, // Fixed height and width to ensure circular shape
+                      width: 36,
+                      onTap: () {
+                        Get.back();
+                        final ChatController chatController =
+                            Get.find<ChatController>();
+                        chatController.userSelectedRemixOutfits.clear();
+                        chatController.userSelectedRemixOutfits.value = [
+                          "${controller.imageUrl}"
+                        ];
+                        chatController.typeFocusNode.requestFocus();
+                      },
+                      isCircle: true,
+                      gradientColors: AppColors.colorGradient,
+                      borderColor: AppColors.hintTextColor,
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: SvgPicture.asset(
+                        AssetConstants.magicpen,
+                        color: AppColors.whiteColor,
+                        width: 18,
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
             hSizedBox30,

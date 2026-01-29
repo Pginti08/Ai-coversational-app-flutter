@@ -20,7 +20,6 @@ import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/core/widgets/blur_bottom_sheet.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
-import 'package:vousvous/core/widgets/stacked_card_widget.dart';
 import 'package:vousvous/features/chat/controller/chat_controller.dart';
 import 'package:vousvous/features/chat/screens/widgets/past_conversation.dart';
 import 'package:vousvous/features/chat/screens/widgets/upload_image_type_bottom_sheet.dart';
@@ -85,12 +84,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: AnimatedOpacity(
                     duration: PerformanceService.instance.animationDuration,
                     opacity: isOpen ? 1.0 : 0.0,
-                    child: BackdropFilter(
-                      filter:
-                          PerformanceService.instance.getScaledBlurFilter(8),
-                      child: Container(
-                        color: Colors.black.withOpacity(0.5),
-                      ),
+                    child: Container(
+                      color: Colors.black.withAlpha(150),
                     ),
                   ),
                 ),
@@ -226,31 +221,19 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: controller.showBrandContainer.value
-                    ? 200.h
-                    : controller.userSelectedRemixOutfits.isNotEmpty ||
-                            isNotNullOrEmpty(controller.uploadImage)
-                        ? 160.h
-                        : 100.h,
-              )
+              Obx(() => Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 8),
+                    child: SafeArea(
+                      top: false,
+                      child: controller.showBrandContainer.value
+                          ? buildBrandContainer()
+                          : bottomTypingWidget(),
+                    ),
+                  )),
             ],
           ),
-        ),
-        bottomNavigationBar: Obx(() => Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: Platform.isAndroid
-                      ? 8
-                      : MediaQuery.viewInsetsOf(context).bottom > 0
-                          ? 8
-                          : 0),
-              child: SafeArea(
-                child: controller.showBrandContainer.value
-                    ? buildBrandContainer()
-                    : bottomTypingWidget(),
-              ),
-            )));
+        ));
   }
 
   // New method for brand container
@@ -260,7 +243,6 @@ class _ChatScreenState extends State<ChatScreen> {
       child: CommonContainer(
         height: 300.h,
         width: double.infinity,
-        enableBlur: true,
         borderColor: AppColors.greyBorderColor,
         borderRadius: 24,
         backgroundColor: AppColors.blackColor.withAlpha(180),
@@ -347,91 +329,95 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildQualityDropdown() {
-    return PopupMenuButton<String>(
-      padding: EdgeInsets.zero,
-      offset: const Offset(0, -145),
-      color: const Color(0xFF1E1E1E),
-      elevation: 20,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.white.withAlpha(30)),
-      ),
-      onSelected: (value) {
-        controller.selectedQuality.value = value;
+    return Obx(() => PopupMenuButton<String>(
+          enabled: !controller.isThinking.value,
+          padding: EdgeInsets.zero,
+          offset: const Offset(0, -145),
+          color: const Color(0xFF1E1E1E),
+          elevation: 20,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.white.withAlpha(30)),
+          ),
+          onSelected: (value) {
+            controller.selectedQuality.value = value;
 
-        HapticService.light();
-      },
-      itemBuilder: (context) => ['SD', 'HD', 'HD+'].map((q) {
-        final isSelected = controller.selectedQuality.value == q;
-        return PopupMenuItem<String>(
-          value: q,
-          child: Row(
-            children: [
-              Text(
-                q,
-                style: style700S12.copyWith(
-                  color: isSelected ? Colors.white : Colors.white60,
-                  fontSize: 13,
-                  letterSpacing: 0.5,
-                ),
-              ),
-              if (isSelected) ...[
-                const Spacer(),
-                const Icon(Icons.check_circle_rounded,
-                    size: 14, color: Color(0xFF68C3E7)),
-              ]
-            ],
-          ),
-        );
-      }).toList(),
-      child: Obx(() {
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          height: 32,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            color: AppColors.whiteColor.withAlpha(50),
-            borderRadius: BorderRadius.circular(100),
-            border: Border.all(
-              color: AppColors.whiteColor.withAlpha(60),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF68C3E7).withAlpha(50),
-                blurRadius: 10,
-                spreadRadius: -1,
-              )
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ShaderMask(
-                shaderCallback: (bounds) => LinearGradient(
-                  colors: AppColors.colorGradient,
-                ).createShader(bounds),
-                child: Text(
-                  controller.selectedQuality.value,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 12,
-                    letterSpacing: 0.5,
+            HapticService.light();
+          },
+          itemBuilder: (context) => ['SD', 'HD', 'HD+'].map((q) {
+            final isSelected = controller.selectedQuality.value == q;
+            return PopupMenuItem<String>(
+              value: q,
+              child: Row(
+                children: [
+                  Text(
+                    q,
+                    style: style700S12.copyWith(
+                      color: isSelected ? Colors.white : Colors.white60,
+                      fontSize: 13,
+                      letterSpacing: 0.5,
+                    ),
                   ),
+                  if (isSelected) ...[
+                    const Spacer(),
+                    const Icon(Icons.check_circle_rounded,
+                        size: 14, color: Color(0xFF68C3E7)),
+                  ]
+                ],
+              ),
+            );
+          }).toList(),
+          child: Obx(() {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              height: 32,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor.withAlpha(50),
+                borderRadius: BorderRadius.circular(100),
+                border: Border.all(
+                  color: AppColors.whiteColor.withAlpha(60),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF68C3E7).withAlpha(50),
+                    blurRadius: 10,
+                    spreadRadius: -1,
+                  )
+                ],
+              ),
+              child: Opacity(
+                opacity: controller.isThinking.value ? 0.5 : 1,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: AppColors.colorGradient,
+                      ).createShader(bounds),
+                      child: Text(
+                        controller.selectedQuality.value,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 12,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 16,
+                      color: Colors.white,
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 4),
-              Icon(
-                Icons.keyboard_arrow_down_rounded,
-                size: 16,
-                color: Colors.white,
-              ),
-            ],
-          ),
-        );
-      }),
-    );
+            );
+          }),
+        ));
   }
 
   Widget bottomTypingWidget() {
@@ -439,177 +425,180 @@ class _ChatScreenState extends State<ChatScreen> {
       return Obx(() => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (controller.messages.isEmpty) ...[
+              if (controller.messages.isEmpty &&
+                  controller.userSelectedRemixOutfits.isEmpty) ...[
                 startCreatingFromTheseTile(),
                 hSizedBox18,
               ],
               ClipRRect(
                 borderRadius: BorderRadius.circular(24),
                 child: RepaintBoundary(
-                  child: BackdropFilter(
-                    filter: PerformanceService.instance.getScaledBlurFilter(10),
-                    child: Container(
-                      width: double.infinity,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withAlpha(15),
-                        border: GradientBoxBorder(
-                          width: 1,
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: controller
-                                        .userSelectedRemixOutfits.isNotEmpty ||
-                                    isNotNullOrEmpty(controller.uploadImage)
-                                ? AppColors.colorGradient
-                                : AppColors.glassBorderGradient,
-                          ),
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withAlpha(15),
+                      border: GradientBoxBorder(
+                        width: 1,
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors:
+                              controller.userSelectedRemixOutfits.isNotEmpty ||
+                                      isNotNullOrEmpty(controller.uploadImage)
+                                  ? AppColors.colorGradient
+                                  : AppColors.glassBorderGradient,
                         ),
-                        borderRadius: BorderRadius.circular(24),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Obx(
-                            () => Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (controller
-                                    .userSelectedRemixOutfits.isNotEmpty)
-                                  Row(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Obx(
+                          () => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (controller
+                                      .userSelectedRemixOutfits.isNotEmpty ||
+                                  isNotNullOrEmpty(controller.uploadImage) ||
+                                  controller.uploadLoader.value)
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Stack(
-                                        clipBehavior: Clip.none,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                    vertical: 8.0)
-                                                .copyWith(right: 10),
-                                            child: CardDeckWidget(
-                                              maxCards: 4,
-                                              items: controller
-                                                  .userSelectedRemixOutfits
-                                                  .map((e) => e)
-                                                  .toList()
-                                                  .obs,
-                                              itemBuilder: (imageUrl) =>
-                                                  ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
-                                                child: AppNetworkImage(
-                                                  imageUrl: "$imageUrl",
+                                      if (controller
+                                          .userSelectedRemixOutfits.isNotEmpty)
+                                        ...List.generate(
+                                            controller.userSelectedRemixOutfits
+                                                .length, (index) {
+                                          final imageUrl = controller
+                                              .userSelectedRemixOutfits[index];
+                                          return Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                            vertical: 8.0)
+                                                        .copyWith(right: 10),
+                                                child: ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(4),
-                                                  fit: BoxFit.cover,
-                                                  width: 50,
-                                                  height: 50,
+                                                  child: AppNetworkImage(
+                                                    imageUrl: "$imageUrl",
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                    fit: BoxFit.cover,
+                                                    width: 50,
+                                                    height: 50,
+                                                    isOpenImageViewer: true,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            right: 0,
-                                            top: 0,
-                                            child: CommonContainer(
-                                              isCircle: true,
-                                              width: 24,
-                                              height: 24,
-                                              backgroundColor:
-                                                  const Color(0xFF797877),
-                                              onTap: () {
-                                                controller
-                                                    .userSelectedRemixOutfits
-                                                    .clear();
-                                              },
-                                              child: SvgPicture.asset(
-                                                AssetConstants.closeCircleIcon,
+                                              Positioned(
+                                                right: 0,
+                                                top: 0,
+                                                child: CommonContainer(
+                                                  isCircle: true,
+                                                  width: 20,
+                                                  height: 20,
+                                                  backgroundColor:
+                                                      const Color(0xFF797877),
+                                                  onTap: () {
+                                                    controller
+                                                        .userSelectedRemixOutfits
+                                                        .removeAt(index);
+                                                  },
+                                                  child: SvgPicture.asset(
+                                                    AssetConstants
+                                                        .closeCircleIcon,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          );
+                                        }),
+                                      if (isNotNullOrEmpty(
+                                          controller.uploadImage))
+                                        ...List.generate(
+                                            controller.uploadImage.length,
+                                            (index) {
+                                          final imageUrl =
+                                              controller.uploadImage[index];
+                                          return Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                            vertical: 8.0)
+                                                        .copyWith(right: 10),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                  child: AppNetworkImage(
+                                                    imageUrl: imageUrl,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                    fit: BoxFit.cover,
+                                                    width: 50,
+                                                    height: 50,
+                                                    isOpenImageViewer: true,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
+                                              Positioned(
+                                                right: 0,
+                                                top: 0,
+                                                child: CommonContainer(
+                                                  isCircle: true,
+                                                  width: 20,
+                                                  height: 20,
+                                                  backgroundColor:
+                                                      const Color(0xFF797877),
+                                                  onTap: () {
+                                                    controller.uploadImage
+                                                        .removeAt(index);
+                                                    controller.update();
+                                                  },
+                                                  child: SvgPicture.asset(
+                                                    AssetConstants
+                                                        .closeCircleIcon,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }),
+                                      if (controller.uploadLoader.value)
+                                        Padding(
+                                          padding: const EdgeInsets.all(12),
+                                          child: RotatingLoader(
+                                            size: 25,
+                                          ),
+                                        ),
                                     ],
                                   ),
-                                if (controller.uploadLoader.value)
-                                  Padding(
-                                    padding: const EdgeInsets.all(12),
-                                    child: RotatingLoader(
-                                      size: 30,
-                                    ),
-                                  ),
-                                if (isNotNullOrEmpty(controller.uploadImage))
-                                  SizedBox(
-                                    height: 70,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: controller.uploadImage.length,
-                                      itemBuilder: (context, index) {
-                                        final imageUrl =
-                                            controller.uploadImage[index];
-
-                                        return Stack(
-                                          clipBehavior: Clip.none,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                          vertical: 8.0)
-                                                      .copyWith(right: 10),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
-                                                child: AppNetworkImage(
-                                                  imageUrl: imageUrl,
-                                                  borderRadius:
-                                                      BorderRadius.circular(4),
-                                                  fit: BoxFit.cover,
-                                                  width: 50,
-                                                  height: 50,
-                                                ),
-                                              ),
-                                            ),
-
-                                            /// ❌ Delete Button
-                                            Positioned(
-                                              right: 0,
-                                              top: 0,
-                                              child: CommonContainer(
-                                                isCircle: true,
-                                                width: 24,
-                                                height: 24,
-                                                backgroundColor:
-                                                    const Color(0xFF797877),
-                                                onTap: () {
-                                                  controller.uploadImage
-                                                      .removeAt(index);
-                                                  controller.update();
-                                                },
-                                                child: SvgPicture.asset(
-                                                  AssetConstants
-                                                      .closeCircleIcon,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ),
-                              ],
-                            ),
+                                ),
+                            ],
                           ),
-                          Row(
-                            children: [
-                              CommonContainer(
-                                height: 32,
-                                width: 32,
-                                backgroundColor:
-                                    AppColors.greyTextColor.withAlpha(100),
-                                enableBlur: true,
-                                isCircle: true,
-                                onTap: () async {
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            CommonContainer(
+                              height: 32,
+                              width: 32,
+                              backgroundColor:
+                                  AppColors.greyTextColor.withAlpha(100),
+                              isCircle: true,
+                              onTap: () async {
+                                if (!controller.isThinking.value &&
+                                    !controller.uploadLoader.value) {
                                   final List<File>? pickedImage =
                                       await BlurBottomSheet().show<List<File>?>(
                                     height:
@@ -635,170 +624,167 @@ class _ChatScreenState extends State<ChatScreen> {
                                       toast("Maximum 4 images allowed.");
                                     }
                                   }
+                                }
+                              },
+                              padding: EdgeInsets.all(4),
+                              child: Icon(Icons.add),
+                            ),
+                            wSizedBox10,
+                            Expanded(
+                              child: AppTextField(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                focusNode: controller.typeFocusNode,
+                                controller: _textController,
+                                outsideMargin: EdgeInsets.zero,
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 6),
+                                hint: "Start Creating...",
+                                maxLines: 5,
+                                minLines: 1,
+                                keyboardType: TextInputType.multiline,
+                                borderColor: Colors.transparent,
+                                onChanged: (value) {
+                                  inputText.value = value;
                                 },
-                                padding: EdgeInsets.all(4),
-                                child: Icon(Icons.add),
+                                onSubmitted: (value) {
+                                  if (value.trim().isNotEmpty &&
+                                      !controller.isThinking.value &&
+                                      !controller.uploadLoader.value) {
+                                    controller.sendMessage(
+                                      message: value.trim(),
+                                    );
+                                    _textController.clear();
+                                    controller.userSelectedRemixOutfits.clear();
+                                    controller.uploadImage.clear();
+                                  }
+                                },
+                                suffixIcon: _buildQualityDropdown(),
                               ),
-                              wSizedBox10,
-                              Expanded(
-                                child: AppTextField(
-                                  focusNode: controller.typeFocusNode,
-                                  controller: _textController,
-                                  outsideMargin: EdgeInsets.zero,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(vertical: 6),
-                                  hint: "Start Creating...",
-                                  maxLines: 2,
-                                  minLines: 1,
-                                  keyboardType: TextInputType.multiline,
-                                  borderColor: Colors.transparent,
-                                  onChanged: (value) {
-                                    inputText.value = value;
-                                  },
-                                  onSubmitted: (value) {
-                                    if (value.trim().isNotEmpty &&
-                                        !controller.isThinking.value &&
-                                        !controller.uploadLoader.value) {
-                                      controller.sendMessage(
-                                        message: value.trim(),
-                                      );
-                                      _textController.clear();
-                                      controller.userSelectedRemixOutfits
-                                          .clear();
-                                      controller.uploadImage.clear();
-                                    }
-                                  },
-                                  suffixIcon: _buildQualityDropdown(),
-                                ),
-                              ),
-                              wSizedBox10,
-                              if (isKeyboardVisible)
-                                Obx(() => IgnorePointer(
-                                      ignoring:
-                                          inputText.value.trim().isEmpty ||
+                            ),
+                            wSizedBox10,
+                            if (isKeyboardVisible)
+                              Obx(() => IgnorePointer(
+                                    ignoring: inputText.value.trim().isEmpty ||
+                                        controller.isThinking.value ||
+                                        controller.uploadLoader.value,
+                                    child: Opacity(
+                                      opacity: inputText.value.trim().isEmpty ||
                                               controller.isThinking.value ||
-                                              controller.uploadLoader.value,
-                                      child: Opacity(
-                                        opacity: inputText.value
-                                                    .trim()
-                                                    .isEmpty ||
-                                                controller.isThinking.value ||
-                                                controller.uploadLoader.value
-                                            ? 0.4
-                                            : 1,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            controller.sendMessage(
-                                              message:
-                                                  _textController.text.trim(),
-                                            );
-                                            _textController.clear();
-                                            controller.userSelectedRemixOutfits
-                                                .clear();
-                                            controller.uploadImage.clear();
-                                          },
-                                          child: SvgPicture.asset(
-                                            AssetConstants.arrowUp,
-                                          ),
+                                              controller.uploadLoader.value
+                                          ? 0.4
+                                          : 1,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          controller.sendMessage(
+                                            message:
+                                                _textController.text.trim(),
+                                          );
+                                          _textController.clear();
+                                          controller.userSelectedRemixOutfits
+                                              .clear();
+                                          controller.uploadImage.clear();
+                                        },
+                                        child: SvgPicture.asset(
+                                          AssetConstants.arrowUp,
                                         ),
                                       ),
-                                    ))
-                            ],
-                          ),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     Row(
-                          //       children: [
-                          //         // CommonContainer(
-                          //         //   height: 32,
-                          //         //   width: 32,
-                          //         //   backgroundColor:
-                          //         //       AppColors.greyTextColor.withAlpha(100),
-                          //         //   enableBlur: true,
-                          //         //   isCircle: true,
-                          //         //   onTap: () async {
-                          //         //     final List<File>? pickedImage =
-                          //         //         await BlurBottomSheet()
-                          //         //             .show<List<File>?>(
-                          //         //       height:
-                          //         //           MediaQuery.sizeOf(context).height *
-                          //         //               0.2,
-                          //         //       context: context,
-                          //         //       borderColor:
-                          //         //           AppColors.whiteColor.withAlpha(40),
-                          //         //       backgroundColor:
-                          //         //           AppColors.scaffoldColor,
-                          //         //       barrierColor:
-                          //         //           AppColors.blackColor.withAlpha(50),
-                          //         //       blurStrength: 10,
-                          //         //       isCloseButton: true,
-                          //         //       child: UploadImageTypeBottomSheet(
-                          //         //         uploadedImages:
-                          //         //             controller.uploadImage,
-                          //         //       ),
-                          //         //     );
-                          //         //     if (pickedImage != null) {
-                          //         //       if (controller.uploadImage.length < 4) {
-                          //         //         controller.uploadMultipleImages(
-                          //         //             pickedImage);
-                          //         //       } else {
-                          //         //         toast("Maximum 4 images allowed.");
-                          //         //       }
-                          //         //     }
-                          //         //   },
-                          //         //   padding: EdgeInsets.all(4),
-                          //         //   child: Icon(Icons.add),
-                          //         // ),
-                          //         // wSizedBox12,
-                          //         // CommonContainer(
-                          //         //   height: 32,
-                          //         //   backgroundColor:
-                          //         //       AppColors.greyTextColor.withAlpha(100),
-                          //         //   enableBlur: true,
-                          //         //   borderRadius: 100,
-                          //         //   onTap: () {
-                          //         //     // Toggle brand container visibility with haptic feedback
-                          //         //     controller.showBrandContainer.value =
-                          //         //         !controller.showBrandContainer.value;
-                          //         //   },
-                          //         //   padding:
-                          //         //       EdgeInsets.symmetric(horizontal: 10),
-                          //         //   child: Center(
-                          //         //     child: AnimatedDefaultTextStyle(
-                          //         //       duration: Duration(milliseconds: 200),
-                          //         //       style: style700S12.copyWith(
-                          //         //           letterSpacing: 0.96),
-                          //         //       child: Text("BRANDS"),
-                          //         //     ),
-                          //         //   ),
-                          //         // ),
-                          //       ],
-                          //     ),
-                          //     // if (isKeyboardVisible)
-                          //     //   GestureDetector(
-                          //     //     onTap: () {
-                          //     //       if (_textController.text
-                          //     //               .trim()
-                          //     //               .isNotEmpty &&
-                          //     //           !controller.isThinking.value &&
-                          //     //           !controller.uploadLoader.value) {
-                          //     //         controller.sendMessage(
-                          //     //           message: _textController.text.trim(),
-                          //     //         );
-                          //     //         _textController.clear();
-                          //     //         controller.userSelectedRemixOutfits
-                          //     //             .clear();
-                          //     //         controller.uploadImage.clear();
-                          //     //       }
-                          //     //     },
-                          //     //     child:
-                          //     //         SvgPicture.asset(AssetConstants.arrowUp),
-                          //     //   )
-                          //   ],
-                          // ),
-                        ],
-                      ),
+                                    ),
+                                  ))
+                          ],
+                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Row(
+                        //       children: [
+                        //         // CommonContainer(
+                        //         //   height: 32,
+                        //         //   width: 32,
+                        //         //   backgroundColor:
+                        //         //       AppColors.greyTextColor.withAlpha(100),
+                        //         //   enableBlur: true,
+                        //         //   isCircle: true,
+                        //         //   onTap: () async {
+                        //         //     final List<File>? pickedImage =
+                        //         //         await BlurBottomSheet()
+                        //         //             .show<List<File>?>(
+                        //         //       height:
+                        //         //           MediaQuery.sizeOf(context).height *
+                        //         //               0.2,
+                        //         //       context: context,
+                        //         //       borderColor:
+                        //         //           AppColors.whiteColor.withAlpha(40),
+                        //         //       backgroundColor:
+                        //         //           AppColors.scaffoldColor,
+                        //         //       barrierColor:
+                        //         //           AppColors.blackColor.withAlpha(50),
+                        //         //       blurStrength: 10,
+                        //         //       isCloseButton: true,
+                        //         //       child: UploadImageTypeBottomSheet(
+                        //         //         uploadedImages:
+                        //         //             controller.uploadImage,
+                        //         //       ),
+                        //         //     );
+                        //         //     if (pickedImage != null) {
+                        //         //       if (controller.uploadImage.length < 4) {
+                        //         //         controller.uploadMultipleImages(
+                        //         //             pickedImage);
+                        //         //       } else {
+                        //         //         toast("Maximum 4 images allowed.");
+                        //         //       }
+                        //         //     }
+                        //         //   },
+                        //         //   padding: EdgeInsets.all(4),
+                        //         //   child: Icon(Icons.add),
+                        //         // ),
+                        //         // wSizedBox12,
+                        //         // CommonContainer(
+                        //         //   height: 32,
+                        //         //   backgroundColor:
+                        //         //       AppColors.greyTextColor.withAlpha(100),
+                        //         //   enableBlur: true,
+                        //         //   borderRadius: 100,
+                        //         //   onTap: () {
+                        //         //     // Toggle brand container visibility with haptic feedback
+                        //         //     controller.showBrandContainer.value =
+                        //         //         !controller.showBrandContainer.value;
+                        //         //   },
+                        //         //   padding:
+                        //         //       EdgeInsets.symmetric(horizontal: 10),
+                        //         //   child: Center(
+                        //         //     child: AnimatedDefaultTextStyle(
+                        //         //       duration: Duration(milliseconds: 200),
+                        //         //       style: style700S12.copyWith(
+                        //         //           letterSpacing: 0.96),
+                        //         //       child: Text("BRANDS"),
+                        //         //     ),
+                        //         //   ),
+                        //         // ),
+                        //       ],
+                        //     ),
+                        //     // if (isKeyboardVisible)
+                        //     //   GestureDetector(
+                        //     //     onTap: () {
+                        //     //       if (_textController.text
+                        //     //               .trim()
+                        //     //               .isNotEmpty &&
+                        //     //           !controller.isThinking.value &&
+                        //     //           !controller.uploadLoader.value) {
+                        //     //         controller.sendMessage(
+                        //     //           message: _textController.text.trim(),
+                        //     //         );
+                        //     //         _textController.clear();
+                        //     //         controller.userSelectedRemixOutfits
+                        //     //             .clear();
+                        //     //         controller.uploadImage.clear();
+                        //     //       }
+                        //     //     },
+                        //     //     child:
+                        //     //         SvgPicture.asset(AssetConstants.arrowUp),
+                        //     //   )
+                        //   ],
+                        // ),
+                      ],
                     ),
                   ),
                 ),
@@ -832,7 +818,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 padding: EdgeInsets.only(right: 12),
                 child: CommonContainer(
                     width: 160.w,
-                    enableBlur: true,
                     padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     borderRadius: 20,
                     borderGradientColors: AppColors.glassBorderGradient,

@@ -98,7 +98,7 @@ class _ProductOutfitCardState extends State<ProductOutfitCard> {
             child: Padding(
               padding: const EdgeInsets.all(4),
               child: CommonContainer(
-                blurStrength: 10,
+                blurStrength: 4,
                 enableBlur: true,
                 borderRadius: 100,
                 padding:

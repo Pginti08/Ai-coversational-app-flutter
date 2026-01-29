@@ -17,8 +17,8 @@ class BlurScaffold extends StatefulWidget {
     this.onClose,
     this.appBar,
     this.bottomNavigationBar,
-    this.overlayColor = const Color.fromARGB(12, 255, 255, 255),
-    this.blurStrength = 10.0,
+    this.overlayColor = const Color(0x0BFFFFFF),
+    this.blurStrength = 5.0,
     this.resizeToAvoidBottomInset,
     this.appBarBorderRadius = 24.0, // Default radius matching CustomAppBar
   });

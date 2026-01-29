@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/services/network_service.dart';
@@ -90,14 +89,14 @@ class LikedController extends GetxController {
         remixProducts.add(currentProduct);
 
         // Move to next index only if we successfully added
-        if (currentCarouselIndex.value < likedProductsList.length - 1) {
-          currentCarouselIndex.value++;
-          carouselController.animateToPage(
-            currentCarouselIndex.value,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        }
+        // if (currentCarouselIndex.value < likedProductsList.length - 1) {
+        //   currentCarouselIndex.value++;
+        //   carouselController.animateToPage(
+        //     currentCarouselIndex.value,
+        //     duration: const Duration(milliseconds: 300),
+        //     curve: Curves.easeInOut,
+        //   );
+        // }
       } else {
         toast("Already in Remix", type: ToastType.warning);
       }
@@ -117,18 +116,18 @@ class LikedController extends GetxController {
       }
 
       // Move to next item safely
-      if (currentCarouselIndex.value < likedProductsList.length - 1) {
-        currentCarouselIndex.value++;
-      } else if (currentCarouselIndex.value > 0) {
-        // If it's last item, move to previous
-        currentCarouselIndex.value--;
-      }
+      // if (currentCarouselIndex.value < likedProductsList.length - 1) {
+      //   currentCarouselIndex.value++;
+      // } else if (currentCarouselIndex.value > 0) {
+      //   // If it's last item, move to previous
+      //   currentCarouselIndex.value--;
+      // }
 
-      carouselController.animateToPage(
-        currentCarouselIndex.value,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      // carouselController.animateToPage(
+      //   currentCarouselIndex.value,
+      //   duration: const Duration(milliseconds: 300),
+      //   curve: Curves.easeInOut,
+      // );
     }
   }
 

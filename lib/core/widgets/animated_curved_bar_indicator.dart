@@ -126,7 +126,7 @@ class _AnimatedCurvedBarIndicatorState extends State<AnimatedCurvedBarIndicator>
           ),
           Positioned.fill(
             child: BackdropFilter(
-              filter: PerformanceService.instance.getScaledBlurFilter(10),
+              filter: PerformanceService.instance.getScaledBlurFilter(20),
               child: Container(color: Colors.transparent),
             ),
           ),

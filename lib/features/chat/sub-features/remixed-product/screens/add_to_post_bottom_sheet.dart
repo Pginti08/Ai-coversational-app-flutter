@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
@@ -12,6 +13,7 @@ import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/app_text_field.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/features/quotation-chat/models/analyze_dress_model.dart';
+import 'package:vousvous/routes/app_pages.dart';
 
 import '../../../../../core/constants/api_constants.dart';
 
@@ -121,7 +123,11 @@ class _AddToPostBottomSheetState extends State<AddToPostBottomSheet> {
         if (Get.isBottomSheetOpen ?? false) {
           Get.back();
         }
+        Get.back();
         toast("Added As Post Successfully", type: ToastType.success);
+        Get.toNamed(Routes.userProfile, arguments: {
+          "userId": LocalStorageService.instance.userInfo.value.data?.id
+        });
       } else {
         toast(result.error.toString());
       }

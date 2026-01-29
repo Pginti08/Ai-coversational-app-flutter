@@ -63,6 +63,7 @@ class _SwipeToReplyState extends State<SwipeToReply>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onHorizontalDragUpdate: _onHorizontalDragUpdate,
       onHorizontalDragEnd: _onHorizontalDragEnd,
       child: Stack(
@@ -85,7 +86,7 @@ class _SwipeToReplyState extends State<SwipeToReply>
                       margin: const EdgeInsets.only(left: 10),
                       padding: const EdgeInsets.all(8),
                       decoration: const BoxDecoration(
-                        color: Color(0xFF68C3E7),
+                        color: Color(0xFF47A9D0),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(

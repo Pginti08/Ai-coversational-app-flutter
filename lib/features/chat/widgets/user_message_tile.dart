@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/image_viewer_screen.dart';
-import 'package:vousvous/core/widgets/stacked_card_widget.dart';
 import 'package:vousvous/core/widgets/swipe_to_reply.dart';
 import 'package:vousvous/features/chat/controller/chat_controller.dart';
 import 'package:vousvous/features/chat/models/chat_history_model.dart';
@@ -19,14 +19,25 @@ class UserMessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final refImages = (message.refImage ?? []);
+    // Combine both lists safely
+    final List<String> displayImages = [
+      ...(message.refImage ?? []),
+      ...(message.images?.map((e) => e.filename ?? "") ?? []),
+    ].where((e) => isNotNullOrEmpty(e)).toList().cast<String>();
+
+    final double avatarSize = 80.0;
+    final double overlap = 65.0;
+    final double totalWidth = displayImages.isNotEmpty
+        ? (displayImages.length * (avatarSize - overlap)) + overlap
+        : 0;
 
     return SwipeToReply(
       onReply: () {
-        if (isNotNullOrEmpty(message.refImage)) {
+        if (displayImages.isNotEmpty) {
           chatController.userSelectedRemixOutfits.clear();
-          chatController.userSelectedRemixOutfits.value =
-              message.refImage!.toList();
+          // For reply, we might just want to use the first available images or handle mixed types differently
+          // But based on current logic, just adding them to selected outfits seems to be the intent
+          chatController.userSelectedRemixOutfits.value = displayImages;
           chatController.typeFocusNode.requestFocus();
         }
       },
@@ -35,7 +46,7 @@ class UserMessageTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            if (isNotNullOrEmpty(message.refImage)) ...[
+            if (displayImages.isNotEmpty) ...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -43,31 +54,44 @@ class UserMessageTile extends StatelessWidget {
                     onTap: () {
                       Get.to(
                         ImageViewerScreen(
-                          imageUrls: refImages.toList().obs,
+                          imageUrls: displayImages.toList().obs,
                         ),
                         opaque: false,
                         transition: Transition.fadeIn,
                         fullscreenDialog: true,
                       );
                     },
-                    child: CardDeckWidget(
-                      maxCards: 4,
-                      items: refImages.toList().obs,
-                      itemBuilder: (imageUrl) => ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: AppNetworkImage(
-                          imageUrl: "$imageUrl",
-                          borderRadius: BorderRadius.circular(8),
-                          fit: BoxFit.cover,
-                          width: 80,
-                          height: 80,
-                        ),
+                    child: SizedBox(
+                      height: avatarSize,
+                      width: totalWidth,
+                      child: Stack(
+                        children: List.generate(displayImages.length, (index) {
+                          return Positioned(
+                            left: index * (avatarSize - overlap),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: AppColors.primaryColor,
+                                    width: 1.5,
+                                    strokeAlign: BorderSide.strokeAlignOutside),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: AppNetworkImage(
+                                width: avatarSize,
+                                height: avatarSize,
+                                imageUrl: displayImages[index],
+                                borderRadius: BorderRadius.circular(8),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        }),
                       ),
                     ),
                   ),
                 ],
               ),
-              hSizedBox12,
+              hSizedBox8,
             ],
             Container(
               constraints: BoxConstraints(

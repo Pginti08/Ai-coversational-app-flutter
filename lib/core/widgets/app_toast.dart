@@ -42,8 +42,7 @@ toast(
               child: Padding(
                 padding: const EdgeInsets.all(4),
                 child: CommonContainer(
-                  enableBlur: true,
-                  backgroundColor: AppColors.blackColor.withAlpha(130),
+                  backgroundColor: AppColors.blackColor.withAlpha(225),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   borderRadius: 20,
@@ -52,7 +51,6 @@ toast(
                     children: [
                       Container(
                         child: CommonContainer(
-                          enableBlur: true,
                           backgroundColor: AppColors.blackColor.withAlpha(40),
                           borderRadius: 100,
                           padding: EdgeInsets.all(4),

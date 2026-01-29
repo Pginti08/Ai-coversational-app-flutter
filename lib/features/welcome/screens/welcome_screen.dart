@@ -176,19 +176,29 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
           ),
           Positioned(
+            left: 0,
             right: 0,
-            bottom: Platform.isAndroid ? 10 : 0,
+            bottom: Platform.isAndroid ? 12 : 0,
             child: SafeArea(
               top: false,
-              child: SwipeSliderButton(
-                title: 'Slide to continue',
-                backgroundColor: AppColors.blackColor,
-                unfilledColor: AppColors.blackColor,
-                width: MediaQuery.sizeOf(context).width * 0.7,
-                height: 68,
-                onSwipe: () {
-                  Get.offNamed(Routes.login);
-                },
+              child: Center(
+                child: SwipeSliderButton(
+                  title: 'Slide to continue',
+                  backgroundColor: AppColors.whiteColor.withAlpha(20),
+                  unfilledColor: AppColors.blackColor.withAlpha(100),
+                  width: MediaQuery.sizeOf(context).width * 0.75,
+                  height: 64,
+                  borderRadius: 100,
+                  enableBlur: true,
+                  textStyle: style500S16.copyWith(
+                    letterSpacing: 0.60,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  onSwipe: () {
+                    Get.offNamed(Routes.login);
+                  },
+                ),
               ),
             ),
           )

@@ -250,13 +250,14 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppTextField(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         fillColor: Colors.transparent,
                         focusNode: controller.typeFocusNode,
                         controller: _textController,
                         outsideMargin: EdgeInsets.zero,
                         contentPadding: EdgeInsets.symmetric(vertical: 10),
                         hint: "Start Typing...",
-                        maxLines: 2,
+                        maxLines: 4,
                         minLines: 1,
                         keyboardType: TextInputType.multiline,
                         borderColor: Colors.transparent,

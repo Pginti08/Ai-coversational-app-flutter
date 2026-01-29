@@ -19,8 +19,7 @@ class BlurBottomSheet {
     Color? backgroundColor,
     Color? borderColor,
     Color? barrierColor,
-    double blurStrength = 10,
-    double backgroundBlurStrength = 0,
+    double blurStrength = 5,
     bool isCloseButton = false,
     // Height configuration
     BottomSheetHeightType heightType = BottomSheetHeightType.fixed,
@@ -79,30 +78,26 @@ class BlurBottomSheet {
                             top: Radius.circular(borderRadius),
                           ),
                           child: RepaintBoundary(
-                            child: BackdropFilter(
-                              filter: PerformanceService.instance
-                                  .getScaledBlurFilter(backgroundBlurStrength),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: backgroundColor ??
-                                      AppColors.greyColor.withAlpha(220),
-                                  border: Border(
-                                    top: borderColor != null
-                                        ? BorderSide(color: borderColor)
-                                        : BorderSide.none,
-                                  ),
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(borderRadius),
-                                  ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: backgroundColor ??
+                                    AppColors.greyColor.withAlpha(220),
+                                border: Border(
+                                  top: borderColor != null
+                                      ? BorderSide(color: borderColor)
+                                      : BorderSide.none,
                                 ),
-                                child: SafeArea(
-                                  top: false,
-                                  child: _buildChildWithHeightConstraints(
-                                    child: child,
-                                    heightType: heightType,
-                                    height: height ??
-                                        MediaQuery.sizeOf(context).height * 0.5,
-                                  ),
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(borderRadius),
+                                ),
+                              ),
+                              child: SafeArea(
+                                top: false,
+                                child: _buildChildWithHeightConstraints(
+                                  child: child,
+                                  heightType: heightType,
+                                  height: height ??
+                                      MediaQuery.sizeOf(context).height * 0.5,
                                 ),
                               ),
                             ),

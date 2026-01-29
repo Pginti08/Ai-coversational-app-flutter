@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:vousvous/core/services/haptic_service.dart';
@@ -89,7 +91,7 @@ class CommonContainer extends StatelessWidget {
       if (isCircle) {
         return ClipOval(
           child: BackdropFilter(
-            filter: ui.ImageFilter.blur(
+            filter: ImageFilter.blur(
               sigmaX: blurStrength,
               sigmaY: blurStrength,
             ),

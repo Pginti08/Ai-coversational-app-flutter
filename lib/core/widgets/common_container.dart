@@ -87,9 +87,19 @@ class CommonContainer extends StatelessWidget {
     );
 
     if (enableBlur) {
+      if (isCircle) {
+        return ClipOval(
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(
+              sigmaX: blurStrength,
+              sigmaY: blurStrength,
+            ),
+            child: inkWellWidget,
+          ),
+        );
+      }
       return ClipRRect(
-        borderRadius:
-            isCircle ? BorderRadius.zero : BorderRadius.circular(borderRadius),
+        borderRadius: BorderRadius.circular(borderRadius),
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(
             sigmaX: blurStrength,
@@ -99,9 +109,11 @@ class CommonContainer extends StatelessWidget {
         ),
       );
     } else {
+      if (isCircle) {
+        return ClipOval(child: inkWellWidget);
+      }
       return ClipRRect(
-        borderRadius:
-            isCircle ? BorderRadius.zero : BorderRadius.circular(borderRadius),
+        borderRadius: BorderRadius.circular(borderRadius),
         child: inkWellWidget,
       );
     }

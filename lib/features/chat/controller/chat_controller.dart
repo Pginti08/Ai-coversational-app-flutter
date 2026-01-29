@@ -496,7 +496,7 @@ class ChatController extends GetxController {
         if (result.data != null &&
             result.data?.data != null &&
             result.data?.data["url"] != null)
-          uploadImage.add("${result.data?.data["filename"].toString()}");
+          uploadImage.add("${result.data?.data["url"].toString()}");
       } else {
         toast(result.error.toString());
       }

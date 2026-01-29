@@ -69,6 +69,7 @@ class AssetConstants {
   static const private = '${icons}private.svg';
   static const public = '${icons}public.svg';
   static const gift = '${icons}gift.svg';
+  static const userMinus = '${icons}user-minus.svg';
 
   ///__________________________________ gif __________________________________///
 

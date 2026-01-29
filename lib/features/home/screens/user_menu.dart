@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
@@ -188,6 +189,29 @@ class _UserMenuState extends State<UserMenu> {
                   //     Get.toNamed(Routes.inviteFriend);
                   //   },
                   // ),
+                  menuTiles(
+                    name: "Delete Account",
+                    icon: AssetConstants.userMinus,
+                    isToggle: false,
+                    onTap: () async {
+                      commonDialog(
+                        title: "Delete Account",
+                        description:
+                            "To delete your account, you'll be redirected to our website.",
+                        successButtonTitle: "Visit Website",
+                        cancelButtonTitle: "Cancel",
+                        onSuccess: () async {
+                          Get.back();
+                          widget.controller.toggleDrawer();
+                          final Uri url =
+                              Uri.parse('https://vousvous.com/delete-account');
+
+                          await launchUrl(url,
+                              mode: LaunchMode.externalApplication);
+                        },
+                      );
+                    },
+                  ),
                   menuTiles(
                     name: "Logout",
                     icon: AssetConstants.logout,

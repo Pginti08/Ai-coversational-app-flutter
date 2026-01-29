@@ -38,11 +38,11 @@ class ReferFriendScreen extends StatelessWidget {
 
                   hSizedBox24,
 
-                  // Title
-                  Text(
-                    'Share & Earn',
-                    style: style700S24.copyWith(color: AppColors.whiteColor),
-                  ),
+                  // // Title
+                  // Text(
+                  //   'Share & Earn',
+                  //   style: style700S24.copyWith(color: AppColors.whiteColor),
+                  // ),
 
                   hSizedBox8,
 

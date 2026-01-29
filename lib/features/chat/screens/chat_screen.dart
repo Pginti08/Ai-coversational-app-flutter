@@ -215,6 +215,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: message.sender?.toLowerCase() == "user"
                             ? UserMessageTile(
                                 message: message,
+                                chatController: controller,
                               )
                             : AiMessageTile(
                                 message: message,
@@ -471,16 +472,19 @@ class _ChatScreenState extends State<ChatScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Obx(
-                            () => (controller
+                            () => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (controller
                                     .userSelectedRemixOutfits.isNotEmpty)
-                                ? Row(
+                                  Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Stack(
                                         clipBehavior: Clip.none,
                                         children: [
                                           Padding(
-                                            padding: EdgeInsets.symmetric(
+                                            padding: const EdgeInsets.symmetric(
                                                     vertical: 8.0)
                                                 .copyWith(right: 10),
                                             child: CardDeckWidget(
@@ -513,7 +517,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                               width: 24,
                                               height: 24,
                                               backgroundColor:
-                                                  Color(0xFF797877),
+                                                  const Color(0xFF797877),
                                               onTap: () {
                                                 controller
                                                     .userSelectedRemixOutfits
@@ -527,78 +531,74 @@ class _ChatScreenState extends State<ChatScreen> {
                                         ],
                                       ),
                                     ],
-                                  )
-                                : controller.uploadLoader.value
-                                    ? Padding(
-                                        padding: const EdgeInsets.all(12),
-                                        child: RotatingLoader(
-                                          size: 30,
-                                        ),
-                                      )
-                                    : isNotNullOrEmpty(controller.uploadImage)
-                                        ? Container(
-                                            height: 70,
-                                            child: ListView.builder(
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount:
-                                                  controller.uploadImage.length,
-                                              itemBuilder: (context, index) {
-                                                final imageUrl = controller
-                                                    .uploadImage[index];
+                                  ),
+                                if (controller.uploadLoader.value)
+                                  Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: RotatingLoader(
+                                      size: 30,
+                                    ),
+                                  ),
+                                if (isNotNullOrEmpty(controller.uploadImage))
+                                  SizedBox(
+                                    height: 70,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: controller.uploadImage.length,
+                                      itemBuilder: (context, index) {
+                                        final imageUrl =
+                                            controller.uploadImage[index];
 
-                                                return Stack(
-                                                  clipBehavior: Clip.none,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                              vertical: 8.0)
-                                                          .copyWith(right: 10),
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(4),
-                                                        child: AppNetworkImage(
-                                                          imageUrl: imageUrl,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(4),
-                                                          fit: BoxFit.cover,
-                                                          width: 50,
-                                                          height: 50,
-                                                        ),
-                                                      ),
-                                                    ),
-
-                                                    /// ❌ Delete Button
-                                                    Positioned(
-                                                      right: 0,
-                                                      top: 0,
-                                                      child: CommonContainer(
-                                                        isCircle: true,
-                                                        width: 24,
-                                                        height: 24,
-                                                        backgroundColor:
-                                                            const Color(
-                                                                0xFF797877),
-                                                        onTap: () {
-                                                          controller.uploadImage
-                                                              .removeAt(index);
-                                                          controller
-                                                              .update(); // if GetX controller
-                                                        },
-                                                        child: SvgPicture.asset(
-                                                          AssetConstants
-                                                              .closeCircleIcon,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
+                                        return Stack(
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                          vertical: 8.0)
+                                                      .copyWith(right: 10),
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                                child: AppNetworkImage(
+                                                  imageUrl: imageUrl,
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                  fit: BoxFit.cover,
+                                                  width: 50,
+                                                  height: 50,
+                                                ),
+                                              ),
                                             ),
-                                          )
-                                        : SizedBox.shrink(),
+
+                                            /// ❌ Delete Button
+                                            Positioned(
+                                              right: 0,
+                                              top: 0,
+                                              child: CommonContainer(
+                                                isCircle: true,
+                                                width: 24,
+                                                height: 24,
+                                                backgroundColor:
+                                                    const Color(0xFF797877),
+                                                onTap: () {
+                                                  controller.uploadImage
+                                                      .removeAt(index);
+                                                  controller.update();
+                                                },
+                                                child: SvgPicture.asset(
+                                                  AssetConstants
+                                                      .closeCircleIcon,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                           Row(
                             children: [

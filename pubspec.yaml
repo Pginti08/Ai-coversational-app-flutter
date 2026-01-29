@@ -51,7 +51,7 @@ dependencies:
   firebase_messaging: ^16.0.4
   firebase_crashlytics: ^5.0.7
   eventflux: ^2.2.1
-
+  app_version_update: ^3.1.0
   scrollable_positioned_list: ^0.3.8
   readmore: ^3.0.0
   gal: ^2.3.2

@@ -245,7 +245,6 @@ class ReferFriendScreen extends StatelessWidget {
             );
             HapticFeedback.mediumImpact();
             toast(
-              title: 'Link Copied!',
               'Referral link copied to clipboard',
               type: ToastType.success,
             );

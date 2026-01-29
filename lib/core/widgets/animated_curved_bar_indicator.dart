@@ -1,7 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:vousvous/core/services/haptic_service.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/widgets/lower_clippath.dart';
 import 'package:vousvous/core/widgets/upper_clippath.dart';
@@ -127,7 +126,7 @@ class _AnimatedCurvedBarIndicatorState extends State<AnimatedCurvedBarIndicator>
           ),
           Positioned.fill(
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+              filter: PerformanceService.instance.getScaledBlurFilter(10),
               child: Container(color: Colors.transparent),
             ),
           ),

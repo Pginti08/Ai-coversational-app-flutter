@@ -28,7 +28,10 @@ class ReferFriendController extends GetxController {
     try {
       await Clipboard.setData(ClipboardData(text: referralCode.value));
       HapticFeedback.mediumImpact();
-      toast('Referral code copied!');
+      toast(
+        'Referral code copied!',
+        type: ToastType.success,
+      );
     } catch (e) {
       toast('Failed to copy code');
     }

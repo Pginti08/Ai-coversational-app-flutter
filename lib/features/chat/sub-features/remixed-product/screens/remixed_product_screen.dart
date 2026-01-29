@@ -60,7 +60,7 @@ class _RemixedProductScreenState extends State<RemixedProductScreen> {
               borderColor: AppColors.whiteColor.withAlpha(40),
               backgroundColor: AppColors.scaffoldColor.withAlpha(200),
               barrierColor: AppColors.blackColor.withAlpha(50),
-              blurStrength: 30,
+              blurStrength: 10,
               isCloseButton: true,
               child: SelectBodyProfileBottomSheet(
                 image: controller.imageUrl,
@@ -246,7 +246,7 @@ Download VOUSVOUS now and bring your fashion vision to life!
                             backgroundColor:
                                 AppColors.scaffoldColor.withAlpha(200),
                             barrierColor: AppColors.blackColor.withAlpha(150),
-                            blurStrength: 30,
+                            blurStrength: 10,
                             isCloseButton: true,
                             child: AddToPostBottomSheet(
                               imageUrl: controller.imageUrl,

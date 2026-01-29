@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
@@ -264,7 +265,8 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                             topRight: Radius.circular(24),
                           ),
                           child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                            filter: PerformanceService.instance
+                                .getScaledBlurFilter(10),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.black.withAlpha(150),
@@ -394,10 +396,7 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                             Obx(() {
                                               final currentUserId =
                                                   LocalStorageService.instance
-                                                      .userInfo
-                                                      .value
-                                                      .data
-                                                      ?.id;
+                                                      .userInfo.value.data?.id;
                                               final postUserId = controller
                                                   .productDetail.value.userId;
 
@@ -429,8 +428,8 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                                           ? "..."
                                                           : "Following",
                                                       isOutlined: true,
-                                                      textColor: AppColors
-                                                          .whiteColor,
+                                                      textColor:
+                                                          AppColors.whiteColor,
                                                       gradientBorderColors:
                                                           AppColors
                                                               .colorGradient,

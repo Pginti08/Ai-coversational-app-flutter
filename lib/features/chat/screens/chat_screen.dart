@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -8,11 +7,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/services/haptic_service.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
-import 'package:vousvous/core/services/haptic_service.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/app_text_field.dart';
@@ -59,80 +59,62 @@ class _ChatScreenState extends State<ChatScreen> {
     return Obx(() {
       final isOpen = controller.isDrawerOpen.value;
 
-      return Stack(
-        children: [
-          ClipRRect(
-            child: Stack(
-              children: [
-                // LAYER 1: The drawer with proper clipping
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOutCubic,
-                  left: isOpen
-                      ? 0
-                      : -drawerWidth, // Move drawer off-screen when closed
-                  top: 0,
-                  bottom: 0,
-                  width: drawerWidth,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.blackColor, // Solid opaque background
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(0),
-                        bottomRight: Radius.circular(0),
-                      ),
-                    ),
-                    child: ColoredBox(
-                        // Prevent transparency leak
-                        color: AppColors.blackColor,
-                        child: PastConversation(
-                          controller: controller,
-                        )),
-                  ),
-                ),
+      return GestureDetector(
+        onHorizontalDragEnd: (details) {
+          // Swipe right to open drawer (positive velocity)
+          if (details.primaryVelocity != null &&
+              details.primaryVelocity! > 300) {
+            if (!isOpen) controller.toggleDrawer();
+          }
+          // Swipe left to close drawer (negative velocity)
+          if (details.primaryVelocity != null &&
+              details.primaryVelocity! < -300) {
+            if (isOpen) controller.toggleDrawer();
+          }
+        },
+        child: Stack(
+          children: [
+            // LAYER 1: Main content (Chat Screen) - stays in place
+            buildMainView(context),
 
-                // LAYER 2: The main content view with full background
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOutCubic,
-                  left: isOpen ? drawerWidth : 0,
-                  right: isOpen ? -drawerWidth : 0,
-                  top: 0,
-                  bottom: 0,
-                  child: Container(
-                    color: AppColors.blackColor, // Ensure solid background
-                    child: ClipRect(
-                      child: Stack(
-                        children: [
-                          // The actual content of your main screen
-                          buildMainView(context),
-
-                          // This scrim layer covers the main content when the drawer is open.
-                          if (isOpen)
-                            Positioned.fill(
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  focusColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  onTap: controller.toggleDrawer,
-                                  child: Container(
-                                      color: Colors.black.withAlpha(150)),
-                                ),
-                              ),
-                            ),
-                        ],
+            // LAYER 2: Dark overlay when drawer is open
+            if (isOpen)
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: controller.toggleDrawer,
+                  child: AnimatedOpacity(
+                    duration: PerformanceService.instance.animationDuration,
+                    opacity: isOpen ? 1.0 : 0.0,
+                    child: BackdropFilter(
+                      filter:
+                          PerformanceService.instance.getScaledBlurFilter(8),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.5),
                       ),
                     ),
                   ),
                 ),
-              ],
+              ),
+
+            // LAYER 3: Drawer sliding from left (overlay)
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOutCubic,
+              left: isOpen ? 0 : -drawerWidth,
+              top: 0,
+              bottom: 0,
+              width: drawerWidth,
+              child: Material(
+                color: AppColors.blackColor,
+                elevation: 16,
+                shadowColor: Colors.black54,
+                child: PastConversation(controller: controller),
+              ),
             ),
-          ),
-          if (controller.loader.value) AppLoader()
-        ],
+
+            if (controller.loader.value) AppLoader()
+          ],
+        ),
       );
     });
   }
@@ -375,7 +357,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       onSelected: (value) {
         controller.selectedQuality.value = value;
-        controller.qualityTouched.value = true;
+
         HapticService.light();
       },
       itemBuilder: (context) => ['SD', 'HD', 'HD+'].map((q) {
@@ -392,7 +374,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   letterSpacing: 0.5,
                 ),
               ),
-              if (isSelected && controller.qualityTouched.value) ...[
+              if (isSelected) ...[
                 const Spacer(),
                 const Icon(Icons.check_circle_rounded,
                     size: 14, color: Color(0xFF68C3E7)),
@@ -402,44 +384,34 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       }).toList(),
       child: Obx(() {
-        final isSelected = controller.qualityTouched.value;
-        final quality = controller.selectedQuality.value;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           height: 32,
           padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
-            color: isSelected
-                ? AppColors.whiteColor.withAlpha(50)
-                : Colors.black.withAlpha(80),
+            color: AppColors.whiteColor.withAlpha(50),
             borderRadius: BorderRadius.circular(100),
             border: Border.all(
-              color: isSelected
-                  ? AppColors.whiteColor.withAlpha(60)
-                  : AppColors.whiteColor.withAlpha(20),
+              color: AppColors.whiteColor.withAlpha(60),
               width: 1,
             ),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: const Color(0xFF68C3E7).withAlpha(50),
-                      blurRadius: 10,
-                      spreadRadius: -1,
-                    )
-                  ]
-                : null,
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF68C3E7).withAlpha(50),
+                blurRadius: 10,
+                spreadRadius: -1,
+              )
+            ],
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               ShaderMask(
                 shaderCallback: (bounds) => LinearGradient(
-                  colors: isSelected
-                      ? AppColors.colorGradient
-                      : [Colors.white70, Colors.white38],
+                  colors: AppColors.colorGradient,
                 ).createShader(bounds),
                 child: Text(
-                  quality,
+                  controller.selectedQuality.value,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
@@ -452,7 +424,7 @@ class _ChatScreenState extends State<ChatScreen> {
               Icon(
                 Icons.keyboard_arrow_down_rounded,
                 size: 16,
-                color: isSelected ? Colors.white : Colors.white38,
+                color: Colors.white,
               ),
             ],
           ),
@@ -474,7 +446,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 borderRadius: BorderRadius.circular(24),
                 child: RepaintBoundary(
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                    filter: PerformanceService.instance.getScaledBlurFilter(10),
                     child: Container(
                       width: double.infinity,
                       padding:
@@ -649,7 +621,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         AppColors.scaffoldColor.withAlpha(200),
                                     barrierColor:
                                         AppColors.blackColor.withAlpha(50),
-                                    blurStrength: 30,
+                                    blurStrength: 10,
                                     isCloseButton: true,
                                     child: UploadImageTypeBottomSheet(
                                       uploadedImages: controller.uploadImage,
@@ -759,7 +731,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           //         //           AppColors.scaffoldColor,
                           //         //       barrierColor:
                           //         //           AppColors.blackColor.withAlpha(50),
-                          //         //       blurStrength: 30,
+                          //         //       blurStrength: 10,
                           //         //       isCloseButton: true,
                           //         //       child: UploadImageTypeBottomSheet(
                           //         //         uploadedImages:

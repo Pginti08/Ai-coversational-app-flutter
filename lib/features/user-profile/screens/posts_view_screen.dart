@@ -432,7 +432,7 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
       borderColor: AppColors.whiteColor.withAlpha(40),
       backgroundColor: AppColors.scaffoldColor.withAlpha(200),
       barrierColor: AppColors.blackColor.withAlpha(150),
-      blurStrength: 20,
+      blurStrength: 10,
       isCloseButton: true,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -450,7 +450,7 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                 borderColor: AppColors.whiteColor.withAlpha(40),
                 backgroundColor: AppColors.scaffoldColor.withAlpha(200),
                 barrierColor: AppColors.blackColor.withAlpha(150),
-                blurStrength: 20,
+                blurStrength: 10,
                 isCloseButton: true,
                 child: EditPostBottomSheet(product: post),
               );

@@ -42,7 +42,6 @@ class ChatController extends GetxController {
   RxList<String> uploadImage = <String>[].obs;
   final RxString selectedQuality = 'SD'.obs;
   final RxBool showQualityOptions = false.obs;
-  final RxBool qualityTouched = false.obs;
 
   // Chat messages list
   final RxList<Message> messages = <Message>[].obs;

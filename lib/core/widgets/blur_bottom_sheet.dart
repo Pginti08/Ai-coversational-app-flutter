@@ -1,10 +1,9 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 
 enum BottomSheetHeightType { fixed, maxHeight }
@@ -20,7 +19,7 @@ class BlurBottomSheet {
     Color? backgroundColor,
     Color? borderColor,
     Color? barrierColor,
-    double blurStrength = 20,
+    double blurStrength = 10,
     double backgroundBlurStrength = 0,
     bool isCloseButton = false,
     // Height configuration
@@ -48,10 +47,8 @@ class BlurBottomSheet {
               onTap: () => handleClose(context, onClose),
               child: RepaintBoundary(
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: blurStrength,
-                    sigmaY: blurStrength,
-                  ),
+                  filter: PerformanceService.instance
+                      .getScaledBlurFilter(blurStrength),
                   // The container with a color is necessary for the GestureDetector to register hits.
                   child: Container(color: Colors.transparent),
                 ),
@@ -83,10 +80,8 @@ class BlurBottomSheet {
                           ),
                           child: RepaintBoundary(
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(
-                                sigmaX: backgroundBlurStrength,
-                                sigmaY: backgroundBlurStrength,
-                              ),
+                              filter: PerformanceService.instance
+                                  .getScaledBlurFilter(backgroundBlurStrength),
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: backgroundColor ??

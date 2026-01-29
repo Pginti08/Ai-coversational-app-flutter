@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/services/haptic_service.dart';
 import 'package:vousvous/core/services/notification_service.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
@@ -206,78 +205,43 @@ class _HomeScreenState extends State<HomeScreen>
 
       return Stack(
         children: [
-          ClipRRect(
-            child: Stack(
-              children: [
-                // LAYER 1: The drawer with proper clipping
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOutCubic,
-                  left: isOpen ? 0 : -drawerWidth,
-                  top: 0,
-                  bottom: 0,
-                  width: drawerWidth,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.blackColor,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(0),
-                        bottomRight: Radius.circular(0),
-                      ),
-                    ),
-                    child: ColoredBox(
-                      color: AppColors.blackColor,
-                      child: UserMenu(controller: controller),
-                    ),
-                  ),
-                ),
+          // LAYER 1: Main content (Home Screen) - stays in place
+          buildMainView(),
 
-                // LAYER 2: The main content view with full background
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOutCubic,
-                  left: isOpen ? drawerWidth : 0,
-                  right: isOpen ? -drawerWidth : 0,
-                  top: 0,
-                  bottom: 0,
-                  child: Container(
-                    color: AppColors.blackColor,
-                    child: ClipRect(
-                      child: Stack(
-                        children: [
-                          buildMainView(),
-                          if (isOpen)
-                            Positioned.fill(
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  focusColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  onTap: controller.toggleDrawer,
-                                  child: RepaintBoundary(
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                        sigmaX: 8,
-                                        sigmaY: 8,
-                                      ),
-                                      child: Container(
-                                        color: Colors.black.withAlpha(100),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
+          // LAYER 2: Dark overlay when drawer is open
+          if (isOpen)
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: controller.toggleDrawer,
+                child: AnimatedOpacity(
+                  duration: PerformanceService.instance.animationDuration,
+                  opacity: isOpen ? 1.0 : 0.0,
+                  child: BackdropFilter(
+                    filter: PerformanceService.instance.getScaledBlurFilter(8),
+                    child: Container(
+                      color: Colors.black.withOpacity(0.5),
                     ),
                   ),
                 ),
-              ],
+              ),
+            ),
+
+          // LAYER 3: Drawer sliding from left (overlay)
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOutCubic,
+            left: isOpen ? 0 : -drawerWidth,
+            top: 0,
+            bottom: 0,
+            width: drawerWidth,
+            child: Material(
+              color: AppColors.blackColor,
+              elevation: 16,
+              shadowColor: Colors.black54,
+              child: UserMenu(controller: controller),
             ),
           ),
+
           if (controller.isLoading.value) AppLoader(),
 
           // --- USER GUIDE OVERLAY ---
@@ -632,10 +596,8 @@ class _HomeScreenState extends State<HomeScreen>
             children: [
               // Blur background
               BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: currentProgress * 10,
-                  sigmaY: currentProgress * 10,
-                ),
+                filter: PerformanceService.instance
+                    .getScaledBlurFilter(currentProgress * 10),
                 child: Container(
                   color: Colors.black.withOpacity(currentProgress * 0.2),
                 ),

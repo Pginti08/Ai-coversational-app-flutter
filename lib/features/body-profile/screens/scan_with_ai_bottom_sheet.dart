@@ -69,7 +69,7 @@ class ScanWithAiBottomSheet extends StatelessWidget {
           ),
           backgroundColor: AppColors.scaffoldColor.withAlpha(200),
           barrierColor: AppColors.blackColor.withAlpha(50),
-          blurStrength: 30,
+          blurStrength: 10,
           isCloseButton: true,
           child: ScannedManuallyBottomSheet(
             savedBodyProfile: SavedBodyProfile(

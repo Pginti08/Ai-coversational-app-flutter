@@ -1,16 +1,15 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 
 class BlurDialog {
   // Alternative method with more explicit sizing control
   Future<T?> show<T>({
     required Widget child,
-    double blurAmount = 20,
+    double blurAmount = 10,
     VoidCallback? onTapOutside,
     Color? overlayColor,
     double borderRadius = 24,
@@ -32,7 +31,7 @@ class BlurDialog {
         child: Material(
           color: Colors.transparent,
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: blurAmount, sigmaY: blurAmount),
+            filter: PerformanceService.instance.getScaledBlurFilter(blurAmount),
             child: Container(
               width: double.infinity,
               height: double.infinity,

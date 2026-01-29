@@ -168,7 +168,7 @@ class _SelectBodyProfileBottomSheetState
                   ),
                   backgroundColor: AppColors.scaffoldColor,
                   barrierColor: AppColors.blackColor.withAlpha(50),
-                  blurStrength: 30,
+                  blurStrength: 10,
                   isCloseButton: true,
                   child: BodyProfileTypeBottomSheet(),
                 )
@@ -328,7 +328,7 @@ class _SelectBodyProfileBottomSheetState
                                                         barrierColor: AppColors
                                                             .blackColor
                                                             .withAlpha(50),
-                                                        blurStrength: 30,
+                                                        blurStrength: 10,
                                                         isCloseButton: true,
                                                         child: ScannedManuallyBottomSheet(
                                                             isEdit: true,

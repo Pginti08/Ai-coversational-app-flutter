@@ -75,7 +75,7 @@ class CheckoutScreen extends StatelessWidget {
                           backgroundColor:
                               AppColors.scaffoldColor.withAlpha(200),
                           barrierColor: AppColors.blackColor.withAlpha(100),
-                          blurStrength: 30,
+                          blurStrength: 10,
                           isCloseButton: true,
                           child: AddAddressBottomSheet(
                             onSuccess: () {
@@ -250,7 +250,7 @@ class CheckoutScreen extends StatelessWidget {
                                                                   .blackColor
                                                                   .withAlpha(
                                                                       100),
-                                                          blurStrength: 30,
+                                                          blurStrength: 10,
                                                           isCloseButton: true,
                                                           child:
                                                               AddAddressBottomSheet(

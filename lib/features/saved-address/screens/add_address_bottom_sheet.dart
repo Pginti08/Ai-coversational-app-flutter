@@ -265,7 +265,7 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                           backgroundColor:
                               AppColors.scaffoldColor.withAlpha(200),
                           barrierColor: AppColors.blackColor.withAlpha(50),
-                          blurStrength: 30,
+                          blurStrength: 10,
                           isCloseButton: true,
                           child: StateListBottomSheet(),
                         );
@@ -313,7 +313,7 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                           backgroundColor:
                               AppColors.scaffoldColor.withAlpha(200),
                           barrierColor: AppColors.blackColor.withAlpha(50),
-                          blurStrength: 30,
+                          blurStrength: 10,
                           isCloseButton: true,
                           child: CityListBottomSheet(
                               stateName: stateController.value.text),

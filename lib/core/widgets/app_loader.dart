@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 
 class AppLoader extends StatelessWidget {
@@ -18,7 +17,7 @@ class AppLoader extends StatelessWidget {
           canPop: false,
           child: RepaintBoundary(
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              filter: PerformanceService.instance.getScaledBlurFilter(5),
               child: Container(
                 height: height,
                 width: width,

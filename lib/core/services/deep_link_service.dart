@@ -17,6 +17,19 @@ class DeepLinkHandler {
   StreamSubscription<Uri>? _linkSubscription;
   Uri? _pendingDeepLink;
 
+  /// Flag to track if the app has completed initial launch
+  /// When false, deep links are stored for later processing by SplashController
+  /// When true, deep links are processed immediately (hot start)
+  bool _isInitialLaunchComplete = false;
+
+  /// Mark the initial launch as complete
+  /// Call this from SplashController after navigation decision is made
+  void markInitialLaunchComplete() {
+    print(
+        '✅ Initial launch complete, hot start deep links will be processed immediately');
+    _isInitialLaunchComplete = true;
+  }
+
   /// Initialize deep link listener
   /// Handles HTTPS App Links, custom URL schemes, and install referrer
   Future<void> initDeepLinks() async {
@@ -25,7 +38,14 @@ class DeepLinkHandler {
     // A. Hot Start Listener (App is already running)
     _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
       print('🔥 Hot start deep link received: $uri');
-      _handleDeepLink(uri);
+      if (_isInitialLaunchComplete) {
+        // App is fully running, process immediately
+        _handleDeepLink(uri);
+      } else {
+        // App is still initializing, store for later
+        print('⏳ App still initializing, storing deep link for later');
+        _pendingDeepLink = uri;
+      }
     }, onError: (err) {
       print('❌ Deep link error: $err');
     });

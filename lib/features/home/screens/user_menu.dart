@@ -27,7 +27,7 @@ class _UserMenuState extends State<UserMenu> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      scaffoldColor: Color(0xFF121212),
+      scaffoldColor: const Color(0xFF0B0B0B),
       body: Container(
         child: SafeArea(
           child: Column(

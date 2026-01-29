@@ -1,7 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 
 class TopProgressBar extends StatefulWidget {
@@ -127,7 +126,7 @@ class _TopProgressBarState extends State<TopProgressBar>
     return ClipRRect(
       borderRadius: BorderRadius.circular(widget.borderRadius),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+        filter: PerformanceService.instance.getScaledBlurFilter(10),
         child: Container(
           width: MediaQuery.sizeOf(context).width,
           height: widget.height,

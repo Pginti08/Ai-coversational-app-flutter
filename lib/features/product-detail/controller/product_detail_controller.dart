@@ -135,7 +135,7 @@ class ProductDetailController extends GetxController {
               borderColor: AppColors.whiteColor.withAlpha(40),
               backgroundColor: AppColors.scaffoldColor.withAlpha(200),
               barrierColor: AppColors.blackColor.withAlpha(50),
-              blurStrength: 30,
+              blurStrength: 10,
               isCloseButton: true,
               child: SelectBodyProfileBottomSheet(
                 productId: productDetail.value.id,

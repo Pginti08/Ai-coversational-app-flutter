@@ -1,8 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/routes/app_pages.dart';
@@ -79,7 +78,7 @@ class _StartCreatingDragBottomState extends State<StartCreatingDragBottom>
         topRight: Radius.circular(24),
       ),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        filter: PerformanceService.instance.getScaledBlurFilter(10),
         child: GestureDetector(
           onTap: () {
             Get.toNamed(Routes.chat);

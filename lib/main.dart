@@ -14,8 +14,8 @@ import 'package:vousvous/core/constants/storage_constants.dart';
 import 'package:vousvous/core/services/deep_link_service.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/services/notification_service.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_theme.dart';
-import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/features/splash/screens/splash_screen.dart';
 import 'package:vousvous/firebase_options.dart';
 import 'package:vousvous/routes/app_pages.dart';
@@ -72,17 +72,16 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
 
+    // Initialize PerformanceService first for optimized effects
+    Get.put<PerformanceService>(PerformanceService(), permanent: true);
+    Get.find<PerformanceService>().init();
+
     Get.put<DeepLinkHandler>(_deepLinkHandler, permanent: true);
 
     _deepLinkHandler.initDeepLinks();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      print("Post-frame callback: Checking for delayed deep link.");
-      final DeepLinkHandler deepLinkHandler = Get.find<DeepLinkHandler>();
-      // If a pending link exists, this will perform the final redirect
-      // (e.g., Get.toNamed(Routes.sharePreview) or Get.offAllNamed(Routes.signup))
-      // overriding the current Home/Welcome screen.
-      deepLinkHandler.processDelayedDeepLink();
-    });
+    // Deep link processing is now handled by SplashController
+    // This ensures proper timing - deep links are processed after splash animation
+    // and before navigation decisions are made
   }
 
   @override
@@ -104,10 +103,10 @@ class _AppState extends State<App> {
           child: GetMaterialApp(
             debugShowCheckedModeBanner: false,
             theme: AppTheme.darkTheme,
-            initialRoute: isNotNullOrEmpty(LocalStorageService.instance
-                    .getString(StorageConstants.accessToken))
-                ? Routes.home
-                : Routes.splash,
+            // ALWAYS start at splash - SplashController handles navigation
+            // This fixes the issue where deep links/referral codes were processed
+            // after the app already navigated to home
+            initialRoute: Routes.splash,
             getPages: AppPages.routes,
             unknownRoute: GetPage(
               name: '/notfound',

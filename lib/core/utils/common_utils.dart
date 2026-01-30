@@ -1,8 +1,9 @@
 import 'dart:convert';
-
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart';
 
 bool isNullOrEmpty(dynamic val) {
   final value = val.toString();
@@ -188,4 +189,63 @@ String getOrderStatusIcon(String orderStatus) {
     default:
       return AssetConstants.box;
   }
+}
+
+String formatTimeAgo(DateTime? dateTime) {
+  if (dateTime == null) return "Unknown";
+
+  final now = DateTime.now();
+  final difference = now.difference(dateTime);
+
+  if (difference.inMinutes < 1) {
+    return "Just now";
+  } else if (difference.inMinutes < 60) {
+    return "${difference.inMinutes} minute${difference.inMinutes == 1 ? '' : 's'} ago";
+  } else if (difference.inHours < 24) {
+    return "${difference.inHours} hour${difference.inHours == 1 ? '' : 's'} ago";
+  } else if (difference.inDays < 7) {
+    return "${difference.inDays} day${difference.inDays == 1 ? '' : 's'} ago";
+  } else {
+    return DateFormat('dd MMMM yyyy').format(dateTime);
+  }
+}
+
+String getDateGroupLabel(DateTime? dateTime) {
+  if (dateTime == null) return "Unknown";
+
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final yesterday = today.subtract(Duration(days: 1));
+  final messageDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+
+  if (messageDate == today) {
+    return "Today";
+  } else if (messageDate == yesterday) {
+    return "Yesterday";
+  } else {
+    return DateFormat('dd MMMM yyyy').format(dateTime);
+  }
+}
+
+List<dynamic> groupMessagesByDate(List<Item> messages) {
+  List<dynamic> groupedItems = [];
+  String? lastDateGroup;
+
+  for (int i = 0; i < messages.length; i++) {
+    final message = messages[i];
+    final dateGroup = getDateGroupLabel(message.createdAt);
+
+    if (lastDateGroup != dateGroup) {
+      groupedItems.add({'type': 'date_header', 'label': dateGroup});
+      lastDateGroup = dateGroup;
+    }
+
+    groupedItems.add({'type': 'message', 'data': message});
+  }
+
+  return groupedItems;
+}
+
+Future<void> shareUrl({required String text}) async {
+  await Share.share(text);
 }

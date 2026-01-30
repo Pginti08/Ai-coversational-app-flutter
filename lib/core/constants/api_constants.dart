@@ -60,6 +60,17 @@ class ApiConstants {
   static const String invoice = '/invoice';
   static const String guideSeen = '/user/guide-seen';
   static const String fcmToken = '/user/fcm-token';
+  static const String product = '/product';
+  static const String otherProduct = '/product/user';
+  static const String getUserProfile = '/user/profile';
+  static const String analyzeProduct = '/products/ai-analysis';
+  static const String follow = '/follow';
+  static const String unfollow = '/unfollow';
+  static const String followers = '/followers';
+  static const String following = '/following';
+  static const String checkQuotationExists = '/quotations/check-exists';
+  static const String createQuotation = '/quotations/create-with-bp';
+  static const String checkUsername = '/user/check-username';
 
   // Headers
   static const Map<String, String> headers = {

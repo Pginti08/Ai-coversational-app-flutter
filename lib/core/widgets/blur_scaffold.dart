@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 
 class BlurScaffold extends StatefulWidget {
   final Widget body;
@@ -18,8 +17,8 @@ class BlurScaffold extends StatefulWidget {
     this.onClose,
     this.appBar,
     this.bottomNavigationBar,
-    this.overlayColor = const Color.fromARGB(12, 255, 255, 255),
-    this.blurStrength = 50.0,
+    this.overlayColor = const Color(0x0BFFFFFF),
+    this.blurStrength = 5.0,
     this.resizeToAvoidBottomInset,
     this.appBarBorderRadius = 24.0, // Default radius matching CustomAppBar
   });
@@ -83,10 +82,8 @@ class _BlurScaffoldState extends State<BlurScaffold>
           animation: _blurAnimation,
           builder: (context, child) {
             return BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: _blurAnimation.value,
-                sigmaY: _blurAnimation.value,
-              ),
+              filter: PerformanceService.instance
+                  .getScaledBlurFilter(_blurAnimation.value),
               child: Container(color: widget.overlayColor),
             );
           },

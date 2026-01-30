@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,12 +5,15 @@ import 'package:get/get.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/services/haptic_service.dart';
 import 'package:vousvous/core/services/notification_service.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
+import 'package:vousvous/core/widgets/guided_gesture_wrapper.dart';
 import 'package:vousvous/core/widgets/shimmer_utils.dart';
 import 'package:vousvous/features/home/controller/home_controller.dart';
 import 'package:vousvous/features/home/screens/start_creating_drag_bottom.dart';
@@ -97,12 +98,14 @@ class _HomeScreenState extends State<HomeScreen>
         _pullDownHeight = _pullDownHeight.clamp(0.0, 200.0);
       });
 
+      /*
       // Check if user performed the correct guide step
       if (_pullDownHeight > 160) {
         if (controller.currentGuideStep.value == GuideStep.dragDown) {
           controller.currentGuideStep.value = GuideStep.thumbLeft;
         }
       }
+      */
     }
 
     // Update thumb horizontal position
@@ -111,21 +114,9 @@ class _HomeScreenState extends State<HomeScreen>
     // Update selection based on current thumb position
     final newSelection = _getSelectionFromPosition(_thumbPosition, screenWidth);
     if (newSelection != _selectedOption) {
-      // --- USER GUIDE LOGIC: Track thumb movements ---
       setState(() {
         _selectedOption = newSelection;
       });
-
-      // Check if user moved thumb left during thumbLeft guide step
-      if (controller.currentGuideStep.value == GuideStep.thumbLeft) {
-        if (newSelection == ThumbSelection.skip) {
-          // User moved thumb to the left successfully
-          controller.currentGuideStep.value = GuideStep.thumbRight;
-        }
-      }
-
-      // --- END USER GUIDE LOGIC ---
-
       HapticService.medium();
     }
   }
@@ -175,23 +166,29 @@ class _HomeScreenState extends State<HomeScreen>
     switch (_selectedOption) {
       case ThumbSelection.skip:
         Get.toNamed(Routes.skipped);
+        /*
         if (controller.currentGuideStep.value == GuideStep.thumbRight) {
           controller.currentGuideStep.value = GuideStep.dragDown;
         }
+        */
 
         break;
       case ThumbSelection.shuffle:
         controller.getSuggestedProducts();
+        /*
         if (controller.currentGuideStep.value == GuideStep.thumbLeft ||
             controller.currentGuideStep.value == GuideStep.thumbRight) {
           controller.currentGuideStep.value = GuideStep.dragDown;
         }
+        */
         break;
       case ThumbSelection.favorite:
         Get.toNamed(Routes.liked);
+        /*
         if (controller.currentGuideStep.value == GuideStep.thumbRight) {
           controller.currentGuideStep.value = GuideStep.swipeRight;
         }
+        */
         break;
       case ThumbSelection.none:
         break;
@@ -208,83 +205,45 @@ class _HomeScreenState extends State<HomeScreen>
 
       return Stack(
         children: [
-          ClipRRect(
-            child: Stack(
-              children: [
-                // LAYER 1: The drawer with proper clipping
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOutCubic,
-                  left: isOpen ? 0 : -drawerWidth,
-                  top: 0,
-                  bottom: 0,
-                  width: drawerWidth,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.blackColor,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(0),
-                        bottomRight: Radius.circular(0),
-                      ),
-                    ),
-                    child: ColoredBox(
-                      color: AppColors.blackColor,
-                      child: UserMenu(controller: controller),
-                    ),
-                  ),
-                ),
+          // LAYER 1: Main content (Home Screen) - stays in place
+          buildMainView(),
 
-                // LAYER 2: The main content view with full background
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOutCubic,
-                  left: isOpen ? drawerWidth : 0,
-                  right: isOpen ? -drawerWidth : 0,
-                  top: 0,
-                  bottom: 0,
+          // LAYER 2: Dark overlay when drawer is open
+          if (isOpen)
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: controller.toggleDrawer,
+                child: AnimatedOpacity(
+                  duration: PerformanceService.instance.animationDuration,
+                  opacity: isOpen ? 1.0 : 0.0,
                   child: Container(
-                    color: AppColors.blackColor,
-                    child: ClipRect(
-                      child: Stack(
-                        children: [
-                          buildMainView(),
-                          if (isOpen)
-                            Positioned.fill(
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  focusColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  onTap: controller.toggleDrawer,
-                                  child: RepaintBoundary(
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                        sigmaX: 8,
-                                        sigmaY: 8,
-                                      ),
-                                      child: Container(
-                                        color: Colors.black.withAlpha(100),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
+                    color: Colors.black.withAlpha(150),
                   ),
                 ),
-              ],
+              ),
+            ),
+
+          // LAYER 3: Drawer sliding from left (overlay)
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOutCubic,
+            left: isOpen ? 0 : -drawerWidth,
+            top: 0,
+            bottom: 0,
+            width: drawerWidth,
+            child: Material(
+              color: AppColors.blackColor,
+              elevation: 16,
+              shadowColor: Colors.black54,
+              child: UserMenu(controller: controller),
             ),
           ),
+
           if (controller.isLoading.value) AppLoader(),
 
           // --- USER GUIDE OVERLAY ---
           // TODO: Guide temporarily disabled
-          _buildGuideOverlay(),
+          // _buildGuideOverlay(),
           // --- END USER GUIDE OVERLAY ---
         ],
       );
@@ -294,8 +253,9 @@ class _HomeScreenState extends State<HomeScreen>
   Stack buildMainView() {
     return Stack(
       children: [
-        // Main content with body sliding effect
-        GestureDetector(
+        // DON'T wrap in GestureDetector here - GuideGestureController handles it
+        GuideGestureController(
+          currentGuideStep: controller.currentGuideStep,
           onVerticalDragStart: _handleDragStart,
           onVerticalDragUpdate: _handleDragUpdate,
           onVerticalDragEnd: _handleDragEnd,
@@ -346,177 +306,241 @@ class _HomeScreenState extends State<HomeScreen>
                                                   ),
                                                 ),
                                               )
-                                            : Builder(
-                                                builder: (context) {
-                                                  print(
-                                                      "🚫 SHOWING 'No More Outfits Available'");
-                                                  print(
-                                                      "   - Products list length: ${controller.suggestedProductsList.length}");
-                                                  print(
-                                                      "   - Current card index: ${controller.currentCardIndex.value}");
-                                                  print(
-                                                      "   - Remaining in queue: ${controller.remainingProductsInQueue.value}");
-                                                  print(
-                                                      "   - Has more products: ${controller.hasMoreProducts}");
-                                                  print(
-                                                      "   - Current page: ${controller.currentPage}");
-                                                  return Text(
-                                                    "No More Outfits Available",
-                                                    style: style600S20.copyWith(
-                                                      letterSpacing: 0.42,
-                                                      color: AppColors
-                                                          .whiteTextColor,
-                                                      height: 1.1,
+                                            : Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 20),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      "No More Outfits Available",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style:
+                                                          style600S20.copyWith(
+                                                        letterSpacing: 0.42,
+                                                        color: AppColors
+                                                            .whiteTextColor,
+                                                      ),
                                                     ),
-                                                  );
-                                                },
+                                                    Text(
+                                                      "You can personalize your outfits to match your taste.",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style:
+                                                          style600S16.copyWith(
+                                                        color: AppColors
+                                                            .lightGreyTextColor,
+                                                      ),
+                                                    ),
+                                                    hSizedBox8,
+                                                    AppButton(
+                                                      onTap: () {
+                                                        Get.toNamed(
+                                                            Routes.chat);
+                                                      },
+                                                      width: MediaQuery.sizeOf(
+                                                                  context)
+                                                              .width /
+                                                          2.5,
+                                                      height: 40,
+                                                      text: "Start Creating",
+                                                      fontSize: 14,
+                                                    )
+                                                  ],
+                                                ),
                                               ),
                                       )
-                                    : CardSwiper(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 10,
-                                        ),
-                                        numberOfCardsDisplayed: controller
+                                    : Obx(() => GuideCardSwiperWrapper(
+                                          key: ValueKey(
+                                              'card-swiper-${controller.currentGuideStep.value}'),
+                                          currentGuideStep:
+                                              controller.currentGuideStep,
+                                          cardSwiper: CardSwiper(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            numberOfCardsDisplayed: controller
+                                                        .suggestedProductsList
+                                                        .length <
+                                                    4
+                                                ? controller
                                                     .suggestedProductsList
-                                                    .length <
-                                                4
-                                            ? controller
-                                                .suggestedProductsList.length
-                                            : 4,
-                                        scale: 0.97,
-                                        backCardOffset: Offset(0, 25),
-                                        allowedSwipeDirection:
-                                            AllowedSwipeDirection.only(
-                                          left: true,
-                                          right: true,
-                                        ),
-                                        cardsCount: controller
-                                            .suggestedProductsList.length,
-                                        isLoop: false,
-                                        cardBuilder: (
-                                          context,
-                                          index,
-                                          percentThresholdX,
-                                          percentThresholdY,
-                                        ) {
-                                          return Obx(
-                                            () => ProductOutfitCard(
-                                              product: controller
-                                                  .suggestedProductsList[index],
-                                              isFirst: (controller
-                                                          .currentCardIndex
+                                                    .length
+                                                : 4,
+                                            scale: 0.97,
+                                            backCardOffset: Offset(0, 25),
+                                            allowedSwipeDirection:
+                                                AllowedSwipeDirection.only(
+                                              // Only allow right swipe if step is swipeRight OR if guide is not active
+                                              right: controller.currentGuideStep
                                                           .value ==
-                                                      index)
-                                                  .obs,
-                                              swipeProgress: double.tryParse(
-                                                    percentThresholdX
-                                                        .toString(),
-                                                  ) ??
-                                                  0,
-                                              onTap: () {
-                                                Get.toNamed(
-                                                  Routes.productDetail,
-                                                  arguments: {
-                                                    "productDetail": controller
-                                                            .suggestedProductsList[
-                                                        index],
-                                                  },
-                                                );
-                                              },
+                                                      GuideStep.none ||
+                                                  controller.currentGuideStep
+                                                          .value ==
+                                                      GuideStep.done ||
+                                                  controller.currentGuideStep
+                                                          .value ==
+                                                      GuideStep.swipeRight,
+
+                                              // Only allow left swipe if step is swipeLeft OR if guide is not active
+                                              left: controller.currentGuideStep
+                                                          .value ==
+                                                      GuideStep.none ||
+                                                  controller.currentGuideStep
+                                                          .value ==
+                                                      GuideStep.done ||
+                                                  controller.currentGuideStep
+                                                          .value ==
+                                                      GuideStep.swipeLeft,
                                             ),
-                                          );
-                                        },
-                                        initialIndex:
-                                            controller.currentCardIndex.value,
-                                        onSwipe: (
-                                          previousIndex,
-                                          currentIndex,
-                                          direction,
-                                        ) {
-                                          final outfitList =
-                                              controller.suggestedProductsList;
+                                            cardsCount: controller
+                                                .suggestedProductsList.length,
+                                            isLoop: false,
+                                            cardBuilder: (
+                                              context,
+                                              index,
+                                              percentThresholdX,
+                                              percentThresholdY,
+                                            ) {
+                                              return Obx(
+                                                () => ProductOutfitCard(
+                                                  product: controller
+                                                          .suggestedProductsList[
+                                                      index],
+                                                  isFirst: (controller
+                                                              .currentCardIndex
+                                                              .value ==
+                                                          index)
+                                                      .obs,
+                                                  swipeProgress:
+                                                      double.tryParse(
+                                                            percentThresholdX
+                                                                .toString(),
+                                                          ) ??
+                                                          0,
+                                                  onTap: () {
+                                                    if (controller
+                                                                .currentGuideStep
+                                                                .value ==
+                                                            GuideStep.none ||
+                                                        controller
+                                                                .currentGuideStep
+                                                                .value ==
+                                                            GuideStep.done) {
+                                                      Get.toNamed(
+                                                        Routes.productDetail,
+                                                        arguments: {
+                                                          "productDetail":
+                                                              controller
+                                                                      .suggestedProductsList[
+                                                                  index],
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                            initialIndex: controller
+                                                .currentCardIndex.value,
+                                            onSwipe: (
+                                              previousIndex,
+                                              currentIndex,
+                                              direction,
+                                            ) {
+                                              // Your existing onSwipe logic stays the same
+                                              final outfitList = controller
+                                                  .suggestedProductsList;
 
-                                          if (previousIndex < 0 ||
-                                              previousIndex >=
-                                                  outfitList.length) {
-                                            return true;
-                                          }
+                                              if (previousIndex < 0 ||
+                                                  previousIndex >=
+                                                      outfitList.length) {
+                                                return true;
+                                              }
 
-                                          print("👆 SWIPE DETECTED:");
-                                          print(
-                                              "   - Direction: ${direction == CardSwiperDirection.right ? 'RIGHT (LIKED)' : 'LEFT (SKIPPED)'}");
-                                          print(
-                                              "   - Previous Index: $previousIndex");
-                                          print(
-                                              "   - Current Index: $currentIndex");
+                                              /*
+                                                if (direction ==
+                                                    CardSwiperDirection.right) {
+                                                  if (controller.currentGuideStep
+                                                          .value ==
+                                                      GuideStep.swipeRight) {
+                                                    controller.currentGuideStep
+                                                            .value =
+                                                        GuideStep.swipeLeft;
+                                                  }
+                                                  controller.likedProduct(
+                                                    outfitList[previousIndex]
+                                                            .id ??
+                                                        "",
+                                                  );
+                                                } else if (direction ==
+                                                    CardSwiperDirection.left) {
+                                                  if (controller.currentGuideStep
+                                                          .value ==
+                                                      GuideStep.swipeLeft) {
+                                                    controller.currentGuideStep
+                                                            .value =
+                                                        GuideStep.openDrawer;
+                                                  }
+                                                  controller.skipProduct(
+                                                    outfitList[previousIndex]
+                                                            .id ??
+                                                        "",
+                                                  );
+                                                }
+                      */
+                                              if (direction ==
+                                                  CardSwiperDirection.right) {
+                                                controller.likedProduct(
+                                                  outfitList[previousIndex]
+                                                          .id ??
+                                                      "",
+                                                );
+                                              } else if (direction ==
+                                                  CardSwiperDirection.left) {
+                                                controller.skipProduct(
+                                                  outfitList[previousIndex]
+                                                          .id ??
+                                                      "",
+                                                );
+                                              }
 
-                                          if (direction ==
-                                              CardSwiperDirection.right) {
-                                            if (controller
-                                                    .currentGuideStep.value ==
-                                                GuideStep.swipeRight) {
-                                              controller.currentGuideStep
-                                                  .value = GuideStep.swipeLeft;
-                                            }
-
-                                            controller.likedProduct(
-                                              outfitList[previousIndex].id ??
-                                                  "",
-                                            );
-                                          } else if (direction ==
-                                              CardSwiperDirection.left) {
-                                            if (controller
-                                                    .currentGuideStep.value ==
-                                                GuideStep.swipeLeft) {
-                                              controller.currentGuideStep
-                                                  .value = GuideStep.openDrawer;
-                                            }
-
-                                            controller.skipProduct(
-                                              outfitList[previousIndex].id ??
-                                                  "",
-                                            );
-                                          }
-
-                                          // Track swipe for unlock customization
-                                          controller.onCardSwiped();
-
-                                          controller
-                                              .remainingProductsInQueue.value--;
-
-                                          print(
-                                              "   - Remaining in queue after swipe: ${controller.remainingProductsInQueue.value}");
-                                          print(
-                                              "   - Total products in list: ${controller.suggestedProductsList.length}");
-
-                                          if (controller
-                                                      .remainingProductsInQueue
-                                                      .value <
-                                                  5 &&
-                                              !controller.isLoading.value &&
-                                              !controller.isPaginating.value) {
-                                            print(
-                                                "🔄 Triggering LOAD MORE (remaining < 5)");
-                                            controller.getSuggestedProducts(
-                                              isLoadMore: true,
-                                            );
-                                          }
-
-                                          if (currentIndex != null) {
-                                            controller.currentCardIndex.value =
-                                                currentIndex;
-                                          } else if (currentIndex == null &&
+                                              controller.onCardSwiped();
                                               controller
-                                                      .currentCardIndex.value ==
-                                                  outfitList.length - 1) {
-                                            controller.currentCardIndex.value++;
-                                          }
+                                                  .remainingProductsInQueue
+                                                  .value--;
 
-                                          print(
-                                              "   - New card index: ${controller.currentCardIndex.value}");
-                                          return true;
-                                        },
-                                      ),
+                                              if (controller
+                                                          .remainingProductsInQueue
+                                                          .value <
+                                                      5 &&
+                                                  !controller.isLoading.value &&
+                                                  !controller
+                                                      .isPaginating.value) {
+                                                controller.getSuggestedProducts(
+                                                  isLoadMore: true,
+                                                );
+                                              }
+
+                                              if (currentIndex != null) {
+                                                controller.currentCardIndex
+                                                    .value = currentIndex;
+                                              } else if (currentIndex == null &&
+                                                  controller.currentCardIndex
+                                                          .value ==
+                                                      outfitList.length - 1) {
+                                                controller
+                                                    .currentCardIndex.value++;
+                                              }
+
+                                              return true;
+                                            },
+                                          ),
+                                        )),
                           ),
                         ),
                       ),
@@ -537,14 +561,18 @@ class _HomeScreenState extends State<HomeScreen>
 
                 return Transform.translate(
                   offset: Offset(0, slideOffset * 0.5),
-                  child: StartCreatingDragBottom(),
+                  child: Obx(() => AbsorbPointer(
+                      absorbing: controller.currentGuideStep.value !=
+                              GuideStep.none &&
+                          controller.currentGuideStep.value != GuideStep.done,
+                      child: StartCreatingDragBottom())),
                 );
               },
             ),
           ),
         ),
 
-        // Pull-down overlay
+        // Pull-down overlay (stays the same)
         if (_isPullingDown && _pullDownHeight > 0) _buildPullDownOverlay(),
       ],
     );
@@ -564,14 +592,8 @@ class _HomeScreenState extends State<HomeScreen>
           return Stack(
             children: [
               // Blur background
-              BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: currentProgress * 10,
-                  sigmaY: currentProgress * 10,
-                ),
-                child: Container(
-                  color: Colors.black.withOpacity(currentProgress * 0.2),
-                ),
+              Container(
+                color: Colors.black.withOpacity(currentProgress * 0.2),
               ),
 
               // Options panel at top
@@ -726,8 +748,10 @@ class _HomeScreenState extends State<HomeScreen>
           padding: const EdgeInsets.only(left: 4.5),
           child: Row(
             children: [
-              GestureDetector(
+              // Wrap drawer icon with GuideDrawerIconWrapper
+              GuideDrawerIconWrapper(
                 key: _drawerIconKey,
+                currentGuideStep: controller.currentGuideStep,
                 onTap: () {
                   if (controller.currentGuideStep.value ==
                       GuideStep.openDrawer) {
@@ -736,7 +760,7 @@ class _HomeScreenState extends State<HomeScreen>
                   }
                   controller.toggleDrawer();
                 },
-                child: Obx(
+                drawerIcon: Obx(
                   () => AppNetworkImage(
                     width: 43,
                     height: 43,
@@ -794,7 +818,9 @@ class _HomeScreenState extends State<HomeScreen>
       ],
     );
   }
+}
 
+  /*
   // --- USER GUIDE WIDGETS ---
   Widget _buildGuideOverlay() {
     return Obx(() {
@@ -1004,42 +1030,44 @@ class _HomeScreenState extends State<HomeScreen>
             highlightRect: Rect.zero, guideWidget: const SizedBox.shrink());
     }
   }
-}
 
-// --- HELPER CLASSES FOR GUIDE ---
+  // --- HELPER CLASSES FOR GUIDE ---
 
-/// Helper class to pass guide info
-class _GuideInfo {
-  final Rect highlightRect;
-  final Widget guideWidget;
-  _GuideInfo({required this.highlightRect, required this.guideWidget});
-}
-
-/// CustomClipper to "punch a hole" in the overlay
-class HoleClipper extends CustomClipper<Path> {
-  final Rect holeRect;
-  HoleClipper(this.holeRect);
-
-  @override
-  Path getClip(Size size) {
-    // Create a path for the entire screen
-    final fullScreenPath = Path()
-      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
-
-    // Create a path for the hole, as a rounded rectangle
-    final holePath = Path()
-      ..addRRect(RRect.fromRectAndRadius(holeRect, const Radius.circular(16)));
-
-    // Subtract the hole from the full screen
-    return Path.combine(
-      PathOperation.difference,
-      fullScreenPath,
-      holePath,
-    );
+  /// Helper class to pass guide info
+  class _GuideInfo {
+    final Rect highlightRect;
+    final Widget guideWidget;
+    _GuideInfo({required this.highlightRect, required this.guideWidget});
   }
 
-  @override
-  bool shouldReclip(HoleClipper oldClipper) {
-    return oldClipper.holeRect != holeRect;
+  /// CustomClipper to "punch a hole" in the overlay
+  class HoleClipper extends CustomClipper<Path> {
+    final Rect holeRect;
+    HoleClipper(this.holeRect);
+
+    @override
+    Path getClip(Size size) {
+      // Create a path for the entire screen
+      final fullScreenPath = Path()
+        ..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+
+      // Create a path for the hole, as a rounded rectangle
+      final holePath = Path()
+        ..addRRect(RRect.fromRectAndRadius(holeRect, const Radius.circular(16)));
+
+      // Subtract the hole from the full screen
+      return Path.combine(
+        PathOperation.difference,
+        fullScreenPath,
+        holePath,
+      );
+    }
+
+    @override
+    bool shouldReclip(HoleClipper oldClipper) {
+      return oldClipper.holeRect != holeRect;
+    }
   }
-}
+  */
+
+

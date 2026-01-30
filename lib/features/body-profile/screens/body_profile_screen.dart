@@ -19,6 +19,11 @@ class BodyProfileScreen extends StatelessWidget {
   BodyProfileScreen({super.key});
   final BodyProfileController controller = Get.put(BodyProfileController());
 
+  String _formatValue(double? value) {
+    if (value == null) return "0";
+    return value.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -46,7 +51,10 @@ class BodyProfileScreen extends StatelessWidget {
                     onPressed: () {
                       Get.back();
                     },
-                    icon: SvgPicture.asset(AssetConstants.backward),
+                    icon: SvgPicture.asset(
+                      AssetConstants.backward,
+                      height: 24,
+                    ),
                   ),
                 ),
               ],
@@ -68,9 +76,10 @@ class BodyProfileScreen extends StatelessWidget {
                           borderColor: AppColors.whiteColor.withAlpha(
                             40,
                           ),
-                          backgroundColor: AppColors.scaffoldColor,
+                          backgroundColor:
+                              AppColors.scaffoldColor.withAlpha(200),
                           barrierColor: AppColors.blackColor.withAlpha(50),
-                          blurStrength: 30,
+                          blurStrength: 10,
                           isCloseButton: true,
                           child: BodyProfileTypeBottomSheet(),
                         );
@@ -166,7 +175,7 @@ class BodyProfileScreen extends StatelessWidget {
                                                       AppColors
                                                           .glassBorderGradient,
                                                   child: Text(
-                                                    "${controller.savedBodyProfileModel.value.data?[index].height?.toStringAsFixed(0) ?? '0'} ${(controller.savedBodyProfileModel.value.data?[index].unit ?? "").toUpperCase()}  •  ${controller.savedBodyProfileModel.value.data?[index].bust?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].waist?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].hips?.toStringAsFixed(0) ?? '0'}” | ${controller.savedBodyProfileModel.value.data?[index].shoulders?.toStringAsFixed(0) ?? '0'}”"
+                                                    "${_formatValue(controller.savedBodyProfileModel.value.data?[index].height)} ${(controller.savedBodyProfileModel.value.data?[index].unit ?? "").toUpperCase()}  •  ${_formatValue(controller.savedBodyProfileModel.value.data?[index].bust)}” | ${_formatValue(controller.savedBodyProfileModel.value.data?[index].waist)}” | ${_formatValue(controller.savedBodyProfileModel.value.data?[index].hips)}” | ${_formatValue(controller.savedBodyProfileModel.value.data?[index].shoulders)}”"
                                                         .toUpperCase(),
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -202,7 +211,7 @@ class BodyProfileScreen extends StatelessWidget {
                                                       barrierColor: AppColors
                                                           .blackColor
                                                           .withAlpha(50),
-                                                      blurStrength: 30,
+                                                      blurStrength: 10,
                                                       isCloseButton: true,
                                                       child: ScannedManuallyBottomSheet(
                                                           isEdit: true,

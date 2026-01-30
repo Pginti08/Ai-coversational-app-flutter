@@ -262,15 +262,15 @@ class BodyProfile {
   factory BodyProfile.fromJson(Map<String, dynamic> json) => BodyProfile(
         id: json["id"],
         name: json["name"],
-        height: json["height"],
+        height: int.tryParse(json["height"].toString()),
         heightUnit: json["heightUnit"],
-        bust: json["bust"],
+        bust: int.tryParse(json["bust"].toString()),
         bustUnit: json["bustUnit"],
-        waist: json["waist"],
+        waist: int.tryParse(json["waist"].toString()),
         waistUnit: json["waistUnit"],
-        hips: json["hips"],
+        hips: int.tryParse(json["hips"].toString()),
         hipsUnit: json["hipsUnit"],
-        shoulders: json["shoulders"],
+        shoulders: int.tryParse(json["shoulders"].toString()),
       );
 
   Map<String, dynamic> toJson() => {

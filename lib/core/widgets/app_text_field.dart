@@ -45,7 +45,9 @@ class AppTextField extends StatelessWidget {
     this.textAlign = TextAlign.start,
     this.expands = false,
     this.scrollController,
+    this.crossAxisAlignment = CrossAxisAlignment.center, // Default to center
   });
+
   final String? label;
   final String? hint;
   final String? errorText;
@@ -82,6 +84,7 @@ class AppTextField extends StatelessWidget {
   final TextAlign textAlign;
   final bool expands;
   final ScrollController? scrollController;
+  final CrossAxisAlignment crossAxisAlignment;
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +156,7 @@ class AppTextField extends StatelessWidget {
                   hSizedBox4,
                 ],
                 Row(
+                  crossAxisAlignment: crossAxisAlignment, // Use parameter
                   children: [
                     if (prefixIcon != null) ...[
                       prefixIcon!,

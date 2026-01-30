@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
@@ -26,16 +25,15 @@ class BodyProfileTypeBottomSheet extends StatelessWidget {
               isGradientBorder: true,
               gradientBorderColors: AppColors.colorGradient,
               onTap: () {
-                Get.back();
                 BlurBottomSheet().show<void>(
                   height: MediaQuery.sizeOf(context).height * 0.7,
                   context: context,
                   borderColor: AppColors.whiteColor.withAlpha(
                     40,
                   ),
-                  backgroundColor: AppColors.scaffoldColor,
+                  backgroundColor: AppColors.scaffoldColor.withAlpha(200),
                   barrierColor: AppColors.blackColor.withAlpha(50),
-                  blurStrength: 30,
+                  blurStrength: 10,
                   isCloseButton: true,
                   child: ScanWithAiBottomSheet(),
                 );
@@ -62,16 +60,13 @@ class BodyProfileTypeBottomSheet extends StatelessWidget {
               isGradientBorder: true,
               backgroundColor: AppColors.whiteColor.withAlpha(10),
               onTap: () {
-                Get.back();
                 BlurBottomSheet().show<void>(
                   height: MediaQuery.sizeOf(context).height * 0.7,
                   context: context,
-                  borderColor: AppColors.whiteColor.withAlpha(
-                    40,
-                  ),
-                  backgroundColor: AppColors.scaffoldColor,
+                  borderColor: AppColors.whiteColor.withAlpha(40),
+                  backgroundColor: AppColors.scaffoldColor.withAlpha(200),
                   barrierColor: AppColors.blackColor.withAlpha(50),
-                  blurStrength: 30,
+                  blurStrength: 10,
                   isCloseButton: true,
                   child: ScannedManuallyBottomSheet(),
                 );

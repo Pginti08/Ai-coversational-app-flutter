@@ -52,7 +52,6 @@ class OrderDetailScreen extends StatelessWidget {
                           CommonContainer(
                             padding: EdgeInsets.all(10),
                             borderRadius: 24,
-                            enableBlur: true,
                             borderGradientColors: AppColors.glassBorderGradient,
                             backgroundColor: AppColors.whiteColor.withAlpha(25),
                             child: Row(
@@ -166,7 +165,6 @@ class OrderDetailScreen extends StatelessWidget {
                             CommonContainer(
                                 padding: EdgeInsets.symmetric(vertical: 16),
                                 borderRadius: 24,
-                                enableBlur: true,
                                 borderGradientColors:
                                     AppColors.glassBorderGradient,
                                 backgroundColor:
@@ -208,7 +206,6 @@ class OrderDetailScreen extends StatelessWidget {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 14, vertical: 12),
                             borderRadius: 24,
-                            enableBlur: true,
                             borderGradientColors: AppColors.glassBorderGradient,
                             backgroundColor: AppColors.whiteColor.withAlpha(25),
                             child: Row(
@@ -274,7 +271,6 @@ class OrderDetailScreen extends StatelessWidget {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 14, vertical: 12),
                             borderRadius: 24,
-                            enableBlur: true,
                             borderGradientColors: AppColors.glassBorderGradient,
                             backgroundColor: AppColors.whiteColor.withAlpha(25),
                             child: Row(

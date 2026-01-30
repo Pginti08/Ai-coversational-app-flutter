@@ -74,7 +74,11 @@ class OtpVerifyController extends GetxController {
           verifyOtpModel.data?.token ?? "",
         );
 
-        Future.delayed(Duration(milliseconds: 1500), () {
+        // Clear pending referral code after successful signup
+        await LocalStorageService.instance
+            .remove(StorageConstants.pendingReferralCode);
+
+        Future.delayed(Duration(milliseconds: 700), () {
           Get.offAllNamed(Routes.home);
         });
       } else {

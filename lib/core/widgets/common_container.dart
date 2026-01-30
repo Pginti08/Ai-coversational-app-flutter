@@ -1,8 +1,9 @@
-import 'dart:ui' as ui;
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:vousvous/core/services/haptic_service.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 
 class CommonContainer extends StatelessWidget {
   final double? height;
@@ -35,7 +36,7 @@ class CommonContainer extends StatelessWidget {
     this.enableBlur = false,
     this.isCircle = false,
     this.onTap,
-    this.blurStrength = 20.0,
+    this.blurStrength = 10.0,
     this.begin,
     this.end,
   }) : super(key: key);
@@ -87,21 +88,30 @@ class CommonContainer extends StatelessWidget {
     );
 
     if (enableBlur) {
-      return ClipRRect(
-        borderRadius:
-            isCircle ? BorderRadius.zero : BorderRadius.circular(borderRadius),
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(
-            sigmaX: blurStrength,
-            sigmaY: blurStrength,
+      if (isCircle) {
+        return ClipOval(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: blurStrength,
+              sigmaY: blurStrength,
+            ),
+            child: inkWellWidget,
           ),
+        );
+      }
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: BackdropFilter(
+          filter: PerformanceService.instance.getScaledBlurFilter(blurStrength),
           child: inkWellWidget,
         ),
       );
     } else {
+      if (isCircle) {
+        return ClipOval(child: inkWellWidget);
+      }
       return ClipRRect(
-        borderRadius:
-            isCircle ? BorderRadius.zero : BorderRadius.circular(borderRadius),
+        borderRadius: BorderRadius.circular(borderRadius),
         child: inkWellWidget,
       );
     }

@@ -79,6 +79,10 @@ class AssetConstants {
   static const inviteFriend = '${icons}invite_friend.svg';
   static const firstPurchase = '${icons}first_purchase.svg';
   static const completeOrder = '${icons}complete_order.svg';
+  static const grid = '${icons}grid.svg';
+  static const private = '${icons}private.svg';
+  static const public = '${icons}public.svg';
+  static const userMinus = '${icons}user-minus.svg';
 
   ///__________________________________ gif __________________________________///
 

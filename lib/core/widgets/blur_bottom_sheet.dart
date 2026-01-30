@@ -1,10 +1,9 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
+import 'package:vousvous/core/services/performance_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 
 enum BottomSheetHeightType { fixed, maxHeight }
@@ -20,8 +19,7 @@ class BlurBottomSheet {
     Color? backgroundColor,
     Color? borderColor,
     Color? barrierColor,
-    double blurStrength = 20,
-    double backgroundBlurStrength = 0,
+    double blurStrength = 5,
     bool isCloseButton = false,
     // Height configuration
     BottomSheetHeightType heightType = BottomSheetHeightType.fixed,
@@ -48,10 +46,8 @@ class BlurBottomSheet {
               onTap: () => handleClose(context, onClose),
               child: RepaintBoundary(
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: blurStrength,
-                    sigmaY: blurStrength,
-                  ),
+                  filter: PerformanceService.instance
+                      .getScaledBlurFilter(blurStrength),
                   // The container with a color is necessary for the GestureDetector to register hits.
                   child: Container(color: Colors.transparent),
                 ),
@@ -74,7 +70,7 @@ class BlurBottomSheet {
                     children: [
                       if (isCloseButton) ...[
                         _buildCloseButton(context, onClose, backgroundColor),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 12),
                       ],
                       Flexible(
                         child: ClipRRect(
@@ -82,32 +78,26 @@ class BlurBottomSheet {
                             top: Radius.circular(borderRadius),
                           ),
                           child: RepaintBoundary(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(
-                                sigmaX: backgroundBlurStrength,
-                                sigmaY: backgroundBlurStrength,
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: backgroundColor ??
-                                      AppColors.greyColor.withAlpha(220),
-                                  border: Border(
-                                    top: borderColor != null
-                                        ? BorderSide(color: borderColor)
-                                        : BorderSide.none,
-                                  ),
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(borderRadius),
-                                  ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: backgroundColor ??
+                                    AppColors.greyColor.withAlpha(220),
+                                border: Border(
+                                  top: borderColor != null
+                                      ? BorderSide(color: borderColor)
+                                      : BorderSide.none,
                                 ),
-                                child: SafeArea(
-                                  top: false,
-                                  child: _buildChildWithHeightConstraints(
-                                    child: child,
-                                    heightType: heightType,
-                                    height: height ??
-                                        MediaQuery.sizeOf(context).height * 0.5,
-                                  ),
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(borderRadius),
+                                ),
+                              ),
+                              child: SafeArea(
+                                top: false,
+                                child: _buildChildWithHeightConstraints(
+                                  child: child,
+                                  heightType: heightType,
+                                  height: height ??
+                                      MediaQuery.sizeOf(context).height * 0.5,
                                 ),
                               ),
                             ),

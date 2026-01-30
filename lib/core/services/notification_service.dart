@@ -250,7 +250,10 @@ class FCMService {
   void _navigateToQuotation(String? imageUrl, String? productId) {
     Get.toNamed(
       Routes.quotationChat,
-      arguments: {"imageUrl": imageUrl, "productId": productId},
+      arguments: {
+        "imageUrl": imageUrl,
+        "productId": productId,
+      },
     );
   }
 

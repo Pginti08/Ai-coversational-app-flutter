@@ -1,12 +1,18 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gal/gal.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
 
 class ImageViewerScreen extends StatefulWidget {
@@ -38,6 +44,45 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveToGallery() async {
+    try {
+      // 1. Check/Request Permission
+      final hasAccess = await Gal.hasAccess();
+      if (!hasAccess) {
+        await Gal.requestAccess();
+      }
+
+      // 2. Download image bytes
+      final imageUrl = fullImageUrl(widget.imageUrls[_currentIndex]);
+      final response = await Dio().get(
+        imageUrl,
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      // 3. Save to a temporary file
+      final tempDir = await getTemporaryDirectory();
+      final path =
+          '${tempDir.path}/vousvous_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final file = File(path);
+      await file.writeAsBytes(response.data);
+
+      // 4. Use gal to put the file into the gallery
+      await Gal.putImage(path);
+
+      toast("Image saved successfully!", type: ToastType.success);
+
+      // Clean up: delete the temp file
+      if (await file.exists()) await file.delete();
+    } catch (e) {
+      debugPrint("Gal Save Error: $e");
+      if (e is GalException) {
+        toast("Permission denied or gallery error");
+      } else {
+        toast("Error saving image: $e");
+      }
+    }
   }
 
   void _goToNextImage() {
@@ -92,26 +137,58 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
               );
             },
           ),
-
           // Close button at top right
           Positioned(
             top: 10,
             right: 10,
             child: SafeArea(
               bottom: false,
-              child: GestureDetector(
+              child: CommonContainer(
+                padding: const EdgeInsets.all(12),
+                isCircle: true,
+                borderGradientColors: AppColors.glassBorderGradient,
+                gradientColors: AppColors.glassBorderGradient,
                 onTap: () {
                   Get.back();
                 },
+                child: SvgPicture.asset(AssetConstants.closeIcon),
+              ),
+            ),
+          ),
+
+          // Save to gallery button at bottom center
+          Positioned(
+            bottom: showNavigation ? 120 : 40,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              top: false,
+              child: Center(
                 child: CommonContainer(
-                  padding: const EdgeInsets.all(12),
-                  isCircle: true,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  borderRadius: 100,
                   borderGradientColors: AppColors.glassBorderGradient,
                   gradientColors: AppColors.glassBorderGradient,
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: SvgPicture.asset(AssetConstants.closeIcon),
+                  onTap: _saveToGallery,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(
+                        AssetConstants.gallery,
+                        height: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Save to Gallery',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -30,8 +30,8 @@ class NetworkClient {
   NetworkClient._internal() {
     _dio = Dio(
       BaseOptions(
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
+        connectTimeout: const Duration(seconds: 120),
+        receiveTimeout: const Duration(seconds: 120),
         contentType: 'application/json',
       ),
     );
@@ -52,9 +52,8 @@ class NetworkClient {
         },
         onError: (DioException e, handler) async {
           if (e.response != null) {
-            // Handle 401 Unauthorized - Token Refresh
-            if ((e.response?.statusCode == 401 ||
-                    e.response?.statusCode == 403) &&
+            // Handle 403 Unauthorized - Token Refresh
+            if ((e.response?.statusCode == 403) &&
                 (e.response?.data["error"].toString().toLowerCase() ==
                         "access token has expired" ||
                     e.response?.data["error"].toString().toLowerCase() ==
@@ -84,6 +83,8 @@ class NetworkClient {
                 await _clearStorageAndLogout();
                 return handler.next(e);
               }
+            } else {
+              return handler.next(e);
             }
           }
           return handler.next(e);

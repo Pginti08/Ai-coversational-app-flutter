@@ -76,7 +76,7 @@ class _PastConversationState extends State<PastConversation> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      scaffoldColor: Color(0xFF121212),
+      scaffoldColor: const Color(0xFF0B0B0B),
       body: Container(
         child: Obx(
           () => SafeArea(

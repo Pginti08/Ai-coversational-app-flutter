@@ -58,9 +58,9 @@ class Data {
         subTotal: double.tryParse(json["subTotal"].toString()),
         taxAmount: double.tryParse(json["taxAmount"].toString()),
         shippingCharge: double.tryParse(json["shippingCharge"].toString()),
-        total: json["total"],
-        page: json["page"],
-        limit: json["limit"],
+        total: int.tryParse(json["total"].toString()),
+        page: int.tryParse(json["page"].toString()),
+        limit: int.tryParse(json["limit"].toString()),
       );
 
   Map<String, dynamic> toJson() => {
@@ -116,14 +116,14 @@ class Cart {
         userId: json["userId"],
         quotationCardId: json["quotationCardId"],
         amount: double.tryParse(json["amount"].toString()),
-        quantity: json["quantity"],
+        quantity: int.tryParse(json["quantity"].toString()),
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),
         updatedAt: json["updatedAt"] == null
             ? null
             : DateTime.parse(json["updatedAt"]),
-        v: json["__v"],
+        v: int.tryParse(json["__v"].toString()),
         title: json["title"],
         purchaseType: json["purchaseType"],
         bulkQuantities: json["bulkQuantities"],
@@ -181,11 +181,11 @@ class BodyProfile {
   factory BodyProfile.fromJson(Map<String, dynamic> json) => BodyProfile(
         id: json["id"],
         name: json["name"],
-        height: json["height"],
-        bust: json["bust"],
-        waist: json["waist"],
-        hips: json["hips"],
-        shoulders: json["shoulders"],
+        height: int.tryParse(json["height"].toString()),
+        bust: int.tryParse(json["bust"].toString()),
+        waist: int.tryParse(json["waist"].toString()),
+        hips: int.tryParse(json["hips"].toString()),
+        shoulders: int.tryParse(json["shoulders"].toString()),
         unit: json["unit"],
       );
 

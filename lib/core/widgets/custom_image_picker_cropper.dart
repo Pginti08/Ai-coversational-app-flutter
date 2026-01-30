@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:vousvous/core/theme/app_colors.dart';
 
 Future<void> imagePickerCropper(Function(File file) selectedImage) async {
   XFile? pickedFile;
@@ -21,10 +20,12 @@ Future<void> imagePickerCropper(Function(File file) selectedImage) async {
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'Cropper',
-          toolbarColor: AppColors.primaryColor,
-          toolbarWidgetColor: Colors.white,
-          activeControlsWidgetColor: AppColors.primaryColor,
-          
+          toolbarColor: const Color(0xFF1F8BB5),
+          statusBarColor: Colors.black,
+          toolbarWidgetColor: Colors.black,
+          navBarLight: true,
+          hideBottomControls: false,
+          activeControlsWidgetColor: const Color(0xFF1F8BB5),
           aspectRatioPresets: [
             CropAspectRatioPreset.original,
             CropAspectRatioPreset.square,

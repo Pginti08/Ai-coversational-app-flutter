@@ -143,7 +143,6 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                     onTap: () {
                                       controller.clearRemixOutfits();
                                     },
-                                    enableBlur: true,
                                     padding: EdgeInsets.all(10),
                                     isCircle: true,
                                     height: 52,
@@ -166,7 +165,6 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                                 .swipe(
                                                     CardSwiperDirection.left);
                                           },
-                                          enableBlur: true,
                                           padding: EdgeInsets.all(10),
                                           isCircle: true,
                                           height: 52,
@@ -184,7 +182,6 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                               onTap: () {
                                                 // Do nothing, button is disabled
                                               },
-                                              enableBlur: true,
                                               padding: EdgeInsets.all(10),
                                               isCircle: true,
                                               height: 52,
@@ -212,7 +209,6 @@ class _CardDeckScreenState extends State<CardDeckScreen> {
                                                     .swipe(CardSwiperDirection
                                                         .right);
                                               },
-                                              enableBlur: true,
                                               padding: EdgeInsets.all(10),
                                               isCircle: true,
                                               height: 52,

@@ -85,21 +85,21 @@ class LikedScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(24),
                                       child: GestureDetector(
                                         onTap: () {
-                                          Get.toNamed(Routes.likedProduct,
-                                              arguments: {
-                                                "imageUrl":
-                                                    "${controller.likedProductsList[index].image}",
-                                                "productId":
-                                                    "${controller.likedProductsList[index].id}",
-                                                "productDetail": controller
-                                                    .likedProductsList[index],
-                                              });
+                                          Get.toNamed(
+                                            Routes.productDetail,
+                                            arguments: {
+                                              "productDetail": controller
+                                                  .likedProductsList[index],
+                                            },
+                                          );
                                         },
                                         child: AppNetworkImage(
                                           imageUrl: controller
                                                   .likedProductsList[index]
                                                   .image ??
                                               "",
+                                          width: double.infinity, // Add this
+                                          height: double.infinity, // Add this
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -121,15 +121,15 @@ class LikedScreen extends StatelessWidget {
                                     child: Padding(
                                       padding: const EdgeInsets.all(4),
                                       child: CommonContainer(
-                                        blurStrength: 40,
+                                        blurStrength: 5,
                                         enableBlur: true,
                                         borderRadius: 100,
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 16, vertical: 10),
                                         borderColor:
-                                            AppColors.whiteColor.withAlpha(50),
+                                            AppColors.grey2Color.withAlpha(40),
                                         backgroundColor:
-                                            AppColors.whiteColor.withAlpha(20),
+                                            AppColors.grey2Color.withAlpha(30),
                                         child: Row(
                                           children: [
                                             Expanded(
@@ -226,7 +226,8 @@ class LikedScreen extends StatelessWidget {
                                     onTap: () {
                                       controller.clearRemixProducts();
                                     },
-                                    enableBlur: true,
+                                    backgroundColor:
+                                        AppColors.whiteColor.withAlpha(10),
                                     padding: EdgeInsets.all(10),
                                     isCircle: true,
                                     height: 52,
@@ -250,7 +251,6 @@ class LikedScreen extends StatelessWidget {
                                           onTap: () {
                                             controller.removeFromRemix();
                                           },
-                                          enableBlur: true,
                                           padding: EdgeInsets.all(10),
                                           isCircle: true,
                                           height: 52,
@@ -265,20 +265,13 @@ class LikedScreen extends StatelessWidget {
                                       // If current item is NOT selected but max 4 already selected, show disabled + button
                                       : controller.isRemixAtMaxCapacity
                                           ? CommonContainer(
-                                              onTap: () {
-                                                // Do nothing, button is disabled
-                                              },
-                                              enableBlur: true,
+                                              onTap: () {},
                                               padding: EdgeInsets.all(10),
                                               isCircle: true,
                                               height: 52,
                                               width: 52,
-                                              borderGradientColors: [
-                                                AppColors.grey2Color
-                                                    .withAlpha(100),
-                                                AppColors.grey2Color
-                                                    .withAlpha(100),
-                                              ],
+                                              borderGradientColors:
+                                                  AppColors.glassBorderGradient,
                                               child: SvgPicture.asset(
                                                 AssetConstants.add,
                                                 height: 28,
@@ -294,7 +287,6 @@ class LikedScreen extends StatelessWidget {
                                               onTap: () {
                                                 controller.addToRemix();
                                               },
-                                              enableBlur: true,
                                               padding: EdgeInsets.all(10),
                                               isCircle: true,
                                               height: 52,
@@ -310,7 +302,7 @@ class LikedScreen extends StatelessWidget {
                                   AppButton(
                                     height: 52,
                                     onTap: () {
-                                      Get.offNamed(Routes.chat, arguments: {
+                                      Get.toNamed(Routes.chat, arguments: {
                                         "isInitialRemix": true,
                                         "userSelectedRemixOutfits": controller
                                             .remixProducts

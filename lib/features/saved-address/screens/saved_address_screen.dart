@@ -36,7 +36,7 @@ class SavedAddressScreen extends StatelessWidget {
                   children: [
                     Text('Saved addresses'.toUpperCase(),
                         textAlign: TextAlign.center,
-                        style: style700S16.copyWith(
+                        style: style700S14.copyWith(
                             letterSpacing: 0.96, color: Color(0xFFCCCCCC))),
                   ],
                 ),
@@ -46,7 +46,10 @@ class SavedAddressScreen extends StatelessWidget {
                     onPressed: () {
                       Get.back();
                     },
-                    icon: SvgPicture.asset(AssetConstants.backward),
+                    icon: SvgPicture.asset(
+                      AssetConstants.backward,
+                      height: 24,
+                    ),
                   ),
                 ),
               ],
@@ -66,12 +69,11 @@ class SavedAddressScreen extends StatelessWidget {
                         BlurBottomSheet().show<void>(
                           height: MediaQuery.sizeOf(context).height * 0.9,
                           context: context,
-                          borderColor: AppColors.whiteColor.withAlpha(
-                            40,
-                          ),
-                          backgroundColor: AppColors.scaffoldColor,
+                          borderColor: AppColors.whiteColor.withAlpha(40),
+                          backgroundColor:
+                              AppColors.scaffoldColor.withAlpha(200),
                           barrierColor: AppColors.blackColor.withAlpha(100),
-                          blurStrength: 30,
+                          blurStrength: 10,
                           isCloseButton: true,
                           child: AddAddressBottomSheet(
                             onSuccess: () {
@@ -210,7 +212,7 @@ class SavedAddressScreen extends StatelessWidget {
                                                       barrierColor: AppColors
                                                           .blackColor
                                                           .withAlpha(100),
-                                                      blurStrength: 30,
+                                                      blurStrength: 10,
                                                       isCloseButton: true,
                                                       child:
                                                           AddAddressBottomSheet(

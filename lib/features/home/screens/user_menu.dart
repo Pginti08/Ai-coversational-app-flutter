@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
@@ -27,7 +28,7 @@ class _UserMenuState extends State<UserMenu> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      scaffoldColor: Color(0xFF121212),
+      scaffoldColor: const Color(0xFF0B0B0B),
       body: Container(
         child: SafeArea(
           child: Column(
@@ -36,11 +37,17 @@ class _UserMenuState extends State<UserMenu> {
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: CommonContainer(
+                  onTap: () {
+                    widget.controller.toggleDrawer();
+                    Get.toNamed(Routes.userProfile, arguments: {
+                      "userId":
+                          LocalStorageService.instance.userInfo.value.data?.id
+                    });
+                  },
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8)
                       .copyWith(right: 0),
                   borderRadius: 16,
                   backgroundColor: AppColors.whiteColor.withAlpha(20),
-                  enableBlur: true,
                   child: Row(
                     children: [
                       Obx(() => AppNetworkImage(
@@ -94,12 +101,23 @@ class _UserMenuState extends State<UserMenu> {
                       IconButton(
                           onPressed: () {
                             widget.controller.toggleDrawer();
-                            Get.toNamed(Routes.editProfile);
+                            Get.toNamed(Routes.userProfile);
                           },
-                          icon: SvgPicture.asset(
-                            AssetConstants.edit,
-                            width: 24,
-                          ))
+                          icon: Transform.rotate(
+                              angle: 3.14159,
+                              child: SvgPicture.asset(
+                                AssetConstants.backward,
+                                height: 24,
+                              )))
+                      // IconButton(
+                      //     onPressed: () {
+                      //       widget.controller.toggleDrawer();
+                      //       Get.toNamed(Routes.editProfile);
+                      //     },
+                      //     icon: SvgPicture.asset(
+                      //       AssetConstants.edit,
+                      //       width: 24,
+                      //     ))
                     ],
                   ),
                 ),
@@ -170,7 +188,37 @@ class _UserMenuState extends State<UserMenu> {
                     icon: AssetConstants.share,
                     height: 19,
                     onTap: () {
-                      Get.toNamed(Routes.inviteFriend);
+                      Get.toNamed(Routes.referFriend);
+                    },
+                  ),
+                  // menuTiles(
+                  //   name: "Invite Friends",
+                  //   icon: AssetConstants.share,
+                  //   onTap: () {
+                  //     Get.toNamed(Routes.inviteFriend);
+                  //   },
+                  // ),
+                  menuTiles(
+                    name: "Delete Account",
+                    icon: AssetConstants.userMinus,
+                    isToggle: false,
+                    onTap: () async {
+                      commonDialog(
+                        title: "Delete Account",
+                        description:
+                            "To delete your account, you'll be redirected to our website.",
+                        successButtonTitle: "Visit Website",
+                        cancelButtonTitle: "Cancel",
+                        onSuccess: () async {
+                          Get.back();
+                          widget.controller.toggleDrawer();
+                          final Uri url =
+                              Uri.parse('https://vousvous.com/delete-account');
+
+                          await launchUrl(url,
+                              mode: LaunchMode.externalApplication);
+                        },
+                      );
                     },
                   ),
                   menuTiles(

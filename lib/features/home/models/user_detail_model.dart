@@ -57,9 +57,16 @@ class Data {
   String? image;
   String? bio;
   bool? hasSeenGuide;
+  int? followersCount;
+  int? followingCount;
+  int? productsCount;
   int? swipeCount;
   DateTime? createdAt;
   DateTime? updatedAt;
+  bool? isFollowing;
+  String? username;
+  String? referralCode;
+  String? usedReferralCode;
 
   Data({
     this.id,
@@ -70,28 +77,39 @@ class Data {
     this.image,
     this.bio,
     this.hasSeenGuide,
+    this.followersCount,
+    this.followingCount,
+    this.productsCount,
     this.swipeCount,
     this.createdAt,
     this.updatedAt,
+    this.isFollowing,
+    this.username,
+    this.referralCode,
+    this.usedReferralCode,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        id: json["id"],
-        name: json["name"],
-        countryCode: json["countryCode"],
-        phone: json["phone"],
-        role: json["role"],
-        image: json["image"],
-        bio: json["bio"],
-        hasSeenGuide: json["hasSeenGuide"],
-        swipeCount: json["swipeCount"],
-        createdAt: json["createdAt"] == null
-            ? null
-            : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null
-            ? null
-            : DateTime.parse(json["updatedAt"]),
-      );
+      id: json["id"],
+      name: json["name"],
+      countryCode: json["countryCode"],
+      phone: json["phone"],
+      role: json["role"],
+      image: json["image"],
+      bio: json["bio"],
+      hasSeenGuide: json["hasSeenGuide"],
+      followersCount: int.tryParse(json["followersCount"].toString()),
+      followingCount: int.tryParse(json["followingCount"].toString()),
+      productsCount: int.tryParse(json["productsCount"].toString()),
+      swipeCount: int.tryParse(json["swipeCount"].toString()),
+      createdAt:
+          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+      updatedAt:
+          json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+      isFollowing: json["isFollowing"],
+      username: json["username"],
+      referralCode: json["referralCode"],
+      usedReferralCode: json["usedReferralCode"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -102,37 +120,56 @@ class Data {
         "image": image,
         "bio": bio,
         "hasSeenGuide": hasSeenGuide,
+        "followersCount": followersCount,
+        "followingCount": followingCount,
+        "productsCount": productsCount,
         "swipeCount": swipeCount,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
+        "isFollowing": isFollowing,
+        "username": username,
+        "referralCode": referralCode,
+        "usedReferralCode": usedReferralCode,
       };
 
   // ✅ copyWith method
-  Data copyWith({
-    String? id,
-    String? name,
-    String? countryCode,
-    String? phone,
-    String? role,
-    String? image,
-    String? bio,
-    bool? hasSeenGuide,
-    int? swipeCount,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) {
+  Data copyWith(
+      {String? id,
+      String? name,
+      String? countryCode,
+      String? phone,
+      String? role,
+      String? image,
+      String? bio,
+      bool? hasSeenGuide,
+      int? followersCount,
+      int? followingCount,
+      int? productsCount,
+      int? swipeCount,
+      DateTime? createdAt,
+      DateTime? updatedAt,
+      bool? isFollowing,
+      String? username,
+      String? referralCode,
+      String? usedReferralCode}) {
     return Data(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      countryCode: countryCode ?? this.countryCode,
-      phone: phone ?? this.phone,
-      role: role ?? this.role,
-      image: image ?? this.image,
-      bio: bio ?? this.bio,
-      hasSeenGuide: hasSeenGuide ?? this.hasSeenGuide,
-      swipeCount: swipeCount ?? this.swipeCount,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
+        id: id ?? this.id,
+        name: name ?? this.name,
+        countryCode: countryCode ?? this.countryCode,
+        phone: phone ?? this.phone,
+        role: role ?? this.role,
+        image: image ?? this.image,
+        bio: bio ?? this.bio,
+        hasSeenGuide: hasSeenGuide ?? this.hasSeenGuide,
+        followersCount: followersCount ?? this.followersCount,
+        followingCount: followingCount ?? this.followingCount,
+        productsCount: productsCount ?? this.productsCount,
+        swipeCount: swipeCount ?? this.swipeCount,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        isFollowing: isFollowing ?? this.isFollowing,
+        username: username ?? this.username,
+        referralCode: referralCode ?? this.referralCode,
+        usedReferralCode: usedReferralCode ?? this.usedReferralCode);
   }
 }

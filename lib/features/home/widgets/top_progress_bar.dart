@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
@@ -126,49 +124,44 @@ class _TopProgressBarState extends State<TopProgressBar>
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(widget.borderRadius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-        child: Container(
-          width: MediaQuery.sizeOf(context).width,
-          height: widget.height,
-          decoration: BoxDecoration(
-            color:
-                widget.backgroundColor ?? AppColors.grey2Color.withAlpha(120),
-            borderRadius: BorderRadius.circular(widget.borderRadius),
-            border: GradientBoxBorder(
-              width: 1,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: AppColors.glassBorderGradient,
-              ),
+      child: Container(
+        width: MediaQuery.sizeOf(context).width,
+        height: widget.height,
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? AppColors.grey2Color.withAlpha(120),
+          borderRadius: BorderRadius.circular(widget.borderRadius),
+          border: GradientBoxBorder(
+            width: 1,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: AppColors.glassBorderGradient,
             ),
           ),
-          child: Stack(
-            children: [
-              // Animated Fill
-              AnimatedBuilder(
-                animation: _animation,
-                builder: (context, child) {
-                  return Opacity(
-                    opacity: 0.4,
-                    child: Container(
-                      width: _animation.value,
-                      height: widget.height,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(widget.borderRadius),
-                        gradient: LinearGradient(
-                          colors:
-                              widget.progressColors ?? AppColors.colorGradient,
-                        ),
+        ),
+        child: Stack(
+          children: [
+            // Animated Fill
+            AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: 0.4,
+                  child: Container(
+                    width: _animation.value,
+                    height: widget.height,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(widget.borderRadius),
+                      gradient: LinearGradient(
+                        colors:
+                            widget.progressColors ?? AppColors.colorGradient,
                       ),
                     ),
-                  );
-                },
-              ),
-            ],
-          ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

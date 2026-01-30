@@ -250,7 +250,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                             angle: 3.14159,
                                             child: SvgPicture.asset(
                                               AssetConstants.backward,
-                                              height: 20,
+                                              height: 18,
                                             )),
                                       ],
                                     ),

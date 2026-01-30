@@ -184,8 +184,8 @@ class _UserMenuState extends State<UserMenu> {
                     },
                   ),
                   menuTiles(
-                    name: "Invite Friends",
-                    icon: AssetConstants.share,
+                    name: "Refer Friends",
+                    icon: AssetConstants.gift,
                     height: 19,
                     onTap: () {
                       Get.toNamed(Routes.referFriend);
@@ -202,6 +202,7 @@ class _UserMenuState extends State<UserMenu> {
                     name: "Delete Account",
                     icon: AssetConstants.userMinus,
                     isToggle: false,
+                    height: 20,
                     onTap: () async {
                       commonDialog(
                         title: "Delete Account",

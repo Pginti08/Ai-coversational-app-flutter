@@ -6,7 +6,6 @@ import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
-import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 
@@ -53,38 +52,51 @@ class WhatAreAppCreditsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('App Credits are virtual currency used inside the app',
-                        textAlign: TextAlign.start,
-                        style: style400S16.copyWith(
-                            color: Color(0xFFCCCCCC), letterSpacing: 0.32)),
+                    hSizedBox12,
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text:
+                                'App Credits are virtual currency used inside the app as ',
+                            style: style400S16.copyWith(
+                              color: const Color(0xFFCCCCCC),
+                              letterSpacing: 0.32,
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                '0.01 Credits = ${AssetConstants.rupeeSymbol} 1',
+                            style: style600S16.copyWith(
+                              color: const Color(0xFFFFB86B),
+                              letterSpacing: 0.32,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     hSizedBox16,
-                    Text(
-                        '0.01 Credits = ${AssetConstants.rupeeSymbol} 1'
-                            .toUpperCase(),
+                    Text('Use credits for:'.toUpperCase(),
                         textAlign: TextAlign.start,
-                        style: style700S12.copyWith(
-                            color: Color(0xFFCCCCCC), letterSpacing: 0.96)),
-                    hSizedBox16,
-                    Text('Use credits for:',
-                        textAlign: TextAlign.start,
-                        style: style400S14.copyWith(
-                            color: Color(0xFF999999), letterSpacing: 0.28)),
+                        style: style700S16.copyWith(
+                            color: Color(0xFF999999), letterSpacing: 1.28)),
                     hSizedBox16,
                     creditsForTile(
                         title: "ai designs", icon: AssetConstants.aiDesign),
-                    hSizedBox6,
+                    hSizedBox16,
                     creditsForTile(title: "try on", icon: AssetConstants.tryOn),
-                    hSizedBox6,
+                    hSizedBox16,
                     creditsForTile(
                         title: "remixes", icon: AssetConstants.remixes),
-                    hSizedBox6,
+                    hSizedBox16,
                     creditsForTile(
                         title: "order discounts",
                         icon: AssetConstants.discount),
                     hSizedBox16,
                     CommonContainer(
+                      backgroundColor: AppColors.grey2Color.withAlpha(120),
                       padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                       borderRadius: 100,
                       borderGradientColors: AppColors.glassBorderGradient,
                       child: Column(
@@ -123,17 +135,6 @@ class WhatAreAppCreditsScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    hSizedBox24,
-                    Align(
-                      alignment: Alignment.center,
-                      child: AppButton(
-                        width: MediaQuery.sizeOf(context).width / 2.5,
-                        onTap: () {
-                          Get.back();
-                        },
-                        text: "Got it",
-                      ),
-                    )
                   ],
                 ),
               ),
@@ -162,9 +163,9 @@ class WhatAreAppCreditsScreen extends StatelessWidget {
         ),
         wSizedBox8,
         Flexible(
-          child: Text(title.toUpperCase(),
-              style: style700S12.copyWith(
-                  color: Color(0xFFCCCCCC), letterSpacing: 0.96)),
+          child: Text(title.capitalize ?? "",
+              style: style400S14.copyWith(
+                  color: Color(0xFFCCCCCC), letterSpacing: 0.28)),
         )
       ],
     );

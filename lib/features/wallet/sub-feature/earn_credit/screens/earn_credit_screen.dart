@@ -61,15 +61,15 @@ class EarnCreditScreen extends StatelessWidget {
                         icon: AssetConstants.dailyLogin),
                     hSizedBox24,
                     earnCreditTile(
-                        title: "invite a friends",
+                        title: "Refer Friends",
                         description: "+100 credits after signup",
                         icon: AssetConstants.inviteFriend,
                         extra: AppButton(
                           height: 35,
                           width: MediaQuery.sizeOf(context).width / 4,
-                          text: "Invite",
+                          text: "Refer",
                           onTap: () {
-                            Get.toNamed(Routes.inviteFriend);
+                            Get.toNamed(Routes.referFriend);
                           },
                         )),
                     hSizedBox24,
@@ -98,7 +98,7 @@ class EarnCreditScreen extends StatelessWidget {
       required String icon,
       Widget? extra}) {
     return CommonContainer(
-      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       borderRadius: 18,
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,

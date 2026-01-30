@@ -71,6 +71,10 @@ class ApiConstants {
   static const String checkQuotationExists = '/quotations/check-exists';
   static const String createQuotation = '/quotations/create-with-bp';
   static const String checkUsername = '/user/check-username';
+  static const String walletBalance = '/wallet/balance';
+  static const String coinOrder = '/wallet/coin-order';
+  static const String verifyPayment = '/wallet/verify-payment';
+  static const String walletHistory = '/wallet/history';
 
   // Headers
   static const Map<String, String> headers = {

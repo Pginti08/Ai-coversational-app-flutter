@@ -1,16 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
-import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
+import 'package:vousvous/features/wallet/models/wallet_history_model.dart';
+import 'package:vousvous/features/wallet/sub-feature/credit_history/controller/credit_history_controller.dart';
 
-class CreditHistoryScreen extends StatelessWidget {
-  CreditHistoryScreen({super.key});
+class CreditHistoryScreen extends StatefulWidget {
+  const CreditHistoryScreen({super.key});
+
+  @override
+  State<CreditHistoryScreen> createState() => _CreditHistoryScreenState();
+}
+
+class _CreditHistoryScreenState extends State<CreditHistoryScreen> {
+  final CreditHistoryController controller = Get.put(CreditHistoryController());
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    // Don't trigger loadMore if history is currently loading (e.g., during refresh)
+    if (controller.isLoading.value) return;
+
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      controller.loadMore();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +53,7 @@ class CreditHistoryScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 6).copyWith(bottom: 0),
         child: Column(
           children: [
+            // Header
             Stack(
               clipBehavior: Clip.none,
               alignment: Alignment.center,
@@ -37,122 +70,280 @@ class CreditHistoryScreen extends StatelessWidget {
                 Positioned(
                   left: 0,
                   child: IconButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: SvgPicture.asset(AssetConstants.backward),
+                    onPressed: () => Get.back(),
+                    icon: SvgPicture.asset(
+                      AssetConstants.backward,
+                      height: 24,
+                    ),
                   ),
                 ),
               ],
             ),
+            hSizedBox24,
+            // List
             Expanded(
-                child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Text('App Credits',
-                    //     textAlign: TextAlign.start,
-                    //     style: style400S16.copyWith(
-                    //         color: Color(0xFFCCCCCC), letterSpacing: 0.32)),
-                    hSizedBox16,
-                    creditHistoryTile(
-                        title: "order cashback", icon: AssetConstants.add),
-                    hSizedBox24,
-                    creditHistoryTile(
-                        title: "ai design generate",
-                        icon: AssetConstants.tryOn),
-                    hSizedBox24,
-                    creditHistoryTile(
-                        title: "credits purchased",
-                        icon: AssetConstants.remixes),
-                    hSizedBox24,
-                    creditHistoryTile(
-                        title: "try-on session", icon: AssetConstants.minus),
-                  ],
-                ),
-              ),
-            )),
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return _buildShimmerList();
+                }
+
+                return RefreshIndicator(
+                  onRefresh: () => controller.fetchHistory(refresh: true),
+                  color: AppColors.primaryColor,
+                  backgroundColor: AppColors.greyBackgroundColor,
+                  child: controller.historyItems.isEmpty
+                      ? ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: [
+                            SizedBox(height: 200),
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    AssetConstants.wallet,
+                                    width: 60,
+                                    color: Color(0xFF666666),
+                                  ),
+                                  hSizedBox16,
+                                  Text(
+                                    "No transactions yet",
+                                    style: style400S16.copyWith(
+                                        color: Color(0xFF999999)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      : _buildGroupedList(),
+                );
+              }),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget creditHistoryTile({required String title, required String icon}) {
-    return CommonContainer(
-      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      borderRadius: 18,
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-      borderGradientColors: [
-        Color(0xFF68C3E7).withAlpha(50),
-        Color(0xFFFFB86B).withAlpha(50),
-      ],
-      gradientColors: [
-        Color(0xFF68C3E7).withAlpha(17),
-        Color(0xFFFFB86B).withAlpha(17),
-      ],
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
+  Widget _buildGroupedList() {
+    final groupedItems = _groupHistoryByDate(controller.historyItems);
+    final dateKeys = groupedItems.keys.toList();
+
+    return ListView.builder(
+      controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      itemCount: _calculateTotalItemCount(groupedItems) + 1,
+      itemBuilder: (context, index) {
+        // Calculate which date group and item we're at
+        int itemCount = 0;
+        for (int i = 0; i < dateKeys.length; i++) {
+          final dateKey = dateKeys[i];
+          final items = groupedItems[dateKey]!;
+
+          // Check if this index is the header
+          if (index == itemCount) {
+            return _buildDateHeader(dateKey);
+          }
+          itemCount++;
+
+          // Check if this index is within the items of this group
+          if (index < itemCount + items.length) {
+            final itemIndex = index - itemCount;
+            final item = items[itemIndex];
+            final isLastInGroup = itemIndex == items.length - 1;
+            return _buildHistoryTile(item, showDivider: !isLastInGroup);
+          }
+          itemCount += items.length;
+        }
+
+        // Loading more indicator
+        return Obx(() {
+          if (controller.isLoadingMore.value) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.primaryColor,
+                  ),
+                ),
+              ),
+            );
+          }
+          return const SizedBox(height: 16);
+        });
+      },
+    );
+  }
+
+  /// Group history items by date (Today, Yesterday, or specific date)
+  Map<String, List<WalletHistoryItem>> _groupHistoryByDate(
+      List<WalletHistoryItem> items) {
+    final Map<String, List<WalletHistoryItem>> grouped = {};
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+
+    for (final item in items) {
+      String dateKey;
+      if (item.createdAt != null) {
+        try {
+          final date = DateTime.parse(item.createdAt!).toLocal();
+          final itemDate = DateTime(date.year, date.month, date.day);
+
+          if (itemDate == today) {
+            dateKey = 'TODAY';
+          } else if (itemDate == yesterday) {
+            dateKey = 'YESTERDAY';
+          } else {
+            dateKey = DateFormat('dd MMM yyyy').format(date).toUpperCase();
+          }
+        } catch (e) {
+          dateKey = 'UNKNOWN';
+        }
+      } else {
+        dateKey = 'UNKNOWN';
+      }
+
+      if (!grouped.containsKey(dateKey)) {
+        grouped[dateKey] = [];
+      }
+      grouped[dateKey]!.add(item);
+    }
+
+    return grouped;
+  }
+
+  /// Calculate total items including headers
+  int _calculateTotalItemCount(Map<String, List<WalletHistoryItem>> grouped) {
+    int count = 0;
+    for (final key in grouped.keys) {
+      count += 1; // Header
+      count += grouped[key]!.length; // Items
+    }
+    return count;
+  }
+
+  /// Build date section header
+  Widget _buildDateHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, bottom: 4),
+      child: Text(
+        title,
+        style: style700S14.copyWith(
+          color: Color(0xFF999999),
+          letterSpacing: 0.5,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHistoryTile(WalletHistoryItem item, {bool showDivider = true}) {
+    final formattedTime = _formatTime(item.createdAt);
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.displayTitle,
+                      overflow: TextOverflow.ellipsis,
+                      style: style400S18.copyWith(
+                        color: Colors.white,
+                        letterSpacing: 0.36,
+                      ),
+                    ),
+                    hSizedBox4,
+                    Text(
+                      formattedTime,
+                      overflow: TextOverflow.ellipsis,
+                      style: style400S14.copyWith(
+                        color: Color(0xFF999999),
+                        letterSpacing: 0.28,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              wSizedBox16,
+              Text(
+                item.formattedAmount,
+                style: style400S20.copyWith(
+                  color: item.isCredit ? Color(0xFF4ADE80) : Color(0xFFEF4444),
+                  letterSpacing: 0.44,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (showDivider)
           Container(
-            height: 40,
-            width: 40,
-            padding: EdgeInsets.all(6),
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: GradientBoxBorder(
-                  width: 0.5,
-                  gradient: LinearGradient(
-                    colors: AppColors.colorGradient,
-                  ),
-                )),
-            child: SvgPicture.asset(
-              icon,
-              height: 28,
-            ),
+            height: 0.5,
+            color: Color(0xFF333333),
           ),
-          wSizedBox12,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title.toUpperCase(),
-                    overflow: TextOverflow.ellipsis,
-                    style: style700S12.copyWith(
-                        color: Color(0xFFCCCCCC), letterSpacing: 0.96)),
-                hSizedBox2,
-                Text("04/10/2024, 18:00",
-                    overflow: TextOverflow.ellipsis,
-                    style: style400S12.copyWith(
-                        color: Color(0xFF999999), letterSpacing: 0.28)),
-              ],
-            ),
-          ),
-          wSizedBox10,
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: '+120',
-                  style: style400S20.copyWith(
-                    color: Colors.white.withValues(alpha: 0.80),
-                    letterSpacing: 0.40,
+      ],
+    );
+  }
+
+  /// Format time for display (e.g., "Today 10:41 AM", "Yesterday 10:41 AM")
+  String _formatTime(String? dateString) {
+    if (dateString == null) return '';
+    try {
+      final date = DateTime.parse(dateString).toLocal();
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final yesterday = today.subtract(const Duration(days: 1));
+      final itemDate = DateTime(date.year, date.month, date.day);
+
+      final timeStr = DateFormat('h:mm a').format(date);
+
+      if (itemDate == today) {
+        return 'Today $timeStr';
+      } else if (itemDate == yesterday) {
+        return 'Yesterday $timeStr';
+      } else {
+        return '${DateFormat('dd MMM').format(date)} $timeStr';
+      }
+    } catch (e) {
+      return dateString;
+    }
+  }
+
+  Widget _buildShimmerList() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: SingleChildScrollView(
+        child: Column(
+          children: List.generate(
+            12,
+            (index) => Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[900]!,
+                highlightColor: Colors.black,
+                child: Container(
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                TextSpan(
-                  text: ' credits',
-                  style: style400S14.copyWith(
-                    color: const Color(0xFF999999),
-                    letterSpacing: 0.28,
-                  ),
-                ),
-              ],
+              ),
             ),
-          )
-        ],
+          ),
+        ),
       ),
     );
   }

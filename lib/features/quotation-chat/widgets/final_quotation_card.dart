@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
-import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
@@ -206,7 +205,7 @@ class FinalQuotationCard extends StatelessWidget {
                         (quotation.price ?? 0) != 0)
                       _buildInfoRow(
                           'PRICE',
-                          "${AssetConstants.rupeeSymbol}${quotation.price?.toStringAsFixed(0) ?? '-'}/pc",
+                          "${NumberFormat("#,##0.##").format((double.parse(quotation.price?.toStringAsFixed(0) ?? '0')) / 100)} Credits",
                           ""),
                   ],
                 ),
@@ -253,11 +252,15 @@ class FinalQuotationCard extends StatelessWidget {
                           )
                     : AppButton(
                         text: quotation.status == "FINALIZED"
-                            ? 'Add To Cart'
+                            ? 'Place Order'
                             : quotation.status?.replaceAll("_", " "),
                         isDisabled: quotation.status != "FINALIZED",
                         onTap: () {
-                          addToCartApi(message?.id ?? "");
+                          Get.toNamed(Routes.checkout, arguments: {
+                            'isQuotationCheckout': true,
+                            'quotationCardId': message?.id ?? "",
+                            'quotation': quotation,
+                          });
                         },
                         isLoading: isLoading.value,
                       )),

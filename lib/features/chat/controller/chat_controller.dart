@@ -27,6 +27,9 @@ class ChatController extends GetxController {
   final RxBool uploadLoader = false.obs;
   final RxBool brandLoader = false.obs;
 
+  final TextEditingController textController = TextEditingController();
+  final RxString inputText = ''.obs;
+
   RxInt page = 1.obs;
   RxBool paginationLoading = false.obs;
   RxBool nextPageStop = true.obs;
@@ -446,6 +449,10 @@ class ChatController extends GetxController {
     chatHistoryModel = ChatHistoryModel();
     page.value = 1;
     nextPageStop.value = true;
+    textController.clear();
+    inputText.value = "";
+    userSelectedRemixOutfits.clear();
+    uploadImage.clear();
   }
 
   Future<void> uploadMultipleImages(List<File> files) async {

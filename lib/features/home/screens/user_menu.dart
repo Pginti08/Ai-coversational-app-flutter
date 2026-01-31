@@ -141,13 +141,13 @@ class _UserMenuState extends State<UserMenu> {
                       Get.toNamed(Routes.orders);
                     },
                   ),
-                  menuTiles(
-                    name: "Cart",
-                    icon: AssetConstants.cart,
-                    onTap: () {
-                      Get.toNamed(Routes.cart);
-                    },
-                  ),
+                  // menuTiles(
+                  //   name: "Cart",
+                  //   icon: AssetConstants.cart,
+                  //   onTap: () {
+                  //     Get.toNamed(Routes.cart);
+                  //   },
+                  // ),
                   menuTiles(
                     name: "Quotations",
                     icon: AssetConstants.document,

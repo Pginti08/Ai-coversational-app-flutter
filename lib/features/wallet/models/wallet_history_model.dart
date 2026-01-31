@@ -64,6 +64,7 @@ class WalletHistoryItem {
   final String? provider;
   final String? providerRef;
   final String? razorpayMethod;
+  final String? title;
   final String? description;
   final String? status;
   final double? balanceBefore;
@@ -83,6 +84,7 @@ class WalletHistoryItem {
     this.provider,
     this.providerRef,
     this.razorpayMethod,
+    this.title,
     this.description,
     this.status,
     this.balanceBefore,
@@ -104,6 +106,7 @@ class WalletHistoryItem {
       provider: json['provider'] as String?,
       providerRef: json['providerRef'] as String?,
       razorpayMethod: json['razorpayMethod'] as String?,
+      title: json['title'] as String?,
       description: json['description'] as String?,
       status: json['status'] as String?,
       balanceBefore: (json['balanceBefore'] as num?)?.toDouble(),
@@ -126,35 +129,5 @@ class WalletHistoryItem {
       return '$sign${amountCU!.toStringAsFixed(0)}';
     }
     return '$sign${amountCU!.toStringAsFixed(2).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '')}';
-  }
-
-  /// Get display title from source
-  String get displayTitle {
-    if (description != null && description!.isNotEmpty) {
-      return description!;
-    }
-    // Format source to readable text
-    switch (source) {
-      case 'COIN_PURCHASE':
-        return 'Credits purchased';
-      case 'AI_DESIGN_GENERATE':
-        return 'AI Design Generate';
-      case 'TRY_ON_SESSION':
-        return 'Try-on session';
-      case 'ORDER_CASHBACK':
-        return 'Order cashback';
-      case 'REFERRAL_BONUS':
-        return 'Referral bonus';
-      default:
-        return source?.replaceAll('_', ' ').toLowerCase().capitalizeFirst ??
-            'Transaction';
-    }
-  }
-}
-
-extension StringExtension on String {
-  String? get capitalizeFirst {
-    if (isEmpty) return this;
-    return '${this[0].toUpperCase()}${substring(1)}';
   }
 }

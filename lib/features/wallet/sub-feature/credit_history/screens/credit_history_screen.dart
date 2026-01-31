@@ -258,7 +258,7 @@ class _CreditHistoryScreenState extends State<CreditHistoryScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.displayTitle,
+                      item.title ?? "-",
                       overflow: TextOverflow.ellipsis,
                       style: style400S18.copyWith(
                         color: Colors.white,

@@ -102,7 +102,7 @@ class QuotationsController extends GetxController {
 
       // 1. Prepare Connection
       _disconnectSSE();
-      _eventFlux = EventFlux.instance;
+      _eventFlux = EventFlux.spawn();
 
       final String? token =
           LocalStorageService.instance.getString(StorageConstants.accessToken);
@@ -248,7 +248,7 @@ class QuotationsController extends GetxController {
     debugPrint("Error: $error");
     _stopLoaders();
     _isLoadingNextPage = false;
-    toast("Live updates temporarily unavailable");
+    // toast("Live updates temporarily unavailable");
   }
 
   void _disconnectSSE() {

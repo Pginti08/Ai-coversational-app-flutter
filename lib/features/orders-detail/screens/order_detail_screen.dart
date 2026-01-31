@@ -33,7 +33,10 @@ class OrderDetailScreen extends StatelessWidget {
                   onPressed: () {
                     Get.back();
                   },
-                  icon: SvgPicture.asset(AssetConstants.backward),
+                  icon: SvgPicture.asset(
+                    AssetConstants.backward,
+                    width: 22,
+                  ),
                 ),
                 Text('Order Details',
                     textAlign: TextAlign.center,

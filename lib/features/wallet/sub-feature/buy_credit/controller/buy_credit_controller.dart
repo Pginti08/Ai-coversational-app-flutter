@@ -5,6 +5,7 @@ import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
+import 'package:vousvous/features/checkout/controller/checkout_controller.dart';
 import 'package:vousvous/features/wallet/controller/wallet_controller.dart';
 import 'package:vousvous/features/wallet/models/coin_order_model.dart';
 
@@ -19,9 +20,25 @@ class BuyCreditController extends GetxController {
   // Conversion rate: 0.01 credits = ₹1, so 1 credit = ₹100
   static const double creditToRupeeMultiplier = 100.0;
 
+  // Flag to indicate if we should return to checkout after successful payment
+  bool returnToCheckout = false;
+  Map<String, dynamic>? checkoutArguments;
+
   @override
   void onInit() {
     super.onInit();
+
+    // Check for prefilled credits from arguments
+    final args = Get.arguments;
+    if (args != null && args is Map) {
+      final prefilledCredits = args['prefilledCredits'];
+      if (prefilledCredits != null) {
+        creditController.text = prefilledCredits.toString();
+      }
+      returnToCheckout = args['returnToCheckout'] ?? false;
+      checkoutArguments = args['checkoutArguments'];
+    }
+
     creditController.addListener(_onCreditChanged);
     _initRazorpay();
   }
@@ -149,7 +166,7 @@ class BuyCreditController extends GetxController {
       'key': razorpayKeyId,
       'amount': amountPaise,
       'order_id': orderId,
-      'name': 'VousVous',
+      'name': 'Vousvous',
       'description': 'Buy $credits Credits',
       'prefill': {
         'contact': userPhone,
@@ -201,8 +218,16 @@ class BuyCreditController extends GetxController {
       // Refresh wallet balance
       _refreshWalletBalance();
 
-      // Navigate back
-      Get.back();
+      // Navigate back - either to checkout or previous screen
+      if (returnToCheckout && checkoutArguments != null) {
+        Get.back(); // Close buy credit screen
+        // Refresh checkout controller's wallet balance
+        if (Get.isRegistered<CheckoutController>()) {
+          Get.find<CheckoutController>().refreshWalletBalance();
+        }
+      } else {
+        Get.back();
+      }
     } else {
       toast("Payment verification failed. Please contact support.",
           type: ToastType.error);

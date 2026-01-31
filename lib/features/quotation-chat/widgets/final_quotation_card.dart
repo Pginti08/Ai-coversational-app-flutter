@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
+import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/extensions.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
@@ -203,10 +205,22 @@ class FinalQuotationCard extends StatelessWidget {
                     wSizedBox10,
                     if (isNotNullOrEmpty(quotation.price) &&
                         (quotation.price ?? 0) != 0)
-                      _buildInfoRow(
-                          'PRICE',
-                          "${NumberFormat("#,##0.##").format((double.parse(quotation.price?.toStringAsFixed(0) ?? '0')) / 100)} Credits",
-                          ""),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _buildInfoRow(
+                              'PRICE',
+                              ((double.tryParse(quotation.price
+                                                  ?.toStringAsFixed(0) ??
+                                              '0') ??
+                                          0) /
+                                      100)
+                                  .toFormattedCoins(),
+                              "",
+                              isCoin: true),
+                          wSizedBox10
+                        ],
+                      ),
                   ],
                 ),
                 hSizedBox24,
@@ -272,8 +286,10 @@ class FinalQuotationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value, String? newValue) {
+  Widget _buildInfoRow(String label, String value, String? newValue,
+      {bool isCoin = false}) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -283,13 +299,32 @@ class FinalQuotationCard extends StatelessWidget {
             color: const Color(0xFF666666),
           ),
         ),
-        Text(
-          value,
-          style: style400S14.copyWith(
-            color: AppColors.whiteColor,
-            letterSpacing: 0.28,
-          ),
-        ),
+        (isCoin == true)
+            ? Row(
+                children: [
+                  Text(
+                    value,
+                    style: style400S14.copyWith(
+                      color: AppColors.whiteColor,
+                      letterSpacing: 0.28,
+                    ),
+                  ),
+                  wSizedBox4,
+                  if (isCoin == true)
+                    Image.asset(
+                      AssetConstants.vousvousCoin,
+                      width: 14,
+                      height: 14,
+                    ),
+                ],
+              )
+            : Text(
+                value,
+                style: style400S14.copyWith(
+                  color: AppColors.whiteColor,
+                  letterSpacing: 0.28,
+                ),
+              ),
         if (isNotNullOrEmpty(newValue)) ...[
           Text(
             newValue!,

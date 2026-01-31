@@ -13,6 +13,7 @@ import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/extensions.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
@@ -512,7 +513,7 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                                     0)
                                               TextSpan(
                                                 text:
-                                                    "${AssetConstants.rupeeSymbol}${controller.productDetail.value.minPrice?.toStringAsFixed(0) ?? "-"}",
+                                                    "${AssetConstants.rupeeSymbol}${controller.productDetail.value.minPrice?.toFormattedPrice() ?? "-"}",
                                                 style: style600S20.copyWith(
                                                   color:
                                                       AppColors.whiteTextColor,
@@ -541,7 +542,7 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                               ),
                                               TextSpan(
                                                 text:
-                                                    "${AssetConstants.rupeeSymbol}${controller.productDetail.value.maxPrice?.toStringAsFixed(0) ?? "-"}",
+                                                    "${AssetConstants.rupeeSymbol}${controller.productDetail.value.maxPrice?.toFormattedPrice() ?? "-"}",
                                                 style: style600S20.copyWith(
                                                   color:
                                                       AppColors.whiteTextColor,

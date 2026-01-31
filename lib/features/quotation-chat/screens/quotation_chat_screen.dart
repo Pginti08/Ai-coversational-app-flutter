@@ -93,7 +93,10 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
                   children: [
                     IconButton(
                         onPressed: () => Get.back(),
-                        icon: SvgPicture.asset(AssetConstants.backward)),
+                        icon: SvgPicture.asset(
+                          AssetConstants.backward,
+                          height: 28,
+                        )),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),

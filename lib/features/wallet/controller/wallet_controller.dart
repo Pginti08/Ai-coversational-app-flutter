@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/services/network_service.dart';
+import 'package:vousvous/core/utils/extensions.dart';
 import 'package:vousvous/features/wallet/models/wallet_balance_model.dart';
 import 'package:vousvous/features/wallet/models/wallet_history_model.dart';
 
@@ -106,25 +107,13 @@ class WalletController extends GetxController {
   /// Format balance with 2 decimal places, removing trailing zeros
   String get formattedBalance {
     final balance = walletBalance.value?.balanceCU ?? 0.0;
-    if (balance == balance.truncate()) {
-      return balance.toStringAsFixed(0);
-    }
-    return balance
-        .toStringAsFixed(2)
-        .replaceAll(RegExp(r'0+$'), '')
-        .replaceAll(RegExp(r'\.$'), '');
+    return balance.toFormattedCoins();
   }
 
   /// Calculate rupee value (1 credit = ₹100)
   String get rupeeValue {
     final balance = walletBalance.value?.balanceCU ?? 0.0;
     final rupees = balance * 100;
-    if (rupees == rupees.truncate()) {
-      return rupees.toStringAsFixed(0);
-    }
-    return rupees
-        .toStringAsFixed(2)
-        .replaceAll(RegExp(r'0+$'), '')
-        .replaceAll(RegExp(r'\.$'), '');
+    return rupees.toFormattedPrice();
   }
 }

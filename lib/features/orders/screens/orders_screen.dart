@@ -9,6 +9,7 @@ import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/extensions.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
@@ -152,7 +153,7 @@ class OrdersScreen extends StatelessWidget {
                                           ),
                                           hSizedBox4,
                                           Text(
-                                            "${AssetConstants.rupeeSymbol}${order.price?.toStringAsFixed(0) ?? "-"}",
+                                            "${AssetConstants.rupeeSymbol}${order.price?.toFormattedPrice() ?? "-"}",
                                             overflow: TextOverflow.ellipsis,
                                             style: style600S14.copyWith(
                                                 letterSpacing: 0.36,

@@ -8,6 +8,7 @@ import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/extensions.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
@@ -168,7 +169,7 @@ class QuotationsScreen extends StatelessWidget {
                                                                             0) !=
                                                                         0)
                                                                   Text(
-                                                                    "${AssetConstants.rupeeSymbol} ${quotation.price?.toStringAsFixed(0) ?? 0}",
+                                                                    "${AssetConstants.rupeeSymbol} ${quotation.price?.toFormattedPrice() ?? 0}",
                                                                     overflow:
                                                                         TextOverflow
                                                                             .ellipsis,

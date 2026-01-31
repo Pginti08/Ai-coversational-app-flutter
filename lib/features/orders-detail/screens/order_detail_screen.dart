@@ -6,6 +6,7 @@ import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/extensions.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
@@ -93,7 +94,7 @@ class OrderDetailScreen extends StatelessWidget {
                                             color: AppColors.whiteTextColor),
                                       ),
                                       Text(
-                                        "${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.price?.toStringAsFixed(0) ?? "-"}",
+                                        "${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.price?.toFormattedPrice() ?? "-"}",
                                         overflow: TextOverflow.ellipsis,
                                         style: style500S18.copyWith(
                                             letterSpacing: 0.36,
@@ -309,7 +310,7 @@ class OrderDetailScreen extends StatelessWidget {
                                           )),
                                           wSizedBox10,
                                           Text(
-                                            "${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.subTotal?.toStringAsFixed(0) ?? "-"}",
+                                            "${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.subTotal?.toFormattedPrice() ?? "-"}",
                                             style: style400S14.copyWith(
                                                 letterSpacing: 0.28,
                                                 color: Color(0xFFCCCCCC)),
@@ -335,7 +336,7 @@ class OrderDetailScreen extends StatelessWidget {
                                           )),
                                           wSizedBox10,
                                           Text(
-                                            "${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.taxAmount?.toStringAsFixed(0) ?? "-"}",
+                                            "${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.taxAmount?.toFormattedPrice() ?? "-"}",
                                             style: style400S14.copyWith(
                                                 letterSpacing: 0.28,
                                                 color: Color(0xFFCCCCCC)),
@@ -361,7 +362,7 @@ class OrderDetailScreen extends StatelessWidget {
                                           )),
                                           wSizedBox10,
                                           Text(
-                                            "${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.shippingCharge?.toStringAsFixed(0) ?? "-"}",
+                                            "${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.shippingCharge?.toFormattedPrice() ?? "-"}",
                                             style: style400S14.copyWith(
                                                 letterSpacing: 0.28,
                                                 color: Color(0xFFFFB86B)),
@@ -379,7 +380,7 @@ class OrderDetailScreen extends StatelessWidget {
                                           ),
                                           Spacer(),
                                           Text(
-                                            "${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.totalAmount?.toStringAsFixed(0) ?? "-"}",
+                                            "${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.totalAmount?.toFormattedPrice() ?? "-"}",
                                             style: style700S16.copyWith(
                                                 letterSpacing: 0.32,
                                                 color: Color(0xFFCCCCCC)),

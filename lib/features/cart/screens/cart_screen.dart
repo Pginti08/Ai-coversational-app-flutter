@@ -8,6 +8,7 @@ import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/extensions.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
@@ -171,7 +172,7 @@ class CartScreen extends StatelessWidget {
                                                                   .start,
                                                           children: [
                                                             Text(
-                                                              "Per Pc: ${AssetConstants.rupeeSymbol}${controller.cartList[index].amount?.toStringAsFixed(0) ?? "-"}",
+                                                              "Per Pc: ${AssetConstants.rupeeSymbol}${controller.cartList[index].amount?.toFormattedPrice() ?? "-"}",
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
@@ -183,7 +184,7 @@ class CartScreen extends StatelessWidget {
                                                             ),
                                                             hSizedBox4,
                                                             Text(
-                                                              "Sub Total : ${AssetConstants.rupeeSymbol}${controller.cartList[index].totalPrice?.toStringAsFixed(0) ?? "-"}",
+                                                              "Sub Total : ${AssetConstants.rupeeSymbol}${controller.cartList[index].totalPrice?.toFormattedPrice() ?? "-"}",
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
@@ -267,7 +268,7 @@ class CartScreen extends StatelessWidget {
                                       color: Color(0xFFCCCCCC)),
                                 ),
                                 Text(
-                                  "${AssetConstants.rupeeSymbol}${controller.cartModel.value.data?.subTotal?.toStringAsFixed(0) ?? "-"}/-",
+                                  "${AssetConstants.rupeeSymbol}${controller.cartModel.value.data?.subTotal?.toFormattedPrice() ?? "-"}/-",
                                   overflow: TextOverflow.ellipsis,
                                   style: style700S18.copyWith(
                                       color: AppColors.whiteTextColor),

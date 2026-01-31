@@ -16,6 +16,8 @@ class AssetConstants {
   static const sideBody = '${images}side_body.png';
   static const backBody = '${images}back_body.png';
   static const logo = '${images}logo.png';
+  static const vousvousCoin = '${images}vousvous_coin.png';
+  static const vousvousCoinSet = '${images}vousvous_coin_set.png';
 
   ///__________________________________ icons __________________________________///
 

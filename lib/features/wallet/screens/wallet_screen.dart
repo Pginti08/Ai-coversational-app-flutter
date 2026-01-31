@@ -122,12 +122,20 @@ class _WalletScreenState extends State<WalletScreen> {
                                     ),
                                     Obx(() => controller.isLoading.value
                                         ? _buildBalanceShimmer()
-                                        : Text(
-                                            "${controller.formattedBalance} Credits",
-                                            textAlign: TextAlign.start,
-                                            style: style400S24.copyWith(
-                                              letterSpacing: 0.48,
-                                            ),
+                                        : Row(
+                                            children: [
+                                              Text(
+                                                "${controller.formattedBalance} ",
+                                                style: style400S24.copyWith(
+                                                  letterSpacing: 0.48,
+                                                ),
+                                              ),
+                                              Image.asset(
+                                                AssetConstants.vousvousCoin,
+                                                height: 24,
+                                                width: 24,
+                                              ),
+                                            ],
                                           )),
                                     Obx(() => controller.isLoading.value
                                         ? _buildRupeeShimmer()
@@ -150,15 +158,15 @@ class _WalletScreenState extends State<WalletScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              SvgPicture.asset(
-                                                AssetConstants.add,
-                                                color: AppColors
-                                                    .greyBackgroundColor,
+                                              Image.asset(
+                                                AssetConstants.vousvousCoinSet,
+                                                height: 24,
+                                                width: 24,
                                               ),
-                                              wSizedBox2,
+                                              wSizedBox4,
                                               Flexible(
                                                 child: Text(
-                                                  "Add Credits",
+                                                  "Buy",
                                                   style: style700S16.copyWith(
                                                       color: AppColors
                                                           .greyBackgroundColor),
@@ -181,13 +189,15 @@ class _WalletScreenState extends State<WalletScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              SvgPicture.asset(
-                                                AssetConstants.gift,
+                                              Image.asset(
+                                                AssetConstants.vousvousCoinSet,
+                                                height: 24,
+                                                width: 24,
                                               ),
-                                              wSizedBox2,
+                                              wSizedBox4,
                                               Flexible(
                                                 child: Text(
-                                                  "Earn Credits",
+                                                  "Earn",
                                                   style: style700S16.copyWith(),
                                                 ),
                                               )

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/extensions.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_text_field.dart';
@@ -47,7 +48,10 @@ class BuyCreditScreen extends StatelessWidget {
                       onPressed: () {
                         Get.back();
                       },
-                      icon: SvgPicture.asset(AssetConstants.backward),
+                      icon: SvgPicture.asset(
+                        AssetConstants.backward,
+                        height: 24,
+                      ),
                     ),
                   ),
                 ],
@@ -78,13 +82,30 @@ class BuyCreditScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "0.01 CREDITS = ${AssetConstants.rupeeSymbol}1",
-                                    textAlign: TextAlign.start,
-                                    style: style700S12.copyWith(
-                                      letterSpacing: 0.96,
-                                      color: const Color(0xFFFFB86B),
-                                    ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "0.01 ",
+                                        textAlign: TextAlign.start,
+                                        style: style700S12.copyWith(
+                                          letterSpacing: 0.96,
+                                          color: const Color(0xFFFFB86B),
+                                        ),
+                                      ),
+                                      Image.asset(
+                                        AssetConstants.vousvousCoin,
+                                        width: 14,
+                                        height: 14,
+                                      ),
+                                      Text(
+                                        " = ${AssetConstants.rupeeSymbol}1",
+                                        textAlign: TextAlign.start,
+                                        style: style700S12.copyWith(
+                                          letterSpacing: 0.96,
+                                          color: const Color(0xFFFFB86B),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   hSizedBox4,
                                   Text(
@@ -157,7 +178,7 @@ class BuyCreditScreen extends StatelessWidget {
                                             color: Color(0xFFCCCCCC)),
                                       ),
                                       Text(
-                                        "${AssetConstants.rupeeSymbol}${controller.payableAmount.value.toStringAsFixed(2)}",
+                                        "${AssetConstants.rupeeSymbol}${controller.payableAmount.value.toFormattedPrice()}",
                                         style: style700S20.copyWith(
                                           letterSpacing: 0.4,
                                           color: const Color(0xFFFFB86B),
@@ -195,7 +216,20 @@ class BuyCreditScreen extends StatelessWidget {
                     wSizedBox4,
                     Flexible(
                       child: Text(
-                        "Secure payments. Credits added instantly",
+                        "Secure payments. ",
+                        textAlign: TextAlign.center,
+                        style: style400S12.copyWith(
+                            letterSpacing: 0.24, color: Color(0xFFCCCCCC)),
+                      ),
+                    ),
+                    Image.asset(
+                      AssetConstants.vousvousCoin,
+                      width: 14,
+                      height: 14,
+                    ),
+                    Flexible(
+                      child: Text(
+                        " added instantly",
                         textAlign: TextAlign.center,
                         style: style400S12.copyWith(
                             letterSpacing: 0.24, color: Color(0xFFCCCCCC)),

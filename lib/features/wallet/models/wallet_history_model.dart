@@ -1,3 +1,5 @@
+import 'package:vousvous/core/utils/extensions.dart';
+
 class WalletHistoryModel {
   final bool? success;
   final String? message;
@@ -124,10 +126,7 @@ class WalletHistoryItem {
   /// Get formatted amount with sign
   String get formattedAmount {
     if (amountCU == null) return '0';
-    final sign = isCredit ? '+' : '-';
-    if (amountCU == amountCU!.truncate()) {
-      return '$sign${amountCU!.toStringAsFixed(0)}';
-    }
-    return '$sign${amountCU!.toStringAsFixed(2).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '')}';
+    final sign = isCredit ? '+' : '';
+    return '$sign${amountCU!.toFormattedCoins()}';
   }
 }

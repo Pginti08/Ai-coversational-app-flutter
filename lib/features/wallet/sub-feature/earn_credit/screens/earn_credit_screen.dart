@@ -42,7 +42,10 @@ class EarnCreditScreen extends StatelessWidget {
                     onPressed: () {
                       Get.back();
                     },
-                    icon: SvgPicture.asset(AssetConstants.backward),
+                    icon: SvgPicture.asset(
+                      AssetConstants.backward,
+                      height: 24,
+                    ),
                   ),
                 ),
               ],
@@ -57,12 +60,44 @@ class EarnCreditScreen extends StatelessWidget {
                     hSizedBox16,
                     earnCreditTile(
                         title: "Daily login",
-                        description: "+5 credits per day",
+                        descriptionWidget: Row(
+                          children: [
+                            Text("+5 ",
+                                style: style400S12.copyWith(
+                                    color: Color(0xFF999999),
+                                    letterSpacing: 0.28)),
+                            Image.asset(
+                              AssetConstants.vousvousCoin,
+                              width: 12,
+                              height: 12,
+                            ),
+                            Text(" per day",
+                                style: style400S12.copyWith(
+                                    color: Color(0xFF999999),
+                                    letterSpacing: 0.28)),
+                          ],
+                        ),
                         icon: AssetConstants.dailyLogin),
                     hSizedBox24,
                     earnCreditTile(
                         title: "Refer Friends",
-                        description: "+100 credits after signup",
+                        descriptionWidget: Row(
+                          children: [
+                            Text("+100 ",
+                                style: style400S12.copyWith(
+                                    color: Color(0xFF999999),
+                                    letterSpacing: 0.28)),
+                            Image.asset(
+                              AssetConstants.vousvousCoin,
+                              width: 12,
+                              height: 12,
+                            ),
+                            Text(" after signup",
+                                style: style400S12.copyWith(
+                                    color: Color(0xFF999999),
+                                    letterSpacing: 0.28)),
+                          ],
+                        ),
                         icon: AssetConstants.inviteFriend,
                         extra: AppButton(
                           height: 35,
@@ -75,12 +110,40 @@ class EarnCreditScreen extends StatelessWidget {
                     hSizedBox24,
                     earnCreditTile(
                         title: "complete an order",
-                        description: "up to 10% cashback in credits",
+                        descriptionWidget: Row(
+                          children: [
+                            Text("up to 10% cashback in ",
+                                style: style400S12.copyWith(
+                                    color: Color(0xFF999999),
+                                    letterSpacing: 0.28)),
+                            Image.asset(
+                              AssetConstants.vousvousCoin,
+                              width: 12,
+                              height: 12,
+                            ),
+                          ],
+                        ),
                         icon: AssetConstants.completeOrder),
                     hSizedBox24,
                     earnCreditTile(
                         title: "First boutique purchase",
-                        description: "+150 credits bonus",
+                        descriptionWidget: Row(
+                          children: [
+                            Text("+150 ",
+                                style: style400S12.copyWith(
+                                    color: Color(0xFF999999),
+                                    letterSpacing: 0.28)),
+                            Image.asset(
+                              AssetConstants.vousvousCoin,
+                              width: 12,
+                              height: 12,
+                            ),
+                            Text(" bonus",
+                                style: style400S12.copyWith(
+                                    color: Color(0xFF999999),
+                                    letterSpacing: 0.28)),
+                          ],
+                        ),
                         icon: AssetConstants.firstPurchase),
                   ],
                 ),
@@ -94,7 +157,7 @@ class EarnCreditScreen extends StatelessWidget {
 
   Widget earnCreditTile(
       {required String title,
-      required String description,
+      required Widget descriptionWidget,
       required String icon,
       Widget? extra}) {
     return CommonContainer(
@@ -140,10 +203,7 @@ class EarnCreditScreen extends StatelessWidget {
                     style: style700S12.copyWith(
                         color: Color(0xFFCCCCCC), letterSpacing: 0.96)),
                 hSizedBox2,
-                Text(description,
-                    overflow: TextOverflow.ellipsis,
-                    style: style400S12.copyWith(
-                        color: Color(0xFF999999), letterSpacing: 0.28)),
+                descriptionWidget,
               ],
             ),
           ),

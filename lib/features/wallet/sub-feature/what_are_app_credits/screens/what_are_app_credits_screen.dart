@@ -40,7 +40,10 @@ class WhatAreAppCreditsScreen extends StatelessWidget {
                     onPressed: () {
                       Get.back();
                     },
-                    icon: SvgPicture.asset(AssetConstants.backward),
+                    icon: SvgPicture.asset(
+                      AssetConstants.backward,
+                      height: 24,
+                    ),
                   ),
                 ),
               ],
@@ -65,8 +68,22 @@ class WhatAreAppCreditsScreen extends StatelessWidget {
                             ),
                           ),
                           TextSpan(
-                            text:
-                                '0.01 Credits = ${AssetConstants.rupeeSymbol} 1',
+                            text: '0.01 ',
+                            style: style600S16.copyWith(
+                              color: const Color(0xFFFFB86B),
+                              letterSpacing: 0.32,
+                            ),
+                          ),
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Image.asset(
+                              AssetConstants.vousvousCoin,
+                              height: 16,
+                              width: 16,
+                            ),
+                          ),
+                          TextSpan(
+                            text: ' = ${AssetConstants.rupeeSymbol} 1',
                             style: style600S16.copyWith(
                               color: const Color(0xFFFFB86B),
                               letterSpacing: 0.32,
@@ -76,10 +93,23 @@ class WhatAreAppCreditsScreen extends StatelessWidget {
                       ),
                     ),
                     hSizedBox16,
-                    Text('Use credits for:'.toUpperCase(),
-                        textAlign: TextAlign.start,
-                        style: style700S16.copyWith(
-                            color: Color(0xFF999999), letterSpacing: 1.28)),
+                    Row(
+                      children: [
+                        Text('Use '.toUpperCase(),
+                            textAlign: TextAlign.start,
+                            style: style700S16.copyWith(
+                                color: Color(0xFF999999), letterSpacing: 1.28)),
+                        Image.asset(
+                          AssetConstants.vousvousCoinSet,
+                          height: 16,
+                          width: 16,
+                        ),
+                        Text(' for:'.toUpperCase(),
+                            textAlign: TextAlign.start,
+                            style: style700S16.copyWith(
+                                color: Color(0xFF999999), letterSpacing: 1.28)),
+                      ],
+                    ),
                     hSizedBox16,
                     creditsForTile(
                         title: "ai designs", icon: AssetConstants.aiDesign),
@@ -106,12 +136,28 @@ class WhatAreAppCreditsScreen extends StatelessWidget {
                               SvgPicture.asset(AssetConstants.danger),
                               wSizedBox8,
                               Expanded(
-                                child: Text(
-                                  "Promo credits may expire",
-                                  textAlign: TextAlign.start,
-                                  style: style400S14.copyWith(
-                                      letterSpacing: 0.28,
-                                      color: Color(0xFFCCCCCC)),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Promo ",
+                                      textAlign: TextAlign.start,
+                                      style: style400S14.copyWith(
+                                          letterSpacing: 0.28,
+                                          color: Color(0xFFCCCCCC)),
+                                    ),
+                                    Image.asset(
+                                      AssetConstants.vousvousCoin,
+                                      height: 14,
+                                      width: 14,
+                                    ),
+                                    Text(
+                                      " may expire",
+                                      textAlign: TextAlign.start,
+                                      style: style400S14.copyWith(
+                                          letterSpacing: 0.28,
+                                          color: Color(0xFFCCCCCC)),
+                                    ),
+                                  ],
                                 ),
                               )
                             ],
@@ -122,12 +168,28 @@ class WhatAreAppCreditsScreen extends StatelessWidget {
                               SvgPicture.asset(AssetConstants.tickCircle2),
                               wSizedBox8,
                               Expanded(
-                                child: Text(
-                                  "Purchased credits never expire",
-                                  textAlign: TextAlign.start,
-                                  style: style400S14.copyWith(
-                                      letterSpacing: 0.28,
-                                      color: Color(0xFFCCCCCC)),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Purchased ",
+                                      textAlign: TextAlign.start,
+                                      style: style400S14.copyWith(
+                                          letterSpacing: 0.28,
+                                          color: Color(0xFFCCCCCC)),
+                                    ),
+                                    Image.asset(
+                                      AssetConstants.vousvousCoin,
+                                      height: 14,
+                                      width: 14,
+                                    ),
+                                    Text(
+                                      " never expire",
+                                      textAlign: TextAlign.start,
+                                      style: style400S14.copyWith(
+                                          letterSpacing: 0.28,
+                                          color: Color(0xFFCCCCCC)),
+                                    ),
+                                  ],
                                 ),
                               )
                             ],

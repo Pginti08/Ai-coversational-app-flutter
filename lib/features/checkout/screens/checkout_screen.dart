@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
+import 'package:vousvous/core/utils/extensions.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
@@ -303,30 +304,101 @@ class CheckoutScreen extends StatelessWidget {
                 hSizedBox8,
                 _buildSummaryRow(
                   "Unit Price",
-                  "${AssetConstants.rupeeSymbol}${controller.quotation?.price?.toStringAsFixed(0) ?? "0"}",
+                  "${AssetConstants.rupeeSymbol}${controller.quotation?.price?.toFormattedPrice() ?? "0"}",
                 ),
                 hSizedBox8,
                 _buildSummaryRow(
                   "Total",
-                  "${AssetConstants.rupeeSymbol}${controller.quotationTotalAmount.toStringAsFixed(0)}",
+                  "${AssetConstants.rupeeSymbol}${controller.quotationTotalAmount.toFormattedPrice()}",
                   isBold: true,
                 ),
                 hSizedBox8,
-                _buildSummaryRow(
-                  "Credits Required",
-                  "${controller.creditsNeeded.toStringAsFixed(2)} Credits",
-                  valueColor: const Color(0xFF68C3E7),
+                hSizedBox8,
+                Row(
+                  children: [
+                    Text(
+                      "Credits Required",
+                      style: style400S16.copyWith(
+                        letterSpacing: 0.32,
+                        color: Color(0xFF666666),
+                      ),
+                    ),
+                    wSizedBox10,
+                    Expanded(
+                      child: DottedLine(
+                        dashLength: 3,
+                        dashGapLength: 2,
+                        dashColor: Colors.white.withAlpha(40),
+                      ),
+                    ),
+                    wSizedBox10,
+                    Row(
+                      children: [
+                        Text(
+                          "${controller.creditsNeeded.toFormattedCoins()} ",
+                          style: style400S14.copyWith(
+                            letterSpacing: 0.28,
+                            color: const Color(0xFF68C3E7),
+                          ),
+                        ),
+                        Image.asset(
+                          AssetConstants.vousvousCoin,
+                          width: 14,
+                          height: 14,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
                 hSizedBox8,
                 // Show wallet balance
-                _buildSummaryRow(
-                  "Wallet Balance",
-                  controller.isLoadingBalance.value
-                      ? "Loading..."
-                      : "${controller.walletBalance.value.toStringAsFixed(2)} Credits",
-                  valueColor: controller.hasSufficientBalance
-                      ? const Color(0xFF4CAF50)
-                      : const Color(0xFFFF5252),
+                hSizedBox8,
+                // Show wallet balance
+                Row(
+                  children: [
+                    Text(
+                      "Wallet Balance",
+                      style: style400S16.copyWith(
+                        letterSpacing: 0.32,
+                        color: Color(0xFF666666),
+                      ),
+                    ),
+                    wSizedBox10,
+                    Expanded(
+                      child: DottedLine(
+                        dashLength: 3,
+                        dashGapLength: 2,
+                        dashColor: Colors.white.withAlpha(40),
+                      ),
+                    ),
+                    wSizedBox10,
+                    controller.isLoadingBalance.value
+                        ? Text(
+                            "Loading...",
+                            style: style400S14.copyWith(
+                              letterSpacing: 0.28,
+                              color: Color(0xFFCCCCCC),
+                            ),
+                          )
+                        : Row(
+                            children: [
+                              Text(
+                                "${controller.walletBalance.value.toFormattedCoins()} ",
+                                style: style400S14.copyWith(
+                                  letterSpacing: 0.28,
+                                  color: controller.hasSufficientBalance
+                                      ? const Color(0xFF4CAF50)
+                                      : const Color(0xFFFF5252),
+                                ),
+                              ),
+                              Image.asset(
+                                AssetConstants.vousvousCoin,
+                                width: 14,
+                                height: 14,
+                              ),
+                            ],
+                          ),
+                  ],
                 ),
                 Divider(color: AppColors.grey2Color),
                 hSizedBox6,
@@ -336,11 +408,24 @@ class CheckoutScreen extends StatelessWidget {
                   // Insufficient balance - show add credits button
                   AppButton(
                     onTap: controller.navigateToBuyCredits,
-                    text:
-                        "Add ${controller.creditsDeficit.toStringAsFixed(2)} Credits",
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Add ${controller.creditsDeficit.toFormattedCoins()} ",
+                          style: style700S16.copyWith(
+                            color: AppColors.whiteColor,
+                          ),
+                        ),
+                        Image.asset(
+                          AssetConstants.vousvousCoin,
+                          width: 16,
+                          height: 16,
+                        ),
+                      ],
+                    ),
                     isOutlined: true,
                     isGradientBorder: true,
-                    textColor: AppColors.whiteColor,
                   ),
                   hSizedBox10,
                   Text(
@@ -354,8 +439,22 @@ class CheckoutScreen extends StatelessWidget {
                   // Sufficient balance - show pay button
                   AppButton(
                     onTap: controller.placeOrderApi,
-                    text:
-                        "Pay ${controller.creditsNeeded.toStringAsFixed(2)} Credits",
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Pay ${controller.creditsNeeded.toFormattedCoins()} ",
+                          style: style700S16.copyWith(
+                            color: AppColors.blackColor,
+                          ),
+                        ),
+                        Image.asset(
+                          AssetConstants.vousvousCoin,
+                          width: 16,
+                          height: 16,
+                        ),
+                      ],
+                    ),
                     isLoading: controller.isLoading2.value ||
                         controller.isLoadingBalance.value,
                   ),

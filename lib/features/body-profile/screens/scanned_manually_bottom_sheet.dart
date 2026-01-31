@@ -98,6 +98,30 @@ class _ScannedManuallyBottomSheetState
     return double.tryParse(value);
   }
 
+  void _convertValues(bool toCm) {
+    // Helper to convert a single controller's value
+    void convertField(TextEditingController controller) {
+      final double? currentValue = _parseDouble(controller.text);
+      if (currentValue != null) {
+        double convertedValue;
+        if (toCm) {
+          // IN to CM
+          convertedValue = currentValue * 2.54;
+        } else {
+          // CM to IN
+          convertedValue = currentValue / 2.54;
+        }
+        controller.text = _formatDouble(convertedValue);
+      }
+    }
+
+    convertField(heightController);
+    convertField(bustController);
+    convertField(waistController);
+    convertField(hipController);
+    convertField(shoulderController);
+  }
+
   void validateAndSave() {
     final error1 =
         validateCommonField(nameController.text.trim(), "profile name");
@@ -362,7 +386,12 @@ class _ScannedManuallyBottomSheetState
   Widget _toggleItem(String label, bool isCm) {
     return Expanded(
       child: GestureDetector(
-        onTap: () => isCmSelected.value = isCm,
+        onTap: () {
+          if (isCmSelected.value != isCm) {
+            _convertValues(isCm);
+            isCmSelected.value = isCm;
+          }
+        },
         behavior: HitTestBehavior.translucent,
         child: Center(
           child: Obx(

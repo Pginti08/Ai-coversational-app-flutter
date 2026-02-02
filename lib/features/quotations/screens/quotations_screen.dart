@@ -168,16 +168,31 @@ class QuotationsScreen extends StatelessWidget {
                                                                     (quotation.price ??
                                                                             0) !=
                                                                         0)
-                                                                  Text(
-                                                                    "${AssetConstants.rupeeSymbol} ${quotation.price?.toFormattedPrice() ?? 0}",
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: style400S14.copyWith(
-                                                                        letterSpacing:
-                                                                            0.28,
-                                                                        color: Color(
-                                                                            0xFFCCCCCC)),
+                                                                  Row(
+                                                                    children: [
+                                                                      Image
+                                                                          .asset(
+                                                                        AssetConstants
+                                                                            .vousvousCoin,
+                                                                        height:
+                                                                            14,
+                                                                        width:
+                                                                            14,
+                                                                      ),
+                                                                      wSizedBox4,
+                                                                      Text(
+                                                                        ((quotation.price ?? 0) /
+                                                                                100)
+                                                                            .toFormattedCoins(),
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                        style: style400S14.copyWith(
+                                                                            letterSpacing:
+                                                                                0.28,
+                                                                            color:
+                                                                                Color(0xFFCCCCCC)),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 hSizedBox6,
                                                                 Text(
@@ -283,7 +298,7 @@ class QuotationsScreen extends StatelessWidget {
                                                                         .purchaseType
                                                                         ?.toLowerCase() ==
                                                                     "single"
-                                                                ? "${controller.quotationList[index].bodyProfiles?.firstOrNull?.height?.toStringAsFixed(0) ?? '0'} ${(controller.quotationList[index].bodyProfiles?.firstOrNull?.heightUnit ?? "").toUpperCase()}  •  ${controller.quotationList[index].bodyProfiles?.firstOrNull?.bust?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.waist?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.hips?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.shoulders?.toStringAsFixed(0) ?? '0'}”"
+                                                                ? "${controller.quotationList[index].bodyProfiles?.firstOrNull?.height?.toStringAsFixed(0) ?? '0'} ${(controller.quotationList[index].bodyProfiles?.firstOrNull?.unit ?? "").toUpperCase()}  •  ${controller.quotationList[index].bodyProfiles?.firstOrNull?.bust?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.waist?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.hips?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.shoulders?.toStringAsFixed(0) ?? '0'}”"
                                                                     .toUpperCase()
                                                                 : controller
                                                                             .quotationList[

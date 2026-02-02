@@ -152,12 +152,23 @@ class OrdersScreen extends StatelessWidget {
                                                     AppColors.whiteTextColor),
                                           ),
                                           hSizedBox4,
-                                          Text(
-                                            "${AssetConstants.rupeeSymbol}${order.price?.toFormattedPrice() ?? "-"}",
-                                            overflow: TextOverflow.ellipsis,
-                                            style: style600S14.copyWith(
-                                                letterSpacing: 0.36,
-                                                color: Color(0xFFCCCCCC)),
+                                          Row(
+                                            children: [
+                                              Image.asset(
+                                                AssetConstants.vousvousCoin,
+                                                height: 16,
+                                                width: 16,
+                                              ),
+                                              wSizedBox4,
+                                              Text(
+                                                ((order.price ?? 0) / 100)
+                                                    .toFormattedCoins(),
+                                                overflow: TextOverflow.ellipsis,
+                                                style: style600S14.copyWith(
+                                                    letterSpacing: 0.36,
+                                                    color: Color(0xFFCCCCCC)),
+                                              ),
+                                            ],
                                           ),
                                           Text(
                                             "Qty: ${order.quantity}",

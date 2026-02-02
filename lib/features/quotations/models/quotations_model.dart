@@ -236,54 +236,42 @@ class BodyProfile {
   String? id;
   String? name;
   int? height;
-  String? heightUnit;
   int? bust;
-  String? bustUnit;
   int? waist;
-  String? waistUnit;
   int? hips;
-  String? hipsUnit;
   int? shoulders;
+  String? unit;
 
   BodyProfile({
     this.id,
     this.name,
     this.height,
-    this.heightUnit,
     this.bust,
-    this.bustUnit,
     this.waist,
-    this.waistUnit,
     this.hips,
-    this.hipsUnit,
     this.shoulders,
+    this.unit,
   });
 
   factory BodyProfile.fromJson(Map<String, dynamic> json) => BodyProfile(
         id: json["id"],
         name: json["name"],
         height: int.tryParse(json["height"].toString()),
-        heightUnit: json["heightUnit"],
         bust: int.tryParse(json["bust"].toString()),
-        bustUnit: json["bustUnit"],
         waist: int.tryParse(json["waist"].toString()),
-        waistUnit: json["waistUnit"],
         hips: int.tryParse(json["hips"].toString()),
-        hipsUnit: json["hipsUnit"],
         shoulders: int.tryParse(json["shoulders"].toString()),
+        unit: json["unit"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "height": height,
-        "heightUnit": heightUnit,
         "bust": bust,
-        "bustUnit": bustUnit,
         "waist": waist,
-        "waistUnit": waistUnit,
         "hips": hips,
-        "hipsUnit": hipsUnit,
         "shoulders": shoulders,
+        "unit": unit,
       };
 }

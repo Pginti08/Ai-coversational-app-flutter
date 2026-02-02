@@ -50,7 +50,6 @@ class ApiConstants {
   static const String uploadImage = '/upload/';
   static const String quotations = '/quotations';
   static const String quotationsStream = '/quotations/stream';
-  static const String analyzeDress = '/quotations/analyze-dress';
   static const String bodyMeasurementsAnalyze = '/body-measurements/analyze';
   static const String cart = '/cart';
   static const String modificationRequest = '/modification-request';

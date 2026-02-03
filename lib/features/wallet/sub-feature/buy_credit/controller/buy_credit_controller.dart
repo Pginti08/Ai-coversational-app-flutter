@@ -269,7 +269,7 @@ class BuyCreditController extends GetxController {
     // Check if WalletController is registered and refresh balance
     if (Get.isRegistered<WalletController>()) {
       Get.find<WalletController>().fetchWalletBalance();
-      Get.find<WalletController>().fetchHistory(refresh: true);
+      Get.find<WalletController>().fetchHistory();
     }
   }
 

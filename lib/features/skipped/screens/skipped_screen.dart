@@ -28,7 +28,7 @@ class SkippedScreen extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(12)
-                  .copyWith(top: Platform.isAndroid ? 6 : 0),
+                  .copyWith(top: Platform.isAndroid ? 6 : 0, bottom: 6),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

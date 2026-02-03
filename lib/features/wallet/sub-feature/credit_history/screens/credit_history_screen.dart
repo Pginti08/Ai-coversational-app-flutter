@@ -20,27 +20,14 @@ class CreditHistoryScreen extends StatefulWidget {
 
 class _CreditHistoryScreenState extends State<CreditHistoryScreen> {
   final CreditHistoryController controller = Get.put(CreditHistoryController());
-  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    // Don't trigger loadMore if history is currently loading (e.g., during refresh)
-    if (controller.isLoading.value) return;
-
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      controller.loadMore();
-    }
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
   }
 
@@ -88,7 +75,7 @@ class _CreditHistoryScreenState extends State<CreditHistoryScreen> {
                 }
 
                 return RefreshIndicator(
-                  onRefresh: () => controller.fetchHistory(refresh: true),
+                  onRefresh: () => controller.fetchHistory(isInitial: true),
                   color: AppColors.primaryColor,
                   backgroundColor: AppColors.greyBackgroundColor,
                   child: controller.historyItems.isEmpty
@@ -131,8 +118,9 @@ class _CreditHistoryScreenState extends State<CreditHistoryScreen> {
     final dateKeys = groupedItems.keys.toList();
 
     return ListView.builder(
-      controller: _scrollController,
-      physics: const AlwaysScrollableScrollPhysics(),
+      controller: controller.scrollController,
+      physics: const AlwaysScrollableScrollPhysics()
+          .applyTo(const BouncingScrollPhysics()),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: _calculateTotalItemCount(groupedItems) + 1,
       itemBuilder: (context, index) {
@@ -160,7 +148,7 @@ class _CreditHistoryScreenState extends State<CreditHistoryScreen> {
 
         // Loading more indicator
         return Obx(() {
-          if (controller.isLoadingMore.value) {
+          if (controller.paginationLoading.value) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: Center(
@@ -182,9 +170,9 @@ class _CreditHistoryScreenState extends State<CreditHistoryScreen> {
   }
 
   /// Group history items by date (Today, Yesterday, or specific date)
-  Map<String, List<WalletHistoryItem>> _groupHistoryByDate(
-      List<WalletHistoryItem> items) {
-    final Map<String, List<WalletHistoryItem>> grouped = {};
+  Map<String, List<WalletHistory>> _groupHistoryByDate(
+      List<WalletHistory> items) {
+    final Map<String, List<WalletHistory>> grouped = {};
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
@@ -193,7 +181,7 @@ class _CreditHistoryScreenState extends State<CreditHistoryScreen> {
       String dateKey;
       if (item.createdAt != null) {
         try {
-          final date = DateTime.parse(item.createdAt!).toLocal();
+          final date = item.createdAt!.toLocal();
           final itemDate = DateTime(date.year, date.month, date.day);
 
           if (itemDate == today) {
@@ -220,7 +208,7 @@ class _CreditHistoryScreenState extends State<CreditHistoryScreen> {
   }
 
   /// Calculate total items including headers
-  int _calculateTotalItemCount(Map<String, List<WalletHistoryItem>> grouped) {
+  int _calculateTotalItemCount(Map<String, List<WalletHistory>> grouped) {
     int count = 0;
     for (final key in grouped.keys) {
       count += 1; // Header
@@ -243,7 +231,7 @@ class _CreditHistoryScreenState extends State<CreditHistoryScreen> {
     );
   }
 
-  Widget _buildHistoryTile(WalletHistoryItem item, {bool showDivider = true}) {
+  Widget _buildHistoryTile(WalletHistory item, {bool showDivider = true}) {
     final formattedTime = _formatTime(item.createdAt);
 
     return Column(
@@ -298,26 +286,26 @@ class _CreditHistoryScreenState extends State<CreditHistoryScreen> {
   }
 
   /// Format time for display (e.g., "Today 10:41 AM", "Yesterday 10:41 AM")
-  String _formatTime(String? dateString) {
-    if (dateString == null) return '';
+  String _formatTime(DateTime? date) {
+    if (date == null) return '';
     try {
-      final date = DateTime.parse(dateString).toLocal();
+      final localDate = date.toLocal();
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
       final yesterday = today.subtract(const Duration(days: 1));
-      final itemDate = DateTime(date.year, date.month, date.day);
+      final itemDate = DateTime(localDate.year, localDate.month, localDate.day);
 
-      final timeStr = DateFormat('h:mm a').format(date);
+      final timeStr = DateFormat('h:mm a').format(localDate);
 
       if (itemDate == today) {
         return 'Today $timeStr';
       } else if (itemDate == yesterday) {
         return 'Yesterday $timeStr';
       } else {
-        return '${DateFormat('dd MMM').format(date)} $timeStr';
+        return '${DateFormat('dd MMM').format(localDate)} $timeStr';
       }
     } catch (e) {
-      return dateString;
+      return '';
     }
   }
 

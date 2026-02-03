@@ -159,10 +159,18 @@ class OrdersScreen extends StatelessWidget {
                                                 height: 16,
                                                 width: 16,
                                               ),
-                                              wSizedBox4,
+                                              wSizedBox2,
                                               Text(
                                                 ((order.price ?? 0) / 100)
                                                     .toFormattedCoins(),
+                                                overflow: TextOverflow.ellipsis,
+                                                style: style600S14.copyWith(
+                                                    letterSpacing: 0.36,
+                                                    color: Color(0xFFCCCCCC)),
+                                              ),
+                                              wSizedBox4,
+                                              Text(
+                                                "(${AssetConstants.rupeeSymbol}${order.price?.toFormattedPrice() ?? "-"})",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: style600S14.copyWith(
                                                     letterSpacing: 0.36,

@@ -97,10 +97,10 @@ class OrderDetailScreen extends StatelessWidget {
                                         children: [
                                           Image.asset(
                                             AssetConstants.vousvousCoin,
-                                            height: 18,
-                                            width: 18,
+                                            height: 16,
+                                            width: 16,
                                           ),
-                                          wSizedBox4,
+                                          wSizedBox2,
                                           Text(
                                             ((controller.orderDetailModel.value
                                                             .price ??
@@ -108,7 +108,15 @@ class OrderDetailScreen extends StatelessWidget {
                                                     100)
                                                 .toFormattedCoins(),
                                             overflow: TextOverflow.ellipsis,
-                                            style: style500S18.copyWith(
+                                            style: style500S16.copyWith(
+                                                letterSpacing: 0.36,
+                                                color: Color(0xFFCCCCCC)),
+                                          ),
+                                          wSizedBox4,
+                                          Text(
+                                            "(${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.price?.toFormattedPrice() ?? "-"})",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: style500S16.copyWith(
                                                 letterSpacing: 0.36,
                                                 color: Color(0xFFCCCCCC)),
                                           ),
@@ -328,13 +336,20 @@ class OrderDetailScreen extends StatelessWidget {
                                             height: 14,
                                             width: 14,
                                           ),
-                                          wSizedBox4,
+                                          wSizedBox2,
                                           Text(
                                             ((controller.orderDetailModel.value
                                                             .order?.subTotal ??
                                                         0) /
                                                     100)
                                                 .toFormattedCoins(),
+                                            style: style400S14.copyWith(
+                                                letterSpacing: 0.28,
+                                                color: Color(0xFFCCCCCC)),
+                                          ),
+                                          wSizedBox4,
+                                          Text(
+                                            "(${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.subTotal?.toFormattedPrice() ?? "-"})",
                                             style: style400S14.copyWith(
                                                 letterSpacing: 0.28,
                                                 color: Color(0xFFCCCCCC)),
@@ -364,13 +379,20 @@ class OrderDetailScreen extends StatelessWidget {
                                             height: 14,
                                             width: 14,
                                           ),
-                                          wSizedBox4,
+                                          wSizedBox2,
                                           Text(
                                             ((controller.orderDetailModel.value
                                                             .order?.taxAmount ??
                                                         0) /
                                                     100)
                                                 .toFormattedCoins(),
+                                            style: style400S14.copyWith(
+                                                letterSpacing: 0.28,
+                                                color: Color(0xFFCCCCCC)),
+                                          ),
+                                          wSizedBox4,
+                                          Text(
+                                            "(${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.taxAmount?.toFormattedPrice() ?? "-"})",
                                             style: style400S14.copyWith(
                                                 letterSpacing: 0.28,
                                                 color: Color(0xFFCCCCCC)),
@@ -400,7 +422,7 @@ class OrderDetailScreen extends StatelessWidget {
                                             height: 14,
                                             width: 14,
                                           ),
-                                          wSizedBox4,
+                                          wSizedBox2,
                                           Text(
                                             ((controller
                                                             .orderDetailModel
@@ -413,6 +435,13 @@ class OrderDetailScreen extends StatelessWidget {
                                             style: style400S14.copyWith(
                                                 letterSpacing: 0.28,
                                                 color: Color(0xFFFFB86B)),
+                                          ),
+                                          wSizedBox4,
+                                          Text(
+                                            "(${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.shippingCharge?.toFormattedPrice() ?? "-"})",
+                                            style: style400S14.copyWith(
+                                                letterSpacing: 0.28,
+                                                color: Color(0xFFCCCCCC)),
                                           ),
                                         ],
                                       ),
@@ -431,7 +460,7 @@ class OrderDetailScreen extends StatelessWidget {
                                             height: 16,
                                             width: 16,
                                           ),
-                                          wSizedBox4,
+                                          wSizedBox2,
                                           Text(
                                             ((controller
                                                             .orderDetailModel
@@ -441,6 +470,13 @@ class OrderDetailScreen extends StatelessWidget {
                                                         0) /
                                                     100)
                                                 .toFormattedCoins(),
+                                            style: style700S16.copyWith(
+                                                letterSpacing: 0.32,
+                                                color: Color(0xFFCCCCCC)),
+                                          ),
+                                          wSizedBox4,
+                                          Text(
+                                            "(${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.totalAmount?.toFormattedPrice() ?? "-"})",
                                             style: style700S16.copyWith(
                                                 letterSpacing: 0.32,
                                                 color: Color(0xFFCCCCCC)),

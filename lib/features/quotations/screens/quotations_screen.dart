@@ -179,11 +179,22 @@ class QuotationsScreen extends StatelessWidget {
                                                                         width:
                                                                             14,
                                                                       ),
-                                                                      wSizedBox4,
+                                                                      wSizedBox2,
                                                                       Text(
                                                                         ((quotation.price ?? 0) /
                                                                                 100)
                                                                             .toFormattedCoins(),
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                        style: style400S14.copyWith(
+                                                                            letterSpacing:
+                                                                                0.28,
+                                                                            color:
+                                                                                Color(0xFFCCCCCC)),
+                                                                      ),
+                                                                      wSizedBox4,
+                                                                      Text(
+                                                                        "(${AssetConstants.rupeeSymbol}${quotation.price?.toFormattedPrice() ?? 0})",
                                                                         overflow:
                                                                             TextOverflow.ellipsis,
                                                                         style: style400S14.copyWith(

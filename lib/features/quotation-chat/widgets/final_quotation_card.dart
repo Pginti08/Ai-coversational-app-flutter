@@ -208,16 +208,48 @@ class FinalQuotationCard extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          _buildInfoRow(
-                              'PRICE',
-                              ((double.tryParse(quotation.price
-                                                  ?.toStringAsFixed(0) ??
-                                              '0') ??
-                                          0) /
-                                      100)
-                                  .toFormattedCoins(),
-                              "",
-                              isCoin: true),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'PRICE',
+                                style: style700S10.copyWith(
+                                  letterSpacing: 0.80,
+                                  color: const Color(0xFF666666),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    AssetConstants.vousvousCoin,
+                                    width: 14,
+                                    height: 14,
+                                  ),
+                                  wSizedBox2,
+                                  Text(
+                                    ((double.tryParse(quotation.price
+                                                        ?.toStringAsFixed(0) ??
+                                                    '0') ??
+                                                0) /
+                                            100)
+                                        .toFormattedCoins(),
+                                    style: style400S14.copyWith(
+                                      color: AppColors.whiteColor,
+                                      letterSpacing: 0.28,
+                                    ),
+                                  ),
+                                  wSizedBox4,
+                                  Text(
+                                    "(${AssetConstants.rupeeSymbol}${quotation.price?.toFormattedPrice() ?? '0'})",
+                                    style: style400S14.copyWith(
+                                      color: AppColors.whiteColor,
+                                      letterSpacing: 0.28,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                           wSizedBox10
                         ],
                       ),
@@ -286,8 +318,11 @@ class FinalQuotationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value, String? newValue,
-      {bool isCoin = false}) {
+  Widget _buildInfoRow(
+    String label,
+    String value,
+    String? newValue,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,32 +334,13 @@ class FinalQuotationCard extends StatelessWidget {
             color: const Color(0xFF666666),
           ),
         ),
-        (isCoin == true)
-            ? Row(
-                children: [
-                  Text(
-                    value,
-                    style: style400S14.copyWith(
-                      color: AppColors.whiteColor,
-                      letterSpacing: 0.28,
-                    ),
-                  ),
-                  wSizedBox4,
-                  if (isCoin == true)
-                    Image.asset(
-                      AssetConstants.vousvousCoin,
-                      width: 14,
-                      height: 14,
-                    ),
-                ],
-              )
-            : Text(
-                value,
-                style: style400S14.copyWith(
-                  color: AppColors.whiteColor,
-                  letterSpacing: 0.28,
-                ),
-              ),
+        Text(
+          value,
+          style: style400S14.copyWith(
+            color: AppColors.whiteColor,
+            letterSpacing: 0.28,
+          ),
+        ),
         if (isNotNullOrEmpty(newValue)) ...[
           Text(
             newValue!,

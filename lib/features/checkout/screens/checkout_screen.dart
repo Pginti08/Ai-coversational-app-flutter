@@ -11,11 +11,10 @@ import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/blur_bottom_sheet.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
-import 'package:vousvous/core/widgets/custom_radio.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/features/checkout/controller/checkout_controller.dart';
+import 'package:vousvous/features/checkout/widgets/address_selection_sheet.dart';
 import 'package:vousvous/features/saved-address/models/saved_address_model.dart';
-import 'package:vousvous/features/saved-address/screens/add_address_bottom_sheet.dart';
 
 class CheckoutScreen extends StatelessWidget {
   CheckoutScreen({super.key});
@@ -52,7 +51,10 @@ class CheckoutScreen extends StatelessWidget {
                   left: 0,
                   child: IconButton(
                     onPressed: () => Get.back(),
-                    icon: SvgPicture.asset(AssetConstants.backward),
+                    icon: SvgPicture.asset(
+                      AssetConstants.backward,
+                      height: 24,
+                    ),
                   ),
                 ),
               ],
@@ -70,33 +72,21 @@ class CheckoutScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       hSizedBox10,
-                      // Add New Address Button
-                      AppButton(
-                        isOutlined: true,
-                        isGradientBorder: true,
-                        onTap: () => _showAddAddressSheet(context),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(AssetConstants.add, width: 20),
-                            wSizedBox8,
-                            Text(
-                              "Add New Address",
-                              style: style700S16.copyWith(
-                                  color: Color(0xFFCCCCCC)),
-                            )
-                          ],
-                        ),
-                      ),
-                      hSizedBox24,
+                      hSizedBox10,
 
                       // Shipping Address Section
                       _buildSectionHeader("SHIPPING ADDRESS"),
                       hSizedBox12,
-                      _buildAddressList(
+                      _buildSelectedAddressView(
                         context: context,
-                        selectedAddress: controller.selectedAddress,
-                        onSelect: controller.selectShippingAddress,
+                        title: "Shipping Address",
+                        address: controller.selectedAddress.value,
+                        onTap: () => _showAddressSelectionSheet(
+                          context,
+                          controller.selectedAddress.value,
+                          (address) =>
+                              controller.selectShippingAddress(address),
+                        ),
                       ),
 
                       hSizedBox24,
@@ -143,7 +133,7 @@ class CheckoutScreen extends StatelessWidget {
                             ),
                           )),
 
-                      // Billing Address List (only show if different)
+                      // Billing Address Section (only show if different)
                       Obx(() {
                         if (controller.billingSameAsShipping.value) {
                           return const SizedBox.shrink();
@@ -154,11 +144,16 @@ class CheckoutScreen extends StatelessWidget {
                             hSizedBox24,
                             _buildSectionHeader("BILLING ADDRESS"),
                             hSizedBox12,
-                            _buildAddressList(
+                            _buildSelectedAddressView(
                               context: context,
-                              selectedAddress:
-                                  controller.selectedBillingAddress,
-                              onSelect: controller.selectBillingAddress,
+                              title: "Billing Address",
+                              address: controller.selectedBillingAddress.value,
+                              onTap: () => _showAddressSelectionSheet(
+                                context,
+                                controller.selectedBillingAddress.value,
+                                (address) =>
+                                    controller.selectBillingAddress(address),
+                              ),
                             ),
                           ],
                         );
@@ -187,107 +182,115 @@ class CheckoutScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAddressList({
+  Widget _buildSelectedAddressView({
     required BuildContext context,
-    required Rxn<SavedAddress> selectedAddress,
-    required Function(SavedAddress?) onSelect,
+    required String title,
+    required SavedAddress? address,
+    required VoidCallback onTap,
   }) {
-    return Obx(() {
-      final addresses = controller.savedAddressModel.value.data ?? [];
+    if (address == null) {
+      return CommonContainer(
+        onTap: onTap,
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        borderRadius: 16,
+        backgroundColor: Colors.white.withAlpha(20),
+        child: Row(
+          children: [
+            Icon(Icons.add, color: AppColors.whiteColor),
+            wSizedBox12,
+            Text(
+              "Select $title",
+              style: style500S16.copyWith(color: AppColors.whiteColor),
+            ),
+            Spacer(),
+            Icon(Icons.arrow_forward_ios,
+                size: 16, color: AppColors.whiteColor),
+          ],
+        ),
+      );
+    }
 
-      if (addresses.isEmpty) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Text(
-            "No saved addresses. Add a new address.",
-            style: style400S14.copyWith(color: Color(0xFF999999)),
-          ),
-        );
-      }
-
-      return Column(
-        children: addresses.map((address) {
-          final isSelected = selectedAddress.value == address;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: CommonContainer(
-              padding: EdgeInsets.all(10),
-              borderRadius: 16,
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              borderGradientColors: isSelected ? AppColors.colorGradient : null,
-              gradientColors: isSelected
-                  ? [
-                      Color(0xFF68C3E7).withAlpha(30),
-                      Color(0xFFFFB86B).withAlpha(30),
-                    ]
-                  : null,
-              child: CustomRadio<SavedAddress?>(
-                value: address,
-                groupValue: selectedAddress.value,
-                onChanged: onSelect,
-                titleWidget: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            address.name ?? "",
-                            style: style500S18.copyWith(
-                              letterSpacing: 0.36,
-                              color: const Color(0xFFEFEFEF),
-                            ),
-                          ),
-                          Text(
-                            address.address ?? "",
-                            style: style400S14.copyWith(
-                              letterSpacing: 0.28,
-                              color: const Color(0xFFCCCCCC),
-                            ),
-                          ),
-                          hSizedBox4,
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Mobile Number:',
-                                  style: style400S14.copyWith(
-                                    letterSpacing: 0.28,
-                                    color: const Color(0xFF666666),
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: ' ${address.mobile ?? ""}',
-                                  style: style400S14.copyWith(
-                                    letterSpacing: 0.28,
-                                    color: const Color(0xFFCCCCCC),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: CommonContainer(
-                        isCircle: true,
-                        backgroundColor: Colors.transparent,
-                        onTap: () => _showEditAddressSheet(context, address),
-                        child: SvgPicture.asset(AssetConstants.edit),
-                      ),
-                    )
-                  ],
+    return CommonContainer(
+      padding: EdgeInsets.all(16),
+      borderRadius: 16,
+      backgroundColor: Colors.white.withAlpha(15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                address.name ?? "",
+                style: style600S16.copyWith(
+                  letterSpacing: 0.32,
+                  color: const Color(0xFFEFEFEF),
                 ),
               ),
+              CommonContainer(
+                onTap: onTap,
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                borderRadius: 20,
+                backgroundColor: AppColors.primaryColor.withAlpha(30),
+                child: Text(
+                  "Change",
+                  style: style600S12.copyWith(color: AppColors.primaryColor),
+                ),
+              ),
+            ],
+          ),
+          hSizedBox8,
+          Text(
+            address.address ?? "",
+            style: style400S14.copyWith(
+              letterSpacing: 0.28,
+              color: const Color(0xFFCCCCCC),
             ),
-          );
-        }).toList(),
-      );
-    });
+          ),
+          hSizedBox8,
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Mobile: ',
+                  style: style400S14.copyWith(
+                    letterSpacing: 0.28,
+                    color: const Color(0xFF666666),
+                  ),
+                ),
+                TextSpan(
+                  text: address.mobile ?? "",
+                  style: style400S14.copyWith(
+                    letterSpacing: 0.28,
+                    color: const Color(0xFFCCCCCC),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _showAddressSelectionSheet(
+    BuildContext context,
+    SavedAddress? currentSelected,
+    Function(SavedAddress) onSelect,
+  ) {
+    BlurBottomSheet().show<void>(
+      height: MediaQuery.sizeOf(context).height * 0.8,
+      context: context,
+      borderColor: AppColors.whiteColor.withAlpha(40),
+      backgroundColor: AppColors.scaffoldColor.withAlpha(240),
+      barrierColor: AppColors.blackColor.withAlpha(100),
+      blurStrength: 10,
+      isCloseButton: true,
+      child: AddressSelectionSheet(
+        selectedAddress: currentSelected,
+        onSelect: onSelect,
+      ),
+    );
   }
 
   Widget _buildQuotationBottomBar() {
@@ -312,7 +315,7 @@ class CheckoutScreen extends StatelessWidget {
                   "${AssetConstants.rupeeSymbol}${controller.quotationTotalAmount.toFormattedPrice()}",
                   isBold: true,
                 ),
-                hSizedBox8,
+
                 hSizedBox8,
                 Row(
                   children: [
@@ -350,8 +353,7 @@ class CheckoutScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                hSizedBox8,
-                // Show wallet balance
+
                 hSizedBox8,
                 // Show wallet balance
                 Row(
@@ -494,38 +496,6 @@ class CheckoutScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  void _showAddAddressSheet(BuildContext context) {
-    BlurBottomSheet().show<void>(
-      height: MediaQuery.sizeOf(context).height * 0.9,
-      context: context,
-      borderColor: AppColors.whiteColor.withAlpha(40),
-      backgroundColor: AppColors.scaffoldColor.withAlpha(200),
-      barrierColor: AppColors.blackColor.withAlpha(100),
-      blurStrength: 10,
-      isCloseButton: true,
-      child: AddAddressBottomSheet(
-        onSuccess: () => controller.getSavedAddress(),
-      ),
-    );
-  }
-
-  void _showEditAddressSheet(BuildContext context, SavedAddress address) {
-    BlurBottomSheet().show<void>(
-      height: MediaQuery.sizeOf(context).height * 0.9,
-      context: context,
-      borderColor: AppColors.whiteColor.withAlpha(40),
-      backgroundColor: AppColors.scaffoldColor,
-      barrierColor: AppColors.blackColor.withAlpha(100),
-      blurStrength: 10,
-      isCloseButton: true,
-      child: AddAddressBottomSheet(
-        isEdit: true,
-        savedAddress: address,
-        onSuccess: () => controller.getSavedAddress(),
-      ),
     );
   }
 }

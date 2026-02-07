@@ -37,8 +37,6 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final ChatController controller = Get.put(ChatController());
-  final TextEditingController _textController = TextEditingController();
-  final RxString inputText = ''.obs;
 
   // Add this variable to control brand container visibility
 
@@ -228,7 +226,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       top: false,
                       child: controller.showBrandContainer.value
                           ? buildBrandContainer()
-                          : bottomTypingWidget(),
+                          : bottomTypingWidget(controller),
                     ),
                   )),
             ],
@@ -420,7 +418,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ));
   }
 
-  Widget bottomTypingWidget() {
+  Widget bottomTypingWidget(ChatController controller) {
     return KeyboardVisibilityBuilder(builder: (context, isKeyboardVisible) {
       return Obx(() => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -634,7 +632,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               child: AppTextField(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 focusNode: controller.typeFocusNode,
-                                controller: _textController,
+                                controller: controller.textController,
                                 outsideMargin: EdgeInsets.zero,
                                 contentPadding:
                                     EdgeInsets.symmetric(vertical: 6),
@@ -644,7 +642,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 keyboardType: TextInputType.multiline,
                                 borderColor: Colors.transparent,
                                 onChanged: (value) {
-                                  inputText.value = value;
+                                  controller.inputText.value = value;
                                 },
                                 onSubmitted: (value) {
                                   if (value.trim().isNotEmpty &&
@@ -653,7 +651,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     controller.sendMessage(
                                       message: value.trim(),
                                     );
-                                    _textController.clear();
+                                    controller.textController.clear();
                                     controller.userSelectedRemixOutfits.clear();
                                     controller.uploadImage.clear();
                                   }
@@ -664,11 +662,15 @@ class _ChatScreenState extends State<ChatScreen> {
                             wSizedBox10,
                             if (isKeyboardVisible)
                               Obx(() => IgnorePointer(
-                                    ignoring: inputText.value.trim().isEmpty ||
+                                    ignoring: controller.inputText.value
+                                            .trim()
+                                            .isEmpty ||
                                         controller.isThinking.value ||
                                         controller.uploadLoader.value,
                                     child: Opacity(
-                                      opacity: inputText.value.trim().isEmpty ||
+                                      opacity: controller.inputText.value
+                                                  .trim()
+                                                  .isEmpty ||
                                               controller.isThinking.value ||
                                               controller.uploadLoader.value
                                           ? 0.4
@@ -676,10 +678,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                       child: GestureDetector(
                                         onTap: () {
                                           controller.sendMessage(
-                                            message:
-                                                _textController.text.trim(),
+                                            message: controller
+                                                .textController.text
+                                                .trim(),
                                           );
-                                          _textController.clear();
+                                          controller.textController.clear();
                                           controller.userSelectedRemixOutfits
                                               .clear();
                                           controller.uploadImage.clear();

@@ -28,6 +28,9 @@ import 'package:vousvous/features/splash/screens/splash_screen.dart';
 import 'package:vousvous/features/user-profile/screens/follower_list_screen.dart';
 import 'package:vousvous/features/user-profile/screens/posts_view_screen.dart';
 import 'package:vousvous/features/user-profile/screens/user_profile_screen.dart';
+import 'package:vousvous/features/wallet/screens/wallet_screen.dart';
+import 'package:vousvous/features/wallet/sub-feature/buy_credit/screens/buy_credit_screen.dart';
+import 'package:vousvous/features/wallet/sub-feature/credit_history/screens/credit_history_screen.dart';
 import 'package:vousvous/features/welcome/screens/welcome_screen.dart';
 
 part 'app_routes.dart';
@@ -229,8 +232,22 @@ class AppPages {
       opaque: false,
       transition: Transition.fadeIn,
       fullscreenDialog: true,
+      name: Routes.wallet,
+      page: () => WalletScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
       name: Routes.userProfile,
       page: () => UserProfileScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.creditHistory,
+      page: () => CreditHistoryScreen(),
     ),
     GetPage(
       opaque: false,
@@ -252,6 +269,13 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.referFriend,
       page: () => ReferFriendScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.buyCredit,
+      page: () => BuyCreditScreen(),
     ),
   ];
 }

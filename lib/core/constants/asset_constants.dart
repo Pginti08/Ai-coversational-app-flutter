@@ -16,6 +16,8 @@ class AssetConstants {
   static const sideBody = '${images}side_body.png';
   static const backBody = '${images}back_body.png';
   static const logo = '${images}logo.png';
+  static const vousvousCoin = '${images}vousvous_coin.png';
+  static const vousvousCoinSet = '${images}vousvous_coin_set.png';
 
   ///__________________________________ icons __________________________________///
 
@@ -54,6 +56,7 @@ class AssetConstants {
   static const remove = '${icons}remove.svg';
   static const minus = '${icons}minus.svg';
   static const tickCircle = '${icons}tick-circle.svg';
+  static const tickCircle2 = '${icons}tick-circle2.svg';
   static const aiChat = '${icons}ai-chat.svg';
   static const invoice = '${icons}invoice.svg';
   static const scissor = '${icons}scissor.svg';
@@ -64,12 +67,25 @@ class AssetConstants {
   static const camera = '${icons}camera.svg';
   static const gallery = '${icons}gallery.svg';
   static const logout = '${icons}logout.svg';
+  static const wallet = '${icons}wallet.svg';
   static const emptyWalletTime = '${icons}empty-wallet-time.svg';
+  static const infoCircle = '${icons}info-circle.svg';
+  static const lamp = '${icons}lamp.svg';
+  static const gift = '${icons}gift.svg';
+  static const aiDesign = '${icons}ai_design.svg';
+  static const tryOn = '${icons}try_on.svg';
+  static const discount = '${icons}discount.svg';
+  static const remixes = '${icons}remixes.svg';
+  static const danger = '${icons}danger.svg';
+  static const dailyLogin = '${icons}daily_login.svg';
+  static const inviteFriend = '${icons}invite_friend.svg';
+  static const firstPurchase = '${icons}first_purchase.svg';
+  static const completeOrder = '${icons}complete_order.svg';
   static const grid = '${icons}grid.svg';
   static const private = '${icons}private.svg';
   static const public = '${icons}public.svg';
-  static const gift = '${icons}gift.svg';
   static const userMinus = '${icons}user-minus.svg';
+  static const secure = '${icons}secure.svg';
 
   ///__________________________________ gif __________________________________///
 

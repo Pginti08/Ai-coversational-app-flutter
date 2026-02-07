@@ -344,10 +344,8 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                                 },
                                 isLoading: isLoading.value,
                                 text: "Save Address",
-                                textColor: AppColors.whiteColor,
-                                loaderColor: AppColors.whiteColor,
-                                backgroundColor:
-                                    AppColors.whiteColor.withAlpha(12),
+                                textColor: AppColors.blackColor,
+                                loaderColor: AppColors.blackColor,
                                 gradientBorderColors:
                                     AppColors.glassBorderGradient,
                               )),

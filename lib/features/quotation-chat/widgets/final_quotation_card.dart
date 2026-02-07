@@ -7,6 +7,7 @@ import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/extensions.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
@@ -204,10 +205,54 @@ class FinalQuotationCard extends StatelessWidget {
                     wSizedBox10,
                     if (isNotNullOrEmpty(quotation.price) &&
                         (quotation.price ?? 0) != 0)
-                      _buildInfoRow(
-                          'PRICE',
-                          "${AssetConstants.rupeeSymbol}${quotation.price?.toStringAsFixed(0) ?? '-'}/pc",
-                          ""),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'PRICE',
+                                style: style700S10.copyWith(
+                                  letterSpacing: 0.80,
+                                  color: const Color(0xFF666666),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    AssetConstants.vousvousCoin,
+                                    width: 14,
+                                    height: 14,
+                                  ),
+                                  wSizedBox2,
+                                  Text(
+                                    ((double.tryParse(quotation.price
+                                                        ?.toStringAsFixed(0) ??
+                                                    '0') ??
+                                                0) /
+                                            100)
+                                        .toFormattedCoins(),
+                                    style: style400S14.copyWith(
+                                      color: AppColors.whiteColor,
+                                      letterSpacing: 0.28,
+                                    ),
+                                  ),
+                                  wSizedBox4,
+                                  Text(
+                                    "(${AssetConstants.rupeeSymbol}${quotation.price?.toFormattedPrice() ?? '0'})",
+                                    style: style400S14.copyWith(
+                                      color: AppColors.whiteColor,
+                                      letterSpacing: 0.28,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          wSizedBox10
+                        ],
+                      ),
                   ],
                 ),
                 hSizedBox24,
@@ -253,11 +298,15 @@ class FinalQuotationCard extends StatelessWidget {
                           )
                     : AppButton(
                         text: quotation.status == "FINALIZED"
-                            ? 'Add To Cart'
+                            ? 'Place Order'
                             : quotation.status?.replaceAll("_", " "),
                         isDisabled: quotation.status != "FINALIZED",
                         onTap: () {
-                          addToCartApi(message?.id ?? "");
+                          Get.toNamed(Routes.checkout, arguments: {
+                            'isQuotationCheckout': true,
+                            'quotationCardId': message?.id ?? "",
+                            'quotation': quotation,
+                          });
                         },
                         isLoading: isLoading.value,
                       )),
@@ -269,8 +318,13 @@ class FinalQuotationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value, String? newValue) {
+  Widget _buildInfoRow(
+    String label,
+    String value,
+    String? newValue,
+  ) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(

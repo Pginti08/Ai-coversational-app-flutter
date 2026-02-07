@@ -168,8 +168,14 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   borderRadius: 100,
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
                   borderGradientColors: AppColors.glassBorderGradient,
-                  gradientColors: AppColors.glassBorderGradient,
+                  gradientColors: [
+                    Color(0xFF6A6A6A),
+                    Color(0xFF303030),
+                    Color(0xFF121212),
+                  ],
                   onTap: _saveToGallery,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

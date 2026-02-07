@@ -20,4 +20,12 @@ extension NumericExtension on num {
   String toCurrency() {
     return NumberFormat.currency(symbol: r'$').format(this);
   }
+
+  String toFormattedPrice() {
+    return NumberFormat("#,##0.##").format(this);
+  }
+
+  String toFormattedCoins() {
+    return NumberFormat("0.##").format(this);
+  }
 }

@@ -127,19 +127,27 @@ class _UserMenuState extends State<UserMenu> {
                   child: ListView(
                 children: [
                   menuTiles(
+                    name: "My Wallet",
+                    icon: AssetConstants.wallet,
+                    height: 20,
+                    onTap: () {
+                      Get.toNamed(Routes.wallet);
+                    },
+                  ),
+                  menuTiles(
                     name: "Orders",
                     icon: AssetConstants.box,
                     onTap: () {
                       Get.toNamed(Routes.orders);
                     },
                   ),
-                  menuTiles(
-                    name: "Cart",
-                    icon: AssetConstants.cart,
-                    onTap: () {
-                      Get.toNamed(Routes.cart);
-                    },
-                  ),
+                  // menuTiles(
+                  //   name: "Cart",
+                  //   icon: AssetConstants.cart,
+                  //   onTap: () {
+                  //     Get.toNamed(Routes.cart);
+                  //   },
+                  // ),
                   menuTiles(
                     name: "Quotations",
                     icon: AssetConstants.document,
@@ -176,8 +184,9 @@ class _UserMenuState extends State<UserMenu> {
                     },
                   ),
                   menuTiles(
-                    name: "Refer a Friend",
+                    name: "Refer Friends",
                     icon: AssetConstants.gift,
+                    height: 19,
                     onTap: () {
                       Get.toNamed(Routes.referFriend);
                     },
@@ -193,6 +202,7 @@ class _UserMenuState extends State<UserMenu> {
                     name: "Delete Account",
                     icon: AssetConstants.userMinus,
                     isToggle: false,
+                    height: 20,
                     onTap: () async {
                       commonDialog(
                         title: "Delete Account",
@@ -272,6 +282,7 @@ class _UserMenuState extends State<UserMenu> {
   Widget menuTiles(
       {required String icon,
       required String name,
+      double? height,
       void Function()? onTap,
       bool isToggle = true}) {
     return GestureDetector(
@@ -288,7 +299,7 @@ class _UserMenuState extends State<UserMenu> {
           children: [
             SvgPicture.asset(
               icon,
-              height: 20,
+              height: height,
               colorFilter: ColorFilter.mode(Color(0xFFCCCCCC), BlendMode.srcIn),
             ),
             wSizedBox8,

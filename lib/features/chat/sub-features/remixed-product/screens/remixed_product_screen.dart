@@ -166,7 +166,7 @@ Download VOUSVOUS now and bring your fashion vision to life!
   @override
   Widget build(BuildContext context) {
     return BlurScaffold(
-      overlayColor: AppColors.blackColor.withAlpha(30),
+      overlayColor: AppColors.blackColor.withAlpha(150),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: Column(
@@ -213,7 +213,8 @@ Download VOUSVOUS now and bring your fashion vision to life!
                           36, // Fixed height and width to ensure circular shape
                       width: 36,
                       onTap: () {
-                        Get.back();
+                        Get.until(
+                            (route) => route.settings.name == Routes.chat);
                         final ChatController chatController =
                             Get.find<ChatController>();
                         chatController.userSelectedRemixOutfits.clear();

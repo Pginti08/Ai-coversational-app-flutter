@@ -58,6 +58,7 @@ dependencies:
   android_play_install_referrer: ^0.4.0
   new_version_plus: ^1.0.1
   device_info_plus: ^10.1.2
+  razorpay_flutter: ^1.4.0
 
 dev_dependencies:
   flutter_test:

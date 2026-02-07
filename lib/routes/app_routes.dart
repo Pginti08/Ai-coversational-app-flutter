@@ -30,8 +30,11 @@ abstract class Routes {
   static const String inviteFriend = '/invite-friend';
   static const String sharePreview = '/share-preview';
   static const String trackingDetail = '/tracking-detail';
+  static const String wallet = '/wallet';
+  static const String creditHistory = '/credit-history';
   static const String userProfile = '/user-profile';
   static const String postsView = '/posts-view';
   static const String followerList = '/follower-list';
   static const String referFriend = '/refer-friend';
+  static const String buyCredit = '/buy-credit';
 }

@@ -13,8 +13,10 @@ import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_text_field.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/features/quotation-chat/controller/quotation_chat_controller.dart';
+import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart'; // Add this import
 import 'package:vousvous/features/quotation-chat/utils/date_grouping_helper.dart';
 import 'package:vousvous/features/quotation-chat/widgets/chat_actions_buttons.dart';
+import 'package:vousvous/features/quotation-chat/widgets/final_quotation_card.dart'; // Add this import
 import 'package:vousvous/features/quotation-chat/widgets/quotation_ai_typing_tile.dart';
 import 'package:vousvous/features/quotation-chat/widgets/quotation_message_tile.dart';
 import 'package:vousvous/features/quotation-chat/widgets/show_body_profile_widget.dart';
@@ -75,10 +77,10 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
         },
         child: Column(
           children: [
-            // ... [Keep your existing Header Container code here] ...
+            // Header
             Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 4).copyWith(bottom: 12),
+              padding: EdgeInsets.symmetric(vertical: 4).copyWith(bottom: 6),
               decoration: BoxDecoration(
                 color: Colors.white.withAlpha(15),
                 border: Border(
@@ -93,22 +95,32 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
                   children: [
                     IconButton(
                         onPressed: () => Get.back(),
-                        icon: SvgPicture.asset(AssetConstants.backward)),
+                        icon: SvgPicture.asset(
+                          AssetConstants.backward,
+                          height: 24,
+                        )),
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Text(
-                          controller.quotationDetailModel.value.data?.aiAnalysis
-                                  ?.title ??
-                              "",
-                          maxLines: 2,
-                          style: style400S16.copyWith(
-                              color: AppColors.whiteTextColor,
-                              letterSpacing: 1.0,
-                              overflow: TextOverflow.ellipsis),
-                        ),
+                      child: Text(
+                        controller.quotationDetailModel.value.data?.aiAnalysis
+                                ?.title ??
+                            "",
+                        style: style400S16.copyWith(
+                            color: AppColors.whiteTextColor,
+                            letterSpacing: 0.5,
+                            overflow: TextOverflow.ellipsis),
                       ),
-                    )
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          _showQuotationDetailsBottomSheet(context);
+                        },
+                        icon: SvgPicture.asset(
+                          AssetConstants.infoCircle,
+                          height: 20,
+                          colorFilter: ColorFilter.mode(
+                              AppColors.whiteColor, BlendMode.srcIn),
+                        )),
+                    wSizedBox4,
                   ],
                 ),
               ),
@@ -346,4 +358,73 @@ class _QuotationChatScreenState extends State<QuotationChatScreen>
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+
+  void _showQuotationDetailsBottomSheet(BuildContext context) {
+    // Find the latest message with card details
+    final latestQuotationMessage = controller.messages.firstWhereOrNull(
+      (m) => m.cardDetail != null,
+    );
+
+    if (latestQuotationMessage == null ||
+        latestQuotationMessage.cardDetail == null) {
+      Get.snackbar("Info", "No finalized quotation details available yet.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.white,
+          colorText: Colors.black);
+      return;
+    }
+
+    Get.bottomSheet(
+      Container(
+        decoration: BoxDecoration(
+          color: Color(0xFF1E1E1E), // Dark background matching app theme
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[600],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            Text(
+              "Quotation Details",
+              style: style600S18.copyWith(color: AppColors.whiteTextColor),
+            ),
+            SizedBox(height: 16),
+            FinalQuotationCard(
+              quotation: latestQuotationMessage.cardDetail!,
+              message: latestQuotationMessage,
+              updatedBySupport:
+                  latestQuotationMessage.updatedBySupport ?? UpdatedBySupport(),
+              onMessageUpdate: (updatedMessage) {
+                // Handle message update if needed, though controller usually handles state
+                // Find the index of the message and update it in the controller
+                final index = controller.messages
+                    .indexWhere((m) => m.id == updatedMessage.id);
+                if (index != -1) {
+                  controller.messages[index] = updatedMessage;
+                }
+                Get.back(); // Close bottom sheet after action
+              },
+            ),
+            SizedBox(height: 20),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+    );
+  }
 }

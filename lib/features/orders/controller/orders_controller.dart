@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/constants/storage_constants.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
-import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/features/orders/models/order_model.dart';
 
 class OrdersController extends GetxController {
@@ -104,7 +103,7 @@ class OrdersController extends GetxController {
 
       // 1. Prepare Connection
       _disconnectSSE();
-      _eventFlux = EventFlux.instance;
+      _eventFlux = EventFlux.spawn();
 
       final String? token =
           LocalStorageService.instance.getString(StorageConstants.accessToken);
@@ -250,7 +249,7 @@ class OrdersController extends GetxController {
     debugPrint("Error: $error");
     _stopLoaders();
     _isLoadingNextPage = false;
-    toast("Live updates temporarily unavailable");
+    // toast("Live updates temporarily unavailable");
   }
 
   void _disconnectSSE() {

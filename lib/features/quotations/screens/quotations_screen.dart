@@ -8,6 +8,7 @@ import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
+import 'package:vousvous/core/utils/extensions.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_loader.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
@@ -167,16 +168,42 @@ class QuotationsScreen extends StatelessWidget {
                                                                     (quotation.price ??
                                                                             0) !=
                                                                         0)
-                                                                  Text(
-                                                                    "${AssetConstants.rupeeSymbol} ${quotation.price?.toStringAsFixed(0) ?? 0}",
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: style400S14.copyWith(
-                                                                        letterSpacing:
-                                                                            0.28,
-                                                                        color: Color(
-                                                                            0xFFCCCCCC)),
+                                                                  Row(
+                                                                    children: [
+                                                                      Image
+                                                                          .asset(
+                                                                        AssetConstants
+                                                                            .vousvousCoin,
+                                                                        height:
+                                                                            14,
+                                                                        width:
+                                                                            14,
+                                                                      ),
+                                                                      wSizedBox2,
+                                                                      Text(
+                                                                        ((quotation.price ?? 0) /
+                                                                                100)
+                                                                            .toFormattedCoins(),
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                        style: style400S14.copyWith(
+                                                                            letterSpacing:
+                                                                                0.28,
+                                                                            color:
+                                                                                Color(0xFFCCCCCC)),
+                                                                      ),
+                                                                      wSizedBox4,
+                                                                      Text(
+                                                                        "(${AssetConstants.rupeeSymbol}${quotation.price?.toFormattedPrice() ?? 0})",
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                        style: style400S14.copyWith(
+                                                                            letterSpacing:
+                                                                                0.28,
+                                                                            color:
+                                                                                Color(0xFFCCCCCC)),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 hSizedBox6,
                                                                 Text(
@@ -282,7 +309,7 @@ class QuotationsScreen extends StatelessWidget {
                                                                         .purchaseType
                                                                         ?.toLowerCase() ==
                                                                     "single"
-                                                                ? "${controller.quotationList[index].bodyProfiles?.firstOrNull?.height?.toStringAsFixed(0) ?? '0'} ${(controller.quotationList[index].bodyProfiles?.firstOrNull?.heightUnit ?? "").toUpperCase()}  •  ${controller.quotationList[index].bodyProfiles?.firstOrNull?.bust?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.waist?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.hips?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.shoulders?.toStringAsFixed(0) ?? '0'}”"
+                                                                ? "${controller.quotationList[index].bodyProfiles?.firstOrNull?.height?.toStringAsFixed(0) ?? '0'} ${(controller.quotationList[index].bodyProfiles?.firstOrNull?.unit ?? "").toUpperCase()}  •  ${controller.quotationList[index].bodyProfiles?.firstOrNull?.bust?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.waist?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.hips?.toStringAsFixed(0) ?? '0'}” | ${controller.quotationList[index].bodyProfiles?.firstOrNull?.shoulders?.toStringAsFixed(0) ?? '0'}”"
                                                                     .toUpperCase()
                                                                 : controller
                                                                             .quotationList[

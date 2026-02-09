@@ -168,6 +168,8 @@ class BuyCreditController extends GetxController {
       'order_id': orderId,
       'name': 'Vousvous',
       'description': 'Buy $credits Credits',
+      'image':
+          'https://vrozart-fashion-app-prod.s3.ap-south-1.amazonaws.com/logo/vousvous.jpeg',
       'prefill': {
         'contact': userPhone,
         'email': userEmail,

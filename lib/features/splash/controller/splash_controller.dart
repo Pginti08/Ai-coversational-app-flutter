@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:vousvous/core/constants/api_constants.dart';
 import 'package:vousvous/core/constants/storage_constants.dart';
 import 'package:vousvous/core/services/deep_link_service.dart';
+import 'package:vousvous/core/services/install_referrer_service.dart';
 import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
@@ -35,6 +38,12 @@ class SplashController extends GetxController {
       LocalStorageService.instance.getString(StorageConstants.accessToken),
     );
     print('🔐 Has stored token: $hasToken');
+
+    // Ensure install referrer has been checked before reading the referral code
+    // initDeepLinks() is not awaited in App.initState(), so we explicitly await here
+    if (Platform.isAndroid) {
+      await InstallReferrerHandler.checkAndStoreReferralCode();
+    }
 
     // Get pending referral code (from Play Store install referrer or deep link)
     final pendingReferralCode = await deepLinkHandler.getPendingReferralCode();

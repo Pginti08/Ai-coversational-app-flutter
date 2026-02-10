@@ -31,7 +31,8 @@ class QuotationChatScreen extends StatefulWidget {
 
 class _QuotationChatScreenState extends State<QuotationChatScreen>
     with AutomaticKeepAliveClientMixin {
-  final QuotationChatController controller = Get.put(QuotationChatController());
+  final QuotationChatController controller =
+      Get.put(QuotationChatController(), tag: Get.arguments?['imageUrl']);
   final TextEditingController _textController = TextEditingController();
   final RxString inputText = ''.obs;
 

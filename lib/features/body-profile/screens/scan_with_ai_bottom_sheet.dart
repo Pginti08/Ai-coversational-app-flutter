@@ -20,15 +20,33 @@ import 'package:vousvous/core/widgets/custom_image_picker_cropper.dart';
 import 'package:vousvous/features/body-profile/models/ai_body_profile_detect_model.dart';
 import 'package:vousvous/features/body-profile/models/saved_body_profile_model.dart';
 import 'package:vousvous/features/body-profile/screens/scanned_manually_bottom_sheet.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
-class ScanWithAiBottomSheet extends StatelessWidget {
-  ScanWithAiBottomSheet({super.key, this.onSave});
+class ScanWithAiBottomSheet extends StatefulWidget {
+  const ScanWithAiBottomSheet({super.key, this.onSave});
   final void Function(dynamic)? onSave;
 
+  @override
+  State<ScanWithAiBottomSheet> createState() => _ScanWithAiBottomSheetState();
+}
+
+class _ScanWithAiBottomSheetState extends State<ScanWithAiBottomSheet> {
   final RxBool isLoading = false.obs;
   final Rxn<File> frontImage = Rxn<File>();
   final Rxn<File> backImage = Rxn<File>();
   final Rxn<File> sideImage = Rxn<File>();
+
+  @override
+  void initState() {
+    super.initState();
+    WakelockPlus.enable();
+  }
+
+  @override
+  void dispose() {
+    WakelockPlus.disable();
+    super.dispose();
+  }
 
   Future<void> bodyMeasurementsAnalyzeApi(BuildContext context) async {
     try {
@@ -80,7 +98,7 @@ class ScanWithAiBottomSheet extends StatelessWidget {
               shoulders: aiBodyProfileDetectModel.measurements?.shoulders,
               unit: "CM",
             ),
-            onSave: onSave,
+            onSave: widget.onSave,
           ),
         );
       } else {
@@ -99,193 +117,199 @@ class ScanWithAiBottomSheet extends StatelessWidget {
       top: false,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        child: Column(
-          children: [
-            Text(
-              "Scan with AI".toUpperCase(),
-              style: style700S12.copyWith(
-                  letterSpacing: 0.96, color: Color(0xFFCCCCCC)),
-            ),
-            hSizedBox20,
-            Row(
-              children: [
-                Expanded(child: Image.asset(AssetConstants.frontBody)),
-                wSizedBox10,
-                Expanded(child: Image.asset(AssetConstants.sideBody)),
-                wSizedBox10,
-                Expanded(child: Image.asset(AssetConstants.backBody)),
-              ],
-            ),
-            hSizedBox12,
-            SizedBox(
-              height: 140,
-              child: Obx(
-                () => Row(
-                  children: [
-                    Expanded(
-                        child: DottedBorder(
-                      options: RoundedRectDottedBorderOptions(
-                        color: const Color(0xFF666666),
-                        dashPattern: const [8, 4],
-                        radius: const Radius.circular(14),
-                      ),
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          imagePickerCropper((file) {
-                            frontImage.value = file;
-                          });
-                        },
-                        child: isNotNullOrEmpty(frontImage.value)
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(14),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  height: 140,
-                                  child: Image.file(
-                                    frontImage.value!,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                            : Container(
-                                alignment: Alignment.center,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(AssetConstants.add),
-                                    hSizedBox10,
-                                    Text(
-                                      "Front",
-                                      style: style700S16.copyWith(
-                                          color: Color(0xFFCCCCCC)),
+        child: Obx(() => AbsorbPointer(
+              absorbing: isLoading.value,
+              child: Column(
+                children: [
+                  Text(
+                    "Scan with AI".toUpperCase(),
+                    style: style700S12.copyWith(
+                        letterSpacing: 0.96, color: Color(0xFFCCCCCC)),
+                  ),
+                  hSizedBox20,
+                  Row(
+                    children: [
+                      Expanded(child: Image.asset(AssetConstants.frontBody)),
+                      wSizedBox10,
+                      Expanded(child: Image.asset(AssetConstants.sideBody)),
+                      wSizedBox10,
+                      Expanded(child: Image.asset(AssetConstants.backBody)),
+                    ],
+                  ),
+                  hSizedBox12,
+                  SizedBox(
+                    height: 140,
+                    child: Obx(
+                      () => Row(
+                        children: [
+                          Expanded(
+                              child: DottedBorder(
+                            options: RoundedRectDottedBorderOptions(
+                              color: const Color(0xFF666666),
+                              dashPattern: const [8, 4],
+                              radius: const Radius.circular(14),
+                            ),
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                imagePickerCropper((file) {
+                                  frontImage.value = file;
+                                });
+                              },
+                              child: isNotNullOrEmpty(frontImage.value)
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(14),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 140,
+                                        child: Image.file(
+                                          frontImage.value!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     )
-                                  ],
-                                ),
-                              ),
-                      ),
-                    )),
-                    wSizedBox10,
-                    Expanded(
-                        child: DottedBorder(
-                      options: RoundedRectDottedBorderOptions(
-                        color: const Color(0xFF666666),
-                        dashPattern: const [8, 4],
-                        radius: const Radius.circular(14),
-                      ),
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          imagePickerCropper((file) {
-                            sideImage.value = file;
-                          });
-                        },
-                        child: isNotNullOrEmpty(sideImage.value)
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(14),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  height: 140,
-                                  child: Image.file(
-                                    sideImage.value!,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                            : Container(
-                                alignment: Alignment.center,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(AssetConstants.add),
-                                    hSizedBox10,
-                                    Text(
-                                      "Side",
-                                      style: style700S16.copyWith(
-                                          color: Color(0xFFCCCCCC)),
+                                  : Container(
+                                      alignment: Alignment.center,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(AssetConstants.add),
+                                          hSizedBox10,
+                                          Text(
+                                            "Front",
+                                            style: style700S16.copyWith(
+                                                color: Color(0xFFCCCCCC)),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                            ),
+                          )),
+                          wSizedBox10,
+                          Expanded(
+                              child: DottedBorder(
+                            options: RoundedRectDottedBorderOptions(
+                              color: const Color(0xFF666666),
+                              dashPattern: const [8, 4],
+                              radius: const Radius.circular(14),
+                            ),
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                imagePickerCropper((file) {
+                                  sideImage.value = file;
+                                });
+                              },
+                              child: isNotNullOrEmpty(sideImage.value)
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(14),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 140,
+                                        child: Image.file(
+                                          sideImage.value!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     )
-                                  ],
-                                ),
-                              ),
-                      ),
-                    )),
-                    wSizedBox10,
-                    Expanded(
-                        child: DottedBorder(
-                      options: RoundedRectDottedBorderOptions(
-                        color: const Color(0xFF666666),
-                        dashPattern: const [8, 4],
-                        radius: const Radius.circular(14),
-                      ),
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          imagePickerCropper((file) {
-                            backImage.value = file;
-                          });
-                        },
-                        child: isNotNullOrEmpty(backImage.value)
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(14),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  height: 140,
-                                  child: Image.file(
-                                    backImage.value!,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                            : Container(
-                                alignment: Alignment.center,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(AssetConstants.add),
-                                    hSizedBox10,
-                                    Text(
-                                      "Back",
-                                      style: style700S16.copyWith(
-                                          color: Color(0xFFCCCCCC)),
+                                  : Container(
+                                      alignment: Alignment.center,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(AssetConstants.add),
+                                          hSizedBox10,
+                                          Text(
+                                            "Side",
+                                            style: style700S16.copyWith(
+                                                color: Color(0xFFCCCCCC)),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                            ),
+                          )),
+                          wSizedBox10,
+                          Expanded(
+                              child: DottedBorder(
+                            options: RoundedRectDottedBorderOptions(
+                              color: const Color(0xFF666666),
+                              dashPattern: const [8, 4],
+                              radius: const Radius.circular(14),
+                            ),
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                imagePickerCropper((file) {
+                                  backImage.value = file;
+                                });
+                              },
+                              child: isNotNullOrEmpty(backImage.value)
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(14),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 140,
+                                        child: Image.file(
+                                          backImage.value!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     )
-                                  ],
-                                ),
-                              ),
+                                  : Container(
+                                      alignment: Alignment.center,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(AssetConstants.add),
+                                          hSizedBox10,
+                                          Text(
+                                            "Back",
+                                            style: style700S16.copyWith(
+                                                color: Color(0xFFCCCCCC)),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                            ),
+                          ))
+                        ],
                       ),
-                    ))
-                  ],
-                ),
+                    ),
+                  ),
+                  hSizedBox10,
+                  BulletPointList(items: const [
+                    "Front full-body image",
+                    "Side full-body image",
+                    "Back full-body image",
+                    "Good lighting is essential",
+                    "Use a neutral background"
+                  ]),
+                  Spacer(),
+                  Obx(() => AppButton(
+                        isOutlined: true,
+                        isGradientBorder: true,
+                        backgroundColor: AppColors.whiteColor.withAlpha(10),
+                        loaderColor: AppColors.whiteColor,
+                        isLoading: isLoading.value,
+                        text: "Proceed to Scan",
+                        textColor: const Color(0xFFCCCCCC),
+                        onTap: () {
+                          if (frontImage.value != null &&
+                              backImage.value != null &&
+                              sideImage.value != null) {
+                            bodyMeasurementsAnalyzeApi(context);
+                          } else {
+                            toast('Please upload all required images');
+                          }
+                        },
+                      )),
+                ],
               ),
-            ),
-            hSizedBox10,
-            BulletPointList(items: const [
-              "Front full-body image",
-              "Side full-body image",
-              "Back full-body image",
-              "Good lighting is essential",
-              "Use a neutral background"
-            ]),
-            Spacer(),
-            Obx(() => AppButton(
-                  isOutlined: true,
-                  isGradientBorder: true,
-                  backgroundColor: AppColors.whiteColor.withAlpha(10),
-                  loaderColor: AppColors.whiteColor,
-                  isLoading: isLoading.value,
-                  text: "Proceed to Scan",
-                  textColor: const Color(0xFFCCCCCC),
-                  onTap: () {
-                    if (frontImage.value != null &&
-                        backImage.value != null &&
-                        sideImage.value != null) {
-                      bodyMeasurementsAnalyzeApi(context);
-                    } else {
-                      toast('Please upload all required images');
-                    }
-                  },
-                )),
-          ],
-        ),
+            )),
       ),
     );
   }

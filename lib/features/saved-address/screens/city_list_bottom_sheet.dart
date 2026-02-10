@@ -52,6 +52,18 @@ class CityListBottomSheet extends StatelessWidget {
               },
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Align(
+              child: Text(
+                "We are serviceable for Chandigarh and Delhi only",
+                textAlign: TextAlign.center,
+                style: style400S12.copyWith(
+                  color: Color(0xFFCCCCCC),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

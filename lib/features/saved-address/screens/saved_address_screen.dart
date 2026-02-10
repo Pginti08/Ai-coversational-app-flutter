@@ -157,7 +157,7 @@ class SavedAddressScreen extends StatelessWidget {
                                                         const Color(0xFFCCCCCC),
                                                   ),
                                                 ),
-                                                hSizedBox10,
+                                                hSizedBox4,
                                                 Text.rich(
                                                   TextSpan(
                                                     children: [
@@ -192,6 +192,7 @@ class SavedAddressScreen extends StatelessWidget {
                                             children: [
                                               CommonContainer(
                                                   isCircle: true,
+                                                  padding: EdgeInsets.all(2),
                                                   backgroundColor:
                                                       Colors.transparent,
                                                   onTap: () {

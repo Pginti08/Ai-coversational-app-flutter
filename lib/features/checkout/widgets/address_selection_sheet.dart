@@ -6,6 +6,7 @@ import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
 import 'package:vousvous/core/widgets/app_button.dart';
+import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/core/widgets/blur_bottom_sheet.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/features/checkout/controller/checkout_controller.dart';
@@ -85,8 +86,19 @@ class AddressSelectionSheet extends StatelessWidget {
                           Colors.white.withAlpha(15),
                         ],
                   onTap: () {
-                    onSelect(address);
-                    Get.back();
+                    final city = (address.city ?? "").toLowerCase();
+                    final state = (address.state ?? "").toLowerCase();
+
+                    if (state.contains("delhi") ||
+                        state.contains("chandigarh")) {
+                      onSelect(address);
+                      Get.back();
+                    } else {
+                      toast(
+                        "We are serviceable for Chandigarh and Delhi only",
+                        type: ToastType.warning,
+                      );
+                    }
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

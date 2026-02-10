@@ -49,8 +49,9 @@ class _SharePreviewScreenState extends State<SharePreviewScreen> {
             CheckQuotationExistsModel.fromJson(result.data?.data);
         if (checkExistsQuotationModel.data?.exists == true) {
           // 1️⃣ Remove controller
-          if (Get.isRegistered<QuotationChatController>()) {
-            Get.delete<QuotationChatController>();
+          if (Get.isRegistered<QuotationChatController>(
+              tag: controller.imageUrl)) {
+            Get.delete<QuotationChatController>(tag: controller.imageUrl);
           }
 
 // 2️⃣ Pop until no quotationChat exists in stack

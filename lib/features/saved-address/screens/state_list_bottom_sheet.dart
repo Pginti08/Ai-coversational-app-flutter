@@ -24,13 +24,22 @@ class StateListBottomSheet extends StatelessWidget {
           hSizedBox30,
           Expanded(
             child: ListView.separated(
-              itemCount: stateCitiesMap.length,
+              itemCount: stateCitiesMap.keys
+                  .where((key) =>
+                      key.toLowerCase() == "delhi" ||
+                      key.toLowerCase() == "chandigarh")
+                  .length,
               separatorBuilder: (context, index) => Divider(
                 thickness: 0.5,
                 color: Colors.white24,
               ),
               itemBuilder: (context, index) {
-                final stateName = stateCitiesMap.keys.elementAt(index);
+                final filteredStates = stateCitiesMap.keys
+                    .where((key) =>
+                        key.toLowerCase() == "delhi" ||
+                        key.toLowerCase() == "chandigarh")
+                    .toList();
+                final stateName = filteredStates[index];
 
                 return GestureDetector(
                   onTap: () {
@@ -46,6 +55,18 @@ class StateListBottomSheet extends StatelessWidget {
                   ),
                 );
               },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Align(
+              child: Text(
+                "We are serviceable for Chandigarh and Delhi only",
+                textAlign: TextAlign.center,
+                style: style400S12.copyWith(
+                  color: Color(0xFFCCCCCC),
+                ),
+              ),
             ),
           ),
         ],

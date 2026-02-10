@@ -25,9 +25,11 @@ class OrderDetailController extends GetxController {
     super.onInit();
   }
 
-  Future<void> getOrderDetail() async {
+  Future<void> getOrderDetail({bool isRefresh = false}) async {
     try {
-      isLoading.value = true;
+      if (!isRefresh) {
+        isLoading.value = true;
+      }
       var result = await NetworkClient.instance.callApi(
         "${ApiConstants.orders}/$orderId",
         MethodType.get,

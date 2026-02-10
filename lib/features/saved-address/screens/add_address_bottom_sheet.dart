@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -17,6 +17,7 @@ import 'package:vousvous/core/widgets/blur_bottom_sheet.dart';
 import 'package:vousvous/features/saved-address/models/saved_address_model.dart';
 import 'package:vousvous/features/saved-address/screens/city_list_bottom_sheet.dart';
 import 'package:vousvous/features/saved-address/screens/state_list_bottom_sheet.dart';
+import 'package:vousvous/features/saved-address/services/pincode_service.dart';
 
 class AddAddressBottomSheet extends StatefulWidget {
   final bool isEdit;
@@ -36,6 +37,7 @@ class AddAddressBottomSheet extends StatefulWidget {
 
 class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
   final RxBool isLoading = false.obs;
+  final RxBool isPincodeLoading = false.obs;
 
   final TextEditingController nameController = TextEditingController();
 
@@ -71,7 +73,85 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
     stateController.text = widget.savedAddress?.state ?? "";
     cityController.text = widget.savedAddress?.city ?? "";
 
+    pincodeController.addListener(() {
+      if (pincodeController.text.length == 6) {
+        _fetchCityState(pincodeController.text);
+      }
+    });
+
     super.initState();
+  }
+
+  Future<void> _fetchCityState(String pincode) async {
+    isPincodeLoading.value = true;
+    final data = await PincodeService.fetchCityState(pincode);
+    isPincodeLoading.value = false;
+
+    if (data != null) {
+      final city = data['city'] ?? "";
+      final state = data['state'] ?? "";
+
+      if (city.toLowerCase().contains("delhi") ||
+          city.toLowerCase().contains("chandigarh") ||
+          state.toLowerCase().contains("delhi") ||
+          state.toLowerCase().contains("chandigarh")) {
+        // Since state names from API might differ slightly (e.g. "Delhi" vs "Delhi"),
+        // we might want to map them to our list or just set them.
+        // For now, setting them directly as text.
+
+        // We need to match with our list keys if possible for dropdown consistency,
+        // but since we are auto-filling text fields, setting text is fine.
+        // However, state field is read-only and expects selection from bottom sheet usually.
+        // Let's see if we can set the text directly.
+
+        // Mapping simple "Delhi" to "Delhi" and "Chandigarh" to "Chandigarh"
+        String mappedState = "";
+        if (state.toLowerCase().contains("delhi")) {
+          mappedState = "Delhi";
+        } else if (state.toLowerCase().contains("chandigarh")) {
+          mappedState = "Chandigarh";
+        }
+
+        if (mappedState.isNotEmpty) {
+          stateController.text = mappedState;
+          cityController.text = city; // API returns District as City usually
+
+          // Clear errors
+          stateError.value = '';
+          cityError.value = '';
+          pincodeError.value = '';
+        } else {
+          // Should not happen if outer if check passes
+          stateController.text = state;
+          cityController.text = city;
+        }
+      } else {
+        toast("We are serviceable for Chandigarh and Delhi only",
+            type: ToastType.warning);
+        // Clear fields or keep them? User requirements say "give error on sacve adress" if outside.
+        // But also said "make sure if out side delhi channdigarh pincode enter give error on sacve adress"
+        // And "based on pincode enter fill state and city wich match in our list"
+
+        // If it doesn't match our list (Delhi/Chandigarh), we probably shouldn't fill it?
+        // Or fill it and let validation catch it?
+        // "also make sure if out side delhi channdigarh pincode enter give error on sacve adress" implies validation on save.
+        // But "fill state and city wich match in our list" implies only fill if it matches.
+
+        // Let's fill it to let the user see what happened, but show the toast immediately as per "give error".
+        // Actually, if we fill it with non-Delhi/Chandigarh, the save validation will catch it.
+        // But the previous requirement was "Restrict address addition".
+        // The *state* field is read-only. If we set it to "Maharashtra", the user can't change it easily if they want to correct it without changing pincode?
+        // Actually they can click the field to open sheet.
+
+        // Let's NOT fill if it's not serviceable, to enforce "Restriction".
+        stateController.clear();
+        cityController.clear();
+      }
+    } else {
+      toast("Invalid Pincode", type: ToastType.error);
+      stateController.clear();
+      cityController.clear();
+    }
   }
 
   void validateAndSave() {
@@ -96,7 +176,15 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
         error4 == null &&
         error5 == null &&
         error6 == null) {
-      saveAddressApi();
+      final state = stateController.text.toLowerCase();
+      final city = cityController.text.toLowerCase();
+      if ((state.contains("delhi") || state.contains("chandigarh")) ||
+          (city.contains("delhi") || city.contains("chandigarh"))) {
+        saveAddressApi();
+      } else {
+        toast("We are serviceable for Chandigarh and Delhi only",
+            type: ToastType.warning);
+      }
     }
   }
 
@@ -214,6 +302,22 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                       errorText: pincodeError.value.isEmpty
                           ? null
                           : pincodeError.value,
+                      suffixIcon: Obx(() => isPincodeLoading.value
+                          ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: Center(
+                                child: SizedBox(
+                                  height: 16,
+                                  width: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.whiteColor,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : SizedBox.shrink()),
                       onChanged: (value) {
                         if (pincodeError.value.isNotEmpty) {
                           pincodeError.value = '';
@@ -351,7 +455,7 @@ class _AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                               )),
                         ),
                       );
-              })
+              }),
             ],
           ),
         ));

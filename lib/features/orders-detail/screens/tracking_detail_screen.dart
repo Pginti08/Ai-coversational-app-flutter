@@ -34,10 +34,18 @@ class TrackingDetailScreen extends StatelessWidget {
               ],
             ),
             Expanded(
+                child: RefreshIndicator(
+              onRefresh: () async {
+                await controller.getOrderDetail(isRefresh: true);
+              },
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
                 child: ShippingProgressBarVertically(
-              tracking: controller.orderDetailModel.value.tracking ?? [],
-              activeColor: Color(0xFF4FC3F7),
-              inactiveColor: Color(0xFF757575),
+                  tracking: controller.orderDetailModel.value.tracking ?? [],
+                  activeColor: Color(0xFF4FC3F7),
+                  inactiveColor: Color(0xFF757575),
+                ),
+              ),
             ))
           ],
         ));

@@ -28,13 +28,7 @@ class NetworkClient {
 
   // Private constructor
   NetworkClient._internal() {
-    _dio = Dio(
-      BaseOptions(
-        connectTimeout: const Duration(seconds: 120),
-        receiveTimeout: const Duration(seconds: 120),
-        contentType: 'application/json',
-      ),
-    );
+    _dio = Dio();
 
     // Add interceptors
     _dio.interceptors.addAll([

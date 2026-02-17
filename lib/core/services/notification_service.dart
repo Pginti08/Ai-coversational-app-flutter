@@ -226,17 +226,21 @@ class FCMService {
   void _navigateBasedOnPayload(Map<String, dynamic> data) {
     try {
       final type = data['type'] as String?;
-      final imageUrl = data['imageUrl'] as String?;
-      final productId = data['productId'] as String?;
+
       final orderItemId = data['orderItemId'] as String?;
+      final quotationId = data['quotationId'] as String?;
 
       switch (type) {
         case 'QUOTATION_UPDATE':
-          _navigateToQuotation(imageUrl, productId);
+          _navigateToQuotation(quotationId: quotationId);
           break;
 
         case 'ORDER_UPDATE':
-          _navigateToOrder(orderItemId);
+          _navigateToOrder(orderId: orderItemId);
+          break;
+
+        case 'CHAT_MESSAGE':
+          _navigateToQuotation(quotationId: quotationId);
           break;
 
         default:
@@ -247,17 +251,15 @@ class FCMService {
     }
   }
 
-  void _navigateToQuotation(String? imageUrl, String? productId) {
-    Get.toNamed(
-      Routes.quotationChat,
-      arguments: {
-        "imageUrl": imageUrl,
-        "productId": productId,
-      },
-    );
+  void _navigateToQuotation({String? quotationId}) {
+    Get.toNamed(Routes.quotationChat,
+        arguments: {
+          "quotationId": quotationId,
+        },
+        preventDuplicates: false);
   }
 
-  void _navigateToOrder(String? orderId) {
+  void _navigateToOrder({String? orderId}) {
     Get.toNamed(
       Routes.orderDetail,
       arguments: {'orderId': orderId},

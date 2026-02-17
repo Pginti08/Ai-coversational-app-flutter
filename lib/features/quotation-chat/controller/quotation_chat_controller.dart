@@ -10,7 +10,10 @@ import 'package:vousvous/core/services/network_service.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/features/product-detail/models/check_quotation_exists_model.dart';
-import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart';
+import 'package:vousvous/features/quotation-chat/models/quotation_chat_history_model.dart'
+    hide Data;
+import 'package:vousvous/features/quotation-chat/models/quotation_detail_model.dart'
+    hide Data;
 import 'package:vousvous/features/quotation-chat/widgets/chat_actions_buttons.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -154,16 +157,23 @@ class QuotationChatController extends GetxController {
       loader1.value = true;
 
       var result = await NetworkClient.instance.callApi(
-        isNotNullOrEmpty(productId)
-            ? "${ApiConstants.checkQuotationExists}?productId=${productId}"
-            : "${ApiConstants.checkQuotationExists}?image=${imageUrl}",
+        "${ApiConstants.quotations}/${quotationId}",
         MethodType.get,
         baseUrlType: BaseUrl.base,
       );
 
       if (result.isSuccess) {
-        quotationDetailModel.value =
-            CheckQuotationExistsModel.fromJson(result.data?.data);
+        var quotationDetail = QuotationDetailModel.fromJson(result.data?.data);
+        quotationDetailModel.value = CheckQuotationExistsModel(
+            data: Data(
+                quotationId: quotationId,
+                exists: true,
+                aiAnalysis: AiAnalysis(
+                    color: quotationDetail.data?.color,
+                    description: quotationDetail.data?.description,
+                    material: quotationDetail.data?.material,
+                    title: quotationDetail.data?.title,
+                    type: quotationDetail.data?.type)));
         getChatHistoryApi();
       } else {
         toast(result.error.toString());

@@ -20,6 +20,7 @@ import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/features/product-detail/controller/product_detail_controller.dart';
+import 'package:vousvous/features/try-on/utils/tryon_helper.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -178,14 +179,14 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                               },
                               icon: SvgPicture.asset(
                                 AssetConstants.backward,
-                                height: 32,
+                                height: 26,
                               ),
                             ),
                             IconButton(
                               onPressed: _shareProduct,
                               icon: SvgPicture.asset(
                                 AssetConstants.share,
-                                height: 24,
+                                height: 20,
                               ),
                             ),
                           ],
@@ -227,11 +228,37 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                   ),
                                 );
                               },
-                              child: AppNetworkImage(
-                                imageUrl:
-                                    controller.productDetail.value.image ?? "",
-                                fit: BoxFit.cover,
-                                isOpenImageViewer: true,
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  AppNetworkImage(
+                                    imageUrl:
+                                        controller.productDetail.value.image ??
+                                            "",
+                                    fit: BoxFit.cover,
+                                    isOpenImageViewer: true,
+                                  ),
+                                  Positioned(
+                                    top: 12,
+                                    right: 12,
+                                    child: AppButton(
+                                      onTap: () {
+                                        openTryOnFlow(
+                                          context: context,
+                                          productImageUrl: controller
+                                                  .productDetail.value.image ??
+                                              "",
+                                        );
+                                      },
+                                      text: "Try On Me",
+                                      borderColor: AppColors.hintTextColor,
+                                      textColor:
+                                          AppColors.blackColor.withAlpha(200),
+                                      fontSize: 12,
+                                      height: 34,
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
                           ),

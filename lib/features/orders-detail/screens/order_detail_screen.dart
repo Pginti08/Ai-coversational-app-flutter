@@ -328,144 +328,144 @@ class OrderDetailScreen extends StatelessWidget {
                                               color: Color(0xFF666666)),
                                         ),
                                         hSizedBox10,
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Sub Total",
-                                              style: style400S16.copyWith(
-                                                  letterSpacing: 0.32,
-                                                  color: Color(0xFF666666)),
-                                            ),
-                                            wSizedBox10,
-                                            Expanded(
-                                                child: DottedLine(
-                                              dashLength: 3,
-                                              dashGapLength: 2,
-                                              dashColor:
-                                                  Colors.white.withAlpha(40),
-                                            )),
-                                            wSizedBox10,
-                                            Image.asset(
-                                              AssetConstants.vousvousCoin,
-                                              height: 14,
-                                              width: 14,
-                                            ),
-                                            wSizedBox2,
-                                            Text(
-                                              ((controller
-                                                              .orderDetailModel
-                                                              .value
-                                                              .order
-                                                              ?.subTotal ??
-                                                          0) /
-                                                      100)
-                                                  .toFormattedCoins(),
-                                              style: style400S14.copyWith(
-                                                  letterSpacing: 0.28,
-                                                  color: Color(0xFFCCCCCC)),
-                                            ),
-                                            wSizedBox4,
-                                            Text(
-                                              "(${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.subTotal?.toFormattedPrice() ?? "-"})",
-                                              style: style400S14.copyWith(
-                                                  letterSpacing: 0.28,
-                                                  color: Color(0xFFCCCCCC)),
-                                            ),
-                                          ],
-                                        ),
-                                        hSizedBox12,
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Taxes",
-                                              style: style400S16.copyWith(
-                                                  letterSpacing: 0.32,
-                                                  color: Color(0xFF666666)),
-                                            ),
-                                            wSizedBox10,
-                                            Expanded(
-                                                child: DottedLine(
-                                              dashLength: 3,
-                                              dashGapLength: 2,
-                                              dashColor:
-                                                  Colors.white.withAlpha(40),
-                                            )),
-                                            wSizedBox10,
-                                            Image.asset(
-                                              AssetConstants.vousvousCoin,
-                                              height: 14,
-                                              width: 14,
-                                            ),
-                                            wSizedBox2,
-                                            Text(
-                                              ((controller
-                                                              .orderDetailModel
-                                                              .value
-                                                              .order
-                                                              ?.taxAmount ??
-                                                          0) /
-                                                      100)
-                                                  .toFormattedCoins(),
-                                              style: style400S14.copyWith(
-                                                  letterSpacing: 0.28,
-                                                  color: Color(0xFFCCCCCC)),
-                                            ),
-                                            wSizedBox4,
-                                            Text(
-                                              "(${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.taxAmount?.toFormattedPrice() ?? "-"})",
-                                              style: style400S14.copyWith(
-                                                  letterSpacing: 0.28,
-                                                  color: Color(0xFFCCCCCC)),
-                                            ),
-                                          ],
-                                        ),
-                                        hSizedBox12,
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Shipping",
-                                              style: style400S16.copyWith(
-                                                  letterSpacing: 0.32,
-                                                  color: Color(0xFF666666)),
-                                            ),
-                                            wSizedBox10,
-                                            Expanded(
-                                                child: DottedLine(
-                                              dashLength: 3,
-                                              dashGapLength: 2,
-                                              dashColor:
-                                                  Colors.white.withAlpha(40),
-                                            )),
-                                            wSizedBox10,
-                                            Image.asset(
-                                              AssetConstants.vousvousCoin,
-                                              height: 14,
-                                              width: 14,
-                                            ),
-                                            wSizedBox2,
-                                            Text(
-                                              ((controller
-                                                              .orderDetailModel
-                                                              .value
-                                                              .order
-                                                              ?.shippingCharge ??
-                                                          0) /
-                                                      100)
-                                                  .toFormattedCoins(),
-                                              style: style400S14.copyWith(
-                                                  letterSpacing: 0.28,
-                                                  color: Color(0xFFFFB86B)),
-                                            ),
-                                            wSizedBox4,
-                                            Text(
-                                              "(${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.shippingCharge?.toFormattedPrice() ?? "-"})",
-                                              style: style400S14.copyWith(
-                                                  letterSpacing: 0.28,
-                                                  color: Color(0xFFCCCCCC)),
-                                            ),
-                                          ],
-                                        ),
-                                        hSizedBox12,
+                                        // Row(
+                                        //   children: [
+                                        //     Text(
+                                        //       "Sub Total",
+                                        //       style: style400S16.copyWith(
+                                        //           letterSpacing: 0.32,
+                                        //           color: Color(0xFF666666)),
+                                        //     ),
+                                        //     wSizedBox10,
+                                        //     Expanded(
+                                        //         child: DottedLine(
+                                        //       dashLength: 3,
+                                        //       dashGapLength: 2,
+                                        //       dashColor:
+                                        //           Colors.white.withAlpha(40),
+                                        //     )),
+                                        //     wSizedBox10,
+                                        //     Image.asset(
+                                        //       AssetConstants.vousvousCoin,
+                                        //       height: 14,
+                                        //       width: 14,
+                                        //     ),
+                                        //     wSizedBox2,
+                                        //     Text(
+                                        //       ((controller
+                                        //                       .orderDetailModel
+                                        //                       .value
+                                        //                       .order
+                                        //                       ?.subTotal ??
+                                        //                   0) /
+                                        //               100)
+                                        //           .toFormattedCoins(),
+                                        //       style: style400S14.copyWith(
+                                        //           letterSpacing: 0.28,
+                                        //           color: Color(0xFFCCCCCC)),
+                                        //     ),
+                                        //     wSizedBox4,
+                                        //     Text(
+                                        //       "(${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.subTotal?.toFormattedPrice() ?? "-"})",
+                                        //       style: style400S14.copyWith(
+                                        //           letterSpacing: 0.28,
+                                        //           color: Color(0xFFCCCCCC)),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        // hSizedBox12,
+                                        // Row(
+                                        //   children: [
+                                        //     Text(
+                                        //       "Taxes",
+                                        //       style: style400S16.copyWith(
+                                        //           letterSpacing: 0.32,
+                                        //           color: Color(0xFF666666)),
+                                        //     ),
+                                        //     wSizedBox10,
+                                        //     Expanded(
+                                        //         child: DottedLine(
+                                        //       dashLength: 3,
+                                        //       dashGapLength: 2,
+                                        //       dashColor:
+                                        //           Colors.white.withAlpha(40),
+                                        //     )),
+                                        //     wSizedBox10,
+                                        //     Image.asset(
+                                        //       AssetConstants.vousvousCoin,
+                                        //       height: 14,
+                                        //       width: 14,
+                                        //     ),
+                                        //     wSizedBox2,
+                                        //     Text(
+                                        //       ((controller
+                                        //                       .orderDetailModel
+                                        //                       .value
+                                        //                       .order
+                                        //                       ?.taxAmount ??
+                                        //                   0) /
+                                        //               100)
+                                        //           .toFormattedCoins(),
+                                        //       style: style400S14.copyWith(
+                                        //           letterSpacing: 0.28,
+                                        //           color: Color(0xFFCCCCCC)),
+                                        //     ),
+                                        //     wSizedBox4,
+                                        //     Text(
+                                        //       "(${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.taxAmount?.toFormattedPrice() ?? "-"})",
+                                        //       style: style400S14.copyWith(
+                                        //           letterSpacing: 0.28,
+                                        //           color: Color(0xFFCCCCCC)),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        // hSizedBox12,
+                                        // Row(
+                                        //   children: [
+                                        //     Text(
+                                        //       "Shipping",
+                                        //       style: style400S16.copyWith(
+                                        //           letterSpacing: 0.32,
+                                        //           color: Color(0xFF666666)),
+                                        //     ),
+                                        //     wSizedBox10,
+                                        //     Expanded(
+                                        //         child: DottedLine(
+                                        //       dashLength: 3,
+                                        //       dashGapLength: 2,
+                                        //       dashColor:
+                                        //           Colors.white.withAlpha(40),
+                                        //     )),
+                                        //     wSizedBox10,
+                                        //     Image.asset(
+                                        //       AssetConstants.vousvousCoin,
+                                        //       height: 14,
+                                        //       width: 14,
+                                        //     ),
+                                        //     wSizedBox2,
+                                        //     Text(
+                                        //       ((controller
+                                        //                       .orderDetailModel
+                                        //                       .value
+                                        //                       .order
+                                        //                       ?.shippingCharge ??
+                                        //                   0) /
+                                        //               100)
+                                        //           .toFormattedCoins(),
+                                        //       style: style400S14.copyWith(
+                                        //           letterSpacing: 0.28,
+                                        //           color: Color(0xFFFFB86B)),
+                                        //     ),
+                                        //     wSizedBox4,
+                                        //     Text(
+                                        //       "(${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.shippingCharge?.toFormattedPrice() ?? "-"})",
+                                        //       style: style400S14.copyWith(
+                                        //           letterSpacing: 0.28,
+                                        //           color: Color(0xFFCCCCCC)),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        // hSizedBox12,
                                         Row(
                                           children: [
                                             Text(
@@ -503,6 +503,127 @@ class OrderDetailScreen extends StatelessWidget {
                                             ),
                                           ],
                                         ),
+                                        // Paid Amount
+                                        if (controller.orderDetailModel.value
+                                                .order?.totalAmount !=
+                                            null) ...[
+                                          hSizedBox12,
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Paid Amount",
+                                                style: style400S16.copyWith(
+                                                    letterSpacing: 0.32,
+                                                    color: Color(0xFF4CAF50)),
+                                              ),
+                                              wSizedBox10,
+                                              Expanded(
+                                                  child: DottedLine(
+                                                dashLength: 3,
+                                                dashGapLength: 2,
+                                                dashColor:
+                                                    Colors.white.withAlpha(40),
+                                              )),
+                                              wSizedBox10,
+                                              if (controller
+                                                      .orderDetailModel
+                                                      .value
+                                                      .order
+                                                      ?.walletPaidCU !=
+                                                  null) ...[
+                                                Image.asset(
+                                                  AssetConstants.vousvousCoin,
+                                                  height: 14,
+                                                  width: 14,
+                                                ),
+                                                wSizedBox2,
+                                                Text(
+                                                  "${controller.orderDetailModel.value.order!.walletPaidCU!.toFormattedCoins()} ",
+                                                  style: style400S14.copyWith(
+                                                      letterSpacing: 0.28,
+                                                      color: Color(0xFF4CAF50)),
+                                                ),
+                                              ],
+                                              Text(
+                                                "(${AssetConstants.rupeeSymbol}${((controller.orderDetailModel.value.order?.walletPaidCU ?? 0) * 100).toFormattedPrice()})",
+                                                style: style400S14.copyWith(
+                                                    letterSpacing: 0.28,
+                                                    color: Color(0xFF4CAF50)),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                        // Due Amount on Delivery
+                                        if ((controller
+                                                    .orderDetailModel
+                                                    .value
+                                                    .order
+                                                    ?.amountDueOnDelivery ??
+                                                0) >
+                                            0) ...[
+                                          hSizedBox12,
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Due on Delivery",
+                                                style: style400S16.copyWith(
+                                                    letterSpacing: 0.32,
+                                                    color: Color(0xFFFFB86B)),
+                                              ),
+                                              wSizedBox10,
+                                              Expanded(
+                                                  child: DottedLine(
+                                                dashLength: 3,
+                                                dashGapLength: 2,
+                                                dashColor:
+                                                    Colors.white.withAlpha(40),
+                                              )),
+                                              wSizedBox10,
+                                              Text(
+                                                "${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.amountDueOnDelivery?.toFormattedPrice() ?? "-"}",
+                                                style: style400S14.copyWith(
+                                                    letterSpacing: 0.28,
+                                                    color: Color(0xFFFFB86B)),
+                                              ),
+                                            ],
+                                          ),
+                                          hSizedBox12,
+                                          Container(
+                                            width: double.infinity,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 10),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFFFB86B)
+                                                  .withAlpha(20),
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              border: Border.all(
+                                                color: Color(0xFFFFB86B)
+                                                    .withAlpha(60),
+                                                width: 0.5,
+                                              ),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.info_outline_rounded,
+                                                  color: Color(0xFFFFB86B),
+                                                  size: 18,
+                                                ),
+                                                wSizedBox8,
+                                                Expanded(
+                                                  child: Text(
+                                                    "Please complete your remaining payment of ${AssetConstants.rupeeSymbol}${controller.orderDetailModel.value.order?.amountDueOnDelivery?.toFormattedPrice() ?? "0"} at the time of delivery.",
+                                                    style: style400S12.copyWith(
+                                                      color: Color(0xFFFFB86B),
+                                                      letterSpacing: 0.24,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                         hSizedBox14,
                                         Obx(() => AppButton(
                                               onTap: () {

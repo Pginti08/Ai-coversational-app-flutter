@@ -135,19 +135,34 @@ class CheckoutController extends GetxController {
     return int.tryParse(quantityStr) ?? 1;
   }
 
-  /// Calculate credits needed (1 credit = ₹100)
+  /// Calculate total credits needed (1 credit = ₹100)
   double get creditsNeeded {
     return quotationTotalAmount / 100;
   }
 
-  /// Check if wallet has sufficient balance
-  bool get hasSufficientBalance {
-    return walletBalance.value >= creditsNeeded;
+  /// 50% upfront amount in INR
+  double get upfrontAmount {
+    return quotationTotalAmount / 2;
   }
 
-  /// Get the deficit amount (credits needed to add)
+  /// 50% remaining amount in INR (paid at delivery)
+  double get remainingAmount {
+    return quotationTotalAmount - upfrontAmount;
+  }
+
+  /// Credits needed for 50% upfront payment
+  double get upfrontCredits {
+    return upfrontAmount / 100;
+  }
+
+  /// Check if wallet has sufficient balance for 50% upfront
+  bool get hasSufficientBalance {
+    return walletBalance.value >= upfrontCredits;
+  }
+
+  /// Get the deficit amount (credits needed to add for 50% upfront)
   double get creditsDeficit {
-    final deficit = creditsNeeded - walletBalance.value;
+    final deficit = upfrontCredits - walletBalance.value;
     return deficit > 0 ? deficit : 0;
   }
 
@@ -206,7 +221,7 @@ class CheckoutController extends GetxController {
         "unitPrice": quotation?.price ?? 0,
         "totalAmount": quotationTotalAmount,
         "paidAmountINR": 0,
-        "paidCoinsCU": creditsNeeded,
+        "paidCoinsCU": upfrontCredits,
       };
 
       debugPrint('Placing quotation order with payload: $payload');

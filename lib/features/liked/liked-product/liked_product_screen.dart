@@ -57,7 +57,7 @@ class _LikedProductScreenState extends State<LikedProductScreen> {
               height: MediaQuery.sizeOf(context).height * 0.8,
               context: context,
               borderColor: AppColors.whiteColor.withAlpha(40),
-              backgroundColor: AppColors.scaffoldColor.withAlpha(200),
+              backgroundColor: AppColors.scaffoldColor.withAlpha(230),
               barrierColor: AppColors.blackColor.withAlpha(50),
               blurStrength: 10,
               isCloseButton: true,

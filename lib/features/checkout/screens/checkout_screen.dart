@@ -301,26 +301,29 @@ class CheckoutScreen extends StatelessWidget {
         child: Obx(() => Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Divider(thickness: 0.5, color: AppColors.grey2Color),
-                hSizedBox6,
-                _buildSummaryRow("Quantity", "${controller.quotationQuantity}"),
-                hSizedBox8,
                 _buildSummaryRow(
-                  "Unit Price",
-                  "${AssetConstants.rupeeSymbol}${controller.quotation?.price?.toFormattedPrice() ?? "0"}",
+                  "Total Price",
+                  "${AssetConstants.rupeeSymbol}${controller.quotationTotalAmount.toFormattedPrice()}",
+                  isBold: true,
                 ),
                 hSizedBox8,
                 _buildSummaryRow(
-                  "Total",
-                  "${AssetConstants.rupeeSymbol}${controller.quotationTotalAmount.toFormattedPrice()}",
-                  isBold: true,
+                  "Pay Now (50%)",
+                  "${AssetConstants.rupeeSymbol}${controller.upfrontAmount.toFormattedPrice()}",
+                  valueColor: const Color(0xFF68C3E7),
+                ),
+                hSizedBox8,
+                _buildSummaryRow(
+                  "Pay on Delivery (50%)",
+                  "${AssetConstants.rupeeSymbol}${controller.remainingAmount.toFormattedPrice()}",
+                  valueColor: const Color(0xFFCCCCCC),
                 ),
 
                 hSizedBox8,
                 Row(
                   children: [
                     Text(
-                      "Credits Required",
+                      "Credits Required Now",
                       style: style400S16.copyWith(
                         letterSpacing: 0.32,
                         color: Color(0xFF666666),
@@ -338,7 +341,7 @@ class CheckoutScreen extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          "${controller.creditsNeeded.toFormattedCoins()} ",
+                          "${controller.upfrontCredits.toFormattedCoins()} ",
                           style: style400S14.copyWith(
                             letterSpacing: 0.28,
                             color: const Color(0xFF68C3E7),
@@ -445,7 +448,7 @@ class CheckoutScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Pay ${controller.creditsNeeded.toFormattedCoins()} ",
+                          "Pay ${controller.upfrontCredits.toFormattedCoins()} ",
                           style: style700S16.copyWith(
                             color: AppColors.blackColor,
                           ),

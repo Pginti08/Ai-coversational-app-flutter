@@ -25,6 +25,7 @@ import 'package:vousvous/features/share-preview/screens/share_preview_screen.dar
 import 'package:vousvous/features/signup/screens/signup_screen.dart';
 import 'package:vousvous/features/skipped/screens/skipped_screen.dart';
 import 'package:vousvous/features/splash/screens/splash_screen.dart';
+import 'package:vousvous/features/try-on/screens/tryon_preview_screen.dart';
 import 'package:vousvous/features/user-profile/screens/follower_list_screen.dart';
 import 'package:vousvous/features/user-profile/screens/posts_view_screen.dart';
 import 'package:vousvous/features/user-profile/screens/user_profile_screen.dart';
@@ -276,6 +277,13 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.buyCredit,
       page: () => BuyCreditScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.tryOnPreview,
+      page: () => TryOnPreviewScreen(),
     ),
   ];
 }

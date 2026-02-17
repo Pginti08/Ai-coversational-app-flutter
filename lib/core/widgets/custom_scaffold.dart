@@ -14,7 +14,7 @@ class CustomScaffold extends StatefulWidget {
   final bool isTopSafeArea;
   final bool isBottomSafeArea;
   final Color? scaffoldColor;
-  bool? resizeToAvoidBottomInset;
+  final bool? resizeToAvoidBottomInset;
 
   CustomScaffold(
       {Key? key,

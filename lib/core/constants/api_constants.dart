@@ -74,6 +74,7 @@ class ApiConstants {
   static const String coinOrder = '/wallet/coin-order';
   static const String verifyPayment = '/wallet/verify-payment';
   static const String walletHistory = '/wallet/history';
+  static const String virtualTryOn = '/virtual-tryon/generate';
 
   // Headers
   static const Map<String, String> headers = {

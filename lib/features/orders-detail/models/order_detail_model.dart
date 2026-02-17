@@ -112,6 +112,9 @@ class Order {
   double? taxAmount;
   double? shippingCharge;
   double? totalAmount;
+  double? amountDueOnDelivery;
+  double? amountCollectedOnDelivery;
+  double? walletPaidCU;
   dynamic remarks;
   DateTime? createdAt;
   DateTime? updatedAt;
@@ -127,6 +130,9 @@ class Order {
     this.taxAmount,
     this.shippingCharge,
     this.totalAmount,
+    this.amountDueOnDelivery,
+    this.amountCollectedOnDelivery,
+    this.walletPaidCU,
     this.remarks,
     this.createdAt,
     this.updatedAt,
@@ -143,6 +149,11 @@ class Order {
         taxAmount: double.tryParse(json["taxAmount"].toString()),
         shippingCharge: double.tryParse(json["shippingCharge"].toString()),
         totalAmount: double.tryParse(json["totalAmount"].toString()),
+        amountDueOnDelivery:
+            double.tryParse(json["amountDueOnDelivery"].toString()),
+        amountCollectedOnDelivery:
+            double.tryParse(json["amountCollectedOnDelivery"].toString()),
+        walletPaidCU: double.tryParse(json["walletPaidCU"].toString()),
         remarks: json["remarks"],
         createdAt: json["createdAt"] == null
             ? null
@@ -163,6 +174,9 @@ class Order {
         "taxAmount": taxAmount,
         "shippingCharge": shippingCharge,
         "totalAmount": totalAmount,
+        "amountDueOnDelivery": amountDueOnDelivery,
+        "amountCollectedOnDelivery": amountCollectedOnDelivery,
+        "walletPaidCU": walletPaidCU,
         "remarks": remarks,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),

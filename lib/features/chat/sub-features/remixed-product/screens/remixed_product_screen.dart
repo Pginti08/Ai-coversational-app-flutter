@@ -25,6 +25,7 @@ import 'package:vousvous/features/chat/sub-features/remixed-product/controller/r
 import 'package:vousvous/features/chat/sub-features/remixed-product/screens/add_to_post_bottom_sheet.dart';
 import 'package:vousvous/features/product-detail/models/check_quotation_exists_model.dart';
 import 'package:vousvous/features/quotations/screens/select_body_profile_bottom_sheet.dart';
+import 'package:vousvous/features/try-on/utils/tryon_helper.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 class RemixedProductScreen extends StatefulWidget {
@@ -60,7 +61,7 @@ class _RemixedProductScreenState extends State<RemixedProductScreen> {
               height: MediaQuery.sizeOf(context).height * 0.8,
               context: context,
               borderColor: AppColors.whiteColor.withAlpha(40),
-              backgroundColor: AppColors.scaffoldColor.withAlpha(200),
+              backgroundColor: AppColors.scaffoldColor.withAlpha(230),
               barrierColor: AppColors.blackColor.withAlpha(50),
               blurStrength: 10,
               isCloseButton: true,
@@ -208,30 +209,49 @@ Download VOUSVOUS now and bring your fashion vision to life!
                   Positioned(
                     top: 10,
                     right: 10,
-                    child: CommonContainer(
-                      height:
-                          36, // Fixed height and width to ensure circular shape
-                      width: 36,
-                      onTap: () {
-                        Get.until(
-                            (route) => route.settings.name == Routes.chat);
-                        final ChatController chatController =
-                            Get.find<ChatController>();
-                        chatController.userSelectedRemixOutfits.clear();
-                        chatController.userSelectedRemixOutfits.value = [
-                          "${controller.imageUrl}"
-                        ];
-                        chatController.typeFocusNode.requestFocus();
-                      },
-                      isCircle: true,
-                      gradientColors: AppColors.colorGradient,
-                      borderColor: AppColors.hintTextColor,
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: SvgPicture.asset(
-                        AssetConstants.magicpen,
-                        color: AppColors.whiteColor,
-                        width: 18,
-                      ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        AppButton(
+                          onTap: () {
+                            openTryOnFlow(
+                              context: context,
+                              productImageUrl: controller.imageUrl,
+                            );
+                          },
+                          text: "Try On Me",
+                          borderColor: AppColors.hintTextColor,
+                          textColor: AppColors.blackColor.withAlpha(200),
+                          fontSize: 12,
+                          height: 34,
+                        ),
+                        wSizedBox6,
+                        CommonContainer(
+                          height:
+                              34, // Fixed height and width to ensure circular shape
+                          width: 34,
+                          onTap: () {
+                            Get.until(
+                                (route) => route.settings.name == Routes.chat);
+                            final ChatController chatController =
+                                Get.find<ChatController>();
+                            chatController.userSelectedRemixOutfits.clear();
+                            chatController.userSelectedRemixOutfits.value = [
+                              "${controller.imageUrl}"
+                            ];
+                            chatController.typeFocusNode.requestFocus();
+                          },
+                          isCircle: true,
+                          gradientColors: AppColors.colorGradient,
+                          borderColor: AppColors.hintTextColor,
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: SvgPicture.asset(
+                            AssetConstants.magicpen,
+                            color: AppColors.blackColor.withAlpha(150),
+                            width: 18,
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 ],

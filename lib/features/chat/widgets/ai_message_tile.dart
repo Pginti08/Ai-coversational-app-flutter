@@ -9,12 +9,14 @@ import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/core/utils/sizedbox.dart';
+import 'package:vousvous/core/widgets/app_button.dart';
 import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/core/widgets/stacked_card_widget.dart';
 import 'package:vousvous/core/widgets/swipe_to_reply.dart';
 import 'package:vousvous/features/chat/controller/chat_controller.dart';
 import 'package:vousvous/features/chat/models/chat_history_model.dart';
+import 'package:vousvous/features/try-on/utils/tryon_helper.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 class AiMessageTile extends StatefulWidget {
@@ -101,8 +103,8 @@ class _AiMessageTileState extends State<AiMessageTile> {
                       right: 10,
                       child: CommonContainer(
                         height:
-                            36, // Fixed height and width to ensure circular shape
-                        width: 36,
+                            30, // Fixed height and width to ensure circular shape
+                        width: 30,
                         onTap: () {
                           widget.chatController.userSelectedRemixOutfits
                               .clear();
@@ -119,11 +121,30 @@ class _AiMessageTileState extends State<AiMessageTile> {
 
                         child: SvgPicture.asset(
                           AssetConstants.magicpen,
-                          color: AppColors.whiteColor,
+                          color: AppColors.blackColor.withAlpha(150),
                           width: 18,
                         ),
                       ),
-                    )
+                    ),
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
+                      child: AppButton(
+                        onTap: () {
+                          openTryOnFlow(
+                            context: context,
+                            productImageUrl:
+                                "${widget.message.images!.first.filename ?? ""}",
+                          );
+                        },
+                        text: "Try On Me",
+                        borderColor: AppColors.hintTextColor,
+                        textColor: AppColors.blackColor.withAlpha(200),
+                        padding: EdgeInsets.symmetric(horizontal: 4),
+                        fontSize: 10,
+                        height: 26,
+                      ),
+                    ),
                   ],
                 ),
                 hSizedBox10,

@@ -30,7 +30,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
   void initState() {
     super.initState();
     String? tag;
-    
+
     if (Get.arguments != null) {
       if (Get.arguments["type"] != null) {
         type = Get.arguments["type"];
@@ -199,6 +199,8 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                                             height: 32,
                                             width: 100,
                                             borderRadius: 8,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 6),
                                             fontSize: 12,
                                             text:
                                                 (follower.isFollowing ?? false)

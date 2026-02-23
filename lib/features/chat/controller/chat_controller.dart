@@ -84,10 +84,12 @@ class ChatController extends GetxController {
     if (Get.arguments != null &&
         Get.arguments["isInitialRemix"] != null &&
         Get.arguments["isInitialRemix"] == true) {
-      connectSocket();
-    } else {
-      connectSocket();
+      // Auto-focus text field after the widget tree is built
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        typeFocusNode.requestFocus();
+      });
     }
+    connectSocket();
     getBrandsList();
     _enableWakelock();
     manageScrollController();

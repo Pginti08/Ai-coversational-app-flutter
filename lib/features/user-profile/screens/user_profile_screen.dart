@@ -461,6 +461,9 @@ class UserProfileScreen extends StatelessWidget {
                                             children: [
                                               AppNetworkImage(
                                                 imageUrl: controller
+                                                        .posts[index]
+                                                        .thumbnail ??
+                                                    controller
                                                         .posts[index].image ??
                                                     "",
                                                 fit: BoxFit.cover,

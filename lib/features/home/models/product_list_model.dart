@@ -47,6 +47,7 @@ class Product {
   String? userId;
   String? title;
   String? image;
+  String? thumbnail;
   double? minPrice;
   double? maxPrice;
   String? description;
@@ -70,6 +71,7 @@ class Product {
     this.userId,
     this.title,
     this.image,
+    this.thumbnail,
     this.minPrice,
     this.maxPrice,
     this.description,
@@ -94,6 +96,7 @@ class Product {
         userId: json["userId"],
         title: json["title"],
         image: json["image"],
+        thumbnail: json["thumbnail"],
         minPrice: double.tryParse(json["minPrice"].toString()),
         maxPrice: double.tryParse(json["maxPrice"].toString()),
         description: json["description"],
@@ -123,6 +126,7 @@ class Product {
         "userId": userId,
         "title": title,
         "image": image,
+        "thumbnail": thumbnail,
         "minPrice": minPrice,
         "maxPrice": maxPrice,
         "description": description,
@@ -148,6 +152,7 @@ class Product {
     String? userId,
     String? title,
     String? image,
+    String? thumbnail,
     double? minPrice,
     double? maxPrice,
     String? description,
@@ -171,6 +176,7 @@ class Product {
       userId: userId ?? this.userId,
       title: title ?? this.title,
       image: image ?? this.image,
+      thumbnail: thumbnail ?? this.thumbnail,
       minPrice: minPrice ?? this.minPrice,
       maxPrice: maxPrice ?? this.maxPrice,
       description: description ?? this.description,

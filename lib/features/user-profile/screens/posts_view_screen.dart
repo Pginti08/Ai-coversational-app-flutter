@@ -380,7 +380,7 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
 
                             // Timestamp
                             Text(
-                              formatTimeAgo(post.updatedAt),
+                              formatTimeAgo(post.createdAt),
                               style:
                                   style400S12.copyWith(color: Colors.white60),
                             ),

@@ -209,23 +209,9 @@ Download VOUSVOUS now and bring your fashion vision to life!
                   Positioned(
                     top: 10,
                     right: 10,
-                    child: Row(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        AppButton(
-                          onTap: () {
-                            openTryOnFlow(
-                              context: context,
-                              productImageUrl: controller.imageUrl,
-                            );
-                          },
-                          text: "Try On Me",
-                          borderColor: AppColors.hintTextColor,
-                          textColor: AppColors.blackColor.withAlpha(200),
-                          fontSize: 12,
-                          height: 34,
-                        ),
-                        wSizedBox6,
                         CommonContainer(
                           height:
                               34, // Fixed height and width to ensure circular shape
@@ -250,6 +236,20 @@ Download VOUSVOUS now and bring your fashion vision to life!
                             color: AppColors.blackColor.withAlpha(150),
                             width: 18,
                           ),
+                        ),
+                        hSizedBox6,
+                        AppButton(
+                          onTap: () {
+                            openTryOnFlow(
+                              context: context,
+                              productImageUrl: controller.imageUrl,
+                            );
+                          },
+                          text: "Try On Me",
+                          borderColor: AppColors.hintTextColor,
+                          textColor: AppColors.blackColor.withAlpha(200),
+                          fontSize: 12,
+                          height: 34,
                         ),
                       ],
                     ),

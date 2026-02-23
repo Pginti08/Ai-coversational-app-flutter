@@ -59,6 +59,7 @@ dependencies:
   new_version_plus: ^1.0.1
   device_info_plus: ^10.1.2
   razorpay_flutter: ^1.4.0
+  liquid_glass_renderer: ^0.2.0-dev.4
 
 dev_dependencies:
   flutter_test:

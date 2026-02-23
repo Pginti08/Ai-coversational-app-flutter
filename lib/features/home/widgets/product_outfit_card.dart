@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:vousvous/core/constants/asset_constants.dart';
 import 'package:vousvous/core/theme/app_colors.dart';
 import 'package:vousvous/core/theme/app_styles.dart';
@@ -97,26 +98,30 @@ class _ProductOutfitCardState extends State<ProductOutfitCard> {
           IgnorePointer(
             child: Padding(
               padding: const EdgeInsets.all(4),
-              child: CommonContainer(
-                blurStrength: 4,
-                enableBlur: true,
-                borderRadius: 100,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                borderColor: AppColors.whiteColor.withAlpha(20),
-                backgroundColor: AppColors.blackColor.withAlpha(70),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        widget.product.title ?? "",
-                        overflow: TextOverflow.ellipsis,
-                        style: style500S16.copyWith(letterSpacing: 0.32),
-                      ),
+              child: LiquidGlassLayer(
+                child: LiquidGlass(
+                  shape: LiquidRoundedSuperellipse(borderRadius: 24),
+                  child: CommonContainer(
+                    blurStrength: 4,
+                    borderRadius: 100,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                    borderColor: AppColors.whiteColor.withAlpha(20),
+                    backgroundColor: AppColors.blackColor.withAlpha(70),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            widget.product.title ?? "",
+                            overflow: TextOverflow.ellipsis,
+                            style: style500S16.copyWith(letterSpacing: 0.32),
+                          ),
+                        ),
+                        // wSizedBox10,
+                        // horizontalStackedAvatars(widget.outfit.colors ?? []),
+                      ],
                     ),
-                    // wSizedBox10,
-                    // horizontalStackedAvatars(widget.outfit.colors ?? []),
-                  ],
+                  ),
                 ),
               ),
             ),

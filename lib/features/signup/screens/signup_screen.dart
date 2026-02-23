@@ -118,7 +118,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 // Referral code field - optional, editable, prefilled if available
                 hSizedBox16,
                 Obx(() => AppTextField(
-                      hint: "Referral Code (Optional)",
+                      hint: "Referral Code",
                       controller: controller.referralCodeController,
                       isGradientBorder: true,
                       fillColor: AppColors.whiteColor.withAlpha(8),

@@ -93,7 +93,9 @@ class UserProfileController extends GetxController {
     scrollController.addListener(() {
       if (scrollController.position.maxScrollExtent ==
           scrollController.position.pixels) {
-        if (nextPageStop.isTrue && paginationLoading.isFalse) {
+        if (nextPageStop.isTrue &&
+            paginationLoading.isFalse &&
+            posts.isNotEmpty) {
           if (scrollController.hasClients) {
             scrollController.animateTo(
               scrollController.position.maxScrollExtent + 100,

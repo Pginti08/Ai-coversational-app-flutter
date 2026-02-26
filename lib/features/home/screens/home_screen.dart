@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_svg/svg.dart';
@@ -592,8 +594,14 @@ class _HomeScreenState extends State<HomeScreen>
           return Stack(
             children: [
               // Blur background
-              Container(
-                color: Colors.black.withOpacity(currentProgress * 0.2),
+              BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: currentProgress * 3,
+                  sigmaY: currentProgress * 3,
+                ),
+                child: Container(
+                  color: Colors.black.withOpacity(currentProgress * 0.5),
+                ),
               ),
 
               // Options panel at top

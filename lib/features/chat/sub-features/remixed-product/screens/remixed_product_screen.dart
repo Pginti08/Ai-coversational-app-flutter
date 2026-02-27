@@ -25,6 +25,7 @@ import 'package:vousvous/features/chat/sub-features/remixed-product/controller/r
 import 'package:vousvous/features/chat/sub-features/remixed-product/screens/add_to_post_bottom_sheet.dart';
 import 'package:vousvous/features/product-detail/models/check_quotation_exists_model.dart';
 import 'package:vousvous/features/quotations/screens/select_body_profile_bottom_sheet.dart';
+import 'package:vousvous/features/try-on/utils/tryon_helper.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 class RemixedProductScreen extends StatefulWidget {
@@ -236,20 +237,20 @@ Download VOUSVOUS now and bring your fashion vision to life!
                             width: 18,
                           ),
                         ),
-                        // hSizedBox6,
-                        // AppButton(
-                        //   onTap: () {
-                        //     openTryOnFlow(
-                        //       context: context,
-                        //       productImageUrl: controller.imageUrl,
-                        //     );
-                        //   },
-                        //   text: "Try On Me",
-                        //   borderColor: AppColors.hintTextColor,
-                        //   textColor: AppColors.blackColor.withAlpha(200),
-                        //   fontSize: 12,
-                        //   height: 34,
-                        // ),
+                        hSizedBox6,
+                        AppButton(
+                          onTap: () {
+                            openTryOnFlow(
+                              context: context,
+                              productImageUrl: controller.imageUrl,
+                            );
+                          },
+                          text: "Try On Me",
+                          borderColor: AppColors.hintTextColor,
+                          textColor: AppColors.blackColor.withAlpha(200),
+                          fontSize: 12,
+                          height: 34,
+                        ),
                       ],
                     ),
                   )

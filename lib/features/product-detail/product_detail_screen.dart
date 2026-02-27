@@ -20,7 +20,6 @@ import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/features/product-detail/controller/product_detail_controller.dart';
-import 'package:vousvous/features/try-on/utils/tryon_helper.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -283,21 +282,21 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                               width: 18,
                             ),
                           ),
-                          hSizedBox6,
-                          AppButton(
-                            onTap: () {
-                              openTryOnFlow(
-                                context: context,
-                                productImageUrl:
-                                    controller.productDetail.value.image ?? "",
-                              );
-                            },
-                            text: "Try On Me",
-                            borderColor: AppColors.hintTextColor,
-                            textColor: AppColors.blackColor.withAlpha(200),
-                            fontSize: 12,
-                            height: 34,
-                          ),
+                          // hSizedBox6,
+                          // AppButton(
+                          //   onTap: () {
+                          //     openTryOnFlow(
+                          //       context: context,
+                          //       productImageUrl:
+                          //           controller.productDetail.value.image ?? "",
+                          //     );
+                          //   },
+                          //   text: "Try On Me",
+                          //   borderColor: AppColors.hintTextColor,
+                          //   textColor: AppColors.blackColor.withAlpha(200),
+                          //   fontSize: 12,
+                          //   height: 34,
+                          // ),
                         ],
                       ),
                     ),

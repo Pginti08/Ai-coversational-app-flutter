@@ -11,7 +11,6 @@ import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/core/widgets/common_dialog.dart';
 import 'package:vousvous/features/home/models/product_list_model.dart';
 import 'package:vousvous/features/home/models/user_detail_model.dart';
-import 'package:vousvous/features/home/screens/home_screen.dart';
 import 'package:vousvous/features/user-profile/controller/user_profile_controller.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
@@ -19,8 +18,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   // Loaders
   final RxBool isLoading = false.obs;
   final RxBool isPaginating = false.obs;
-  var currentGuideStep = GuideStep.none.obs;
-  // 3. Keep track of the user's guide status var hasSeenGuide = true.obs;
+
+  final RxBool hasSeenGuide = true.obs;
 
   // Drawer
   final RxBool isDrawerOpen = false.obs;
@@ -48,7 +47,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   @override
   void onInit() {
     WidgetsBinding.instance.addObserver(this);
-
+    hasSeenGuide.value =
+        LocalStorageService.instance.userInfo.value.data?.hasSeenGuide ?? true;
     getUserDetail();
     getSuggestedProducts();
 
@@ -105,6 +105,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
             LocalStorageService.instance.userInfo.value.data?.image ?? "";
         totalSwipes.value =
             LocalStorageService.instance.userInfo.value.data?.swipeCount ?? 0;
+        hasSeenGuide.value =
+            LocalStorageService.instance.userInfo.value.data?.hasSeenGuide ??
+                true;
       } else {
         toast(result.error.toString());
       }

@@ -1,6 +1,6 @@
 name: vousvous
 description: Vousvous App
-version: 1.0.10+21
+version: 1.0.12+23
 publish_to: none
 
 environment:
@@ -60,6 +60,7 @@ dependencies:
   device_info_plus: ^10.1.2
   razorpay_flutter: ^1.4.0
   liquid_glass_renderer: ^0.2.0-dev.4
+  video_player: ^2.11.0
 
 dev_dependencies:
   flutter_test:
@@ -76,4 +77,5 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/videos/
     - assets/animations/

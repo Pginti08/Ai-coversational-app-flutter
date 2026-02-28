@@ -255,182 +255,215 @@ class _HomeScreenState extends State<HomeScreen>
     return Stack(
       children: [
         // DON'T wrap in GestureDetector here - GuideGestureController handles it
-        CustomScaffold(
-          isBottomSafeArea: false,
-          body: AnimatedBuilder(
-            animation: _overlayAnimation,
-            builder: (context, child) {
-              final progress = (_pullDownHeight / 200).clamp(0.0, 1.0);
-              final currentProgress = _animationController.isAnimating
-                  ? _overlayAnimation.value
-                  : progress;
+        GestureDetector(
+          onVerticalDragStart: _handleDragStart,
+          onVerticalDragUpdate: _handleDragUpdate,
+          onVerticalDragEnd: _handleDragEnd,
+          child: CustomScaffold(
+            isBottomSafeArea: false,
+            body: AnimatedBuilder(
+              animation: _overlayAnimation,
+              builder: (context, child) {
+                final progress = (_pullDownHeight / 200).clamp(0.0, 1.0);
+                final currentProgress = _animationController.isAnimating
+                    ? _overlayAnimation.value
+                    : progress;
 
-              final slideOffset = currentProgress * 80;
+                final slideOffset = currentProgress * 80;
 
-              return Transform.translate(
-                offset: Offset(0, slideOffset),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: topProgressImageNameWidget(),
-                    ),
-                    Expanded(
-                      child: Obx(
-                        () => Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ).copyWith(bottom: 150),
-                            child: controller.isLoading.value
-                                ? SizedBox.shrink()
-                                : controller.suggestedProductsList.length ==
-                                            0 ||
-                                        ((controller.currentCardIndex.value) >=
-                                            controller
-                                                .suggestedProductsList.length)
-                                    ? Center(
-                                        child: controller.isPaginating.value
-                                            ? shimmer(
-                                                child: Text(
-                                                  "Finding more products you might love...",
-                                                  style: style600S20.copyWith(
-                                                    letterSpacing: 0.42,
-                                                    color: AppColors
-                                                        .whiteTextColor,
-                                                    height: 1.1,
+                return Transform.translate(
+                  offset: Offset(0, slideOffset),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: topProgressImageNameWidget(),
+                      ),
+                      Expanded(
+                        child: Obx(
+                          () => Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ).copyWith(bottom: 150),
+                              child: controller.isLoading.value
+                                  ? SizedBox.shrink()
+                                  : controller.suggestedProductsList.length ==
+                                              0 ||
+                                          ((controller
+                                                  .currentCardIndex.value) >=
+                                              controller
+                                                  .suggestedProductsList.length)
+                                      ? Center(
+                                          child: controller.isPaginating.value
+                                              ? shimmer(
+                                                  child: Text(
+                                                    "Finding more products you might love...",
+                                                    style: style600S20.copyWith(
+                                                      letterSpacing: 0.42,
+                                                      color: AppColors
+                                                          .whiteTextColor,
+                                                      height: 1.1,
+                                                    ),
+                                                  ),
+                                                )
+                                              : Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 20),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        "No More Outfits Available",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: style600S20
+                                                            .copyWith(
+                                                          letterSpacing: 0.42,
+                                                          color: AppColors
+                                                              .whiteTextColor,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        "You can personalize your outfits to match your taste.",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: style600S16
+                                                            .copyWith(
+                                                          color: AppColors
+                                                              .lightGreyTextColor,
+                                                        ),
+                                                      ),
+                                                      hSizedBox8,
+                                                      AppButton(
+                                                        onTap: () {
+                                                          Get.toNamed(
+                                                              Routes.chat);
+                                                        },
+                                                        width:
+                                                            MediaQuery.sizeOf(
+                                                                        context)
+                                                                    .width /
+                                                                2.5,
+                                                        height: 40,
+                                                        text: "Start Creating",
+                                                        fontSize: 14,
+                                                      )
+                                                    ],
                                                   ),
                                                 ),
-                                              )
-                                            : Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 20),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      "No More Outfits Available",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style:
-                                                          style600S20.copyWith(
-                                                        letterSpacing: 0.42,
-                                                        color: AppColors
-                                                            .whiteTextColor,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      "You can personalize your outfits to match your taste.",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style:
-                                                          style600S16.copyWith(
-                                                        color: AppColors
-                                                            .lightGreyTextColor,
-                                                      ),
-                                                    ),
-                                                    hSizedBox8,
-                                                    AppButton(
-                                                      onTap: () {
-                                                        Get.toNamed(
-                                                            Routes.chat);
+                                        )
+                                      : Obx(
+                                          () => CardSwiper(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            numberOfCardsDisplayed: controller
+                                                        .suggestedProductsList
+                                                        .length <
+                                                    4
+                                                ? controller
+                                                    .suggestedProductsList
+                                                    .length
+                                                : 4,
+                                            scale: 0.97,
+                                            backCardOffset: Offset(0, 25),
+                                            allowedSwipeDirection:
+                                                AllowedSwipeDirection.symmetric(
+                                                    horizontal: true),
+                                            cardsCount: controller
+                                                .suggestedProductsList.length,
+                                            isLoop: false,
+                                            cardBuilder: (
+                                              context,
+                                              index,
+                                              percentThresholdX,
+                                              percentThresholdY,
+                                            ) {
+                                              return Obx(
+                                                () => ProductOutfitCard(
+                                                  product: controller
+                                                          .suggestedProductsList[
+                                                      index],
+                                                  isFirst: (controller
+                                                              .currentCardIndex
+                                                              .value ==
+                                                          index)
+                                                      .obs,
+                                                  swipeProgress:
+                                                      double.tryParse(
+                                                            percentThresholdX
+                                                                .toString(),
+                                                          ) ??
+                                                          0,
+                                                  onTap: () {
+                                                    Get.toNamed(
+                                                      Routes.productDetail,
+                                                      arguments: {
+                                                        "productDetail": controller
+                                                                .suggestedProductsList[
+                                                            index],
                                                       },
-                                                      width: MediaQuery.sizeOf(
-                                                                  context)
-                                                              .width /
-                                                          2.5,
-                                                      height: 40,
-                                                      text: "Start Creating",
-                                                      fontSize: 14,
-                                                    )
-                                                  ],
+                                                    );
+                                                  },
                                                 ),
-                                              ),
-                                      )
-                                    : Obx(
-                                        () => CardSwiper(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 10),
-                                          numberOfCardsDisplayed: controller
-                                                      .suggestedProductsList
-                                                      .length <
-                                                  4
-                                              ? controller
-                                                  .suggestedProductsList.length
-                                              : 4,
-                                          scale: 0.97,
-                                          backCardOffset: Offset(0, 25),
-                                          allowedSwipeDirection:
-                                              AllowedSwipeDirection.symmetric(
-                                                  horizontal: true),
-                                          cardsCount: controller
-                                              .suggestedProductsList.length,
-                                          isLoop: false,
-                                          cardBuilder: (
-                                            context,
-                                            index,
-                                            percentThresholdX,
-                                            percentThresholdY,
-                                          ) {
-                                            return Obx(
-                                              () => ProductOutfitCard(
-                                                product: controller
-                                                        .suggestedProductsList[
-                                                    index],
-                                                isFirst: (controller
-                                                            .currentCardIndex
-                                                            .value ==
-                                                        index)
-                                                    .obs,
-                                                swipeProgress: double.tryParse(
-                                                      percentThresholdX
-                                                          .toString(),
-                                                    ) ??
-                                                    0,
-                                                onTap: () {
-                                                  Get.toNamed(
-                                                    Routes.productDetail,
-                                                    arguments: {
-                                                      "productDetail": controller
-                                                              .suggestedProductsList[
-                                                          index],
-                                                    },
+                                              );
+                                            },
+                                            initialIndex: controller
+                                                .currentCardIndex.value,
+                                            onSwipe: (
+                                              previousIndex,
+                                              currentIndex,
+                                              direction,
+                                            ) {
+                                              // Your existing onSwipe logic stays the same
+                                              final outfitList = controller
+                                                  .suggestedProductsList;
+
+                                              if (previousIndex < 0 ||
+                                                  previousIndex >=
+                                                      outfitList.length) {
+                                                return true;
+                                              }
+
+                                              /*
+                                                if (direction ==
+                                                    CardSwiperDirection.right) {
+                                                  if (controller.currentGuideStep
+                                                          .value ==
+                                                      GuideStep.swipeRight) {
+                                                    controller.currentGuideStep
+                                                            .value =
+                                                        GuideStep.swipeLeft;
+                                                  }
+                                                  controller.likedProduct(
+                                                    outfitList[previousIndex]
+                                                            .id ??
+                                                        "",
                                                   );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                          initialIndex:
-                                              controller.currentCardIndex.value,
-                                          onSwipe: (
-                                            previousIndex,
-                                            currentIndex,
-                                            direction,
-                                          ) {
-                                            // Your existing onSwipe logic stays the same
-                                            final outfitList = controller
-                                                .suggestedProductsList;
-
-                                            if (previousIndex < 0 ||
-                                                previousIndex >=
-                                                    outfitList.length) {
-                                              return true;
-                                            }
-
-                                            /*
+                                                } else if (direction ==
+                                                    CardSwiperDirection.left) {
+                                                  if (controller.currentGuideStep
+                                                          .value ==
+                                                      GuideStep.swipeLeft) {
+                                                    controller.currentGuideStep
+                                                            .value =
+                                                        GuideStep.openDrawer;
+                                                  }
+                                                  controller.skipProduct(
+                                                    outfitList[previousIndex]
+                                                            .id ??
+                                                        "",
+                                                  );
+                                                }
+                      */
                                               if (direction ==
                                                   CardSwiperDirection.right) {
-                                                if (controller.currentGuideStep
-                                                        .value ==
-                                                    GuideStep.swipeRight) {
-                                                  controller.currentGuideStep
-                                                          .value =
-                                                      GuideStep.swipeLeft;
-                                                }
                                                 controller.likedProduct(
                                                   outfitList[previousIndex]
                                                           .id ??
@@ -438,87 +471,68 @@ class _HomeScreenState extends State<HomeScreen>
                                                 );
                                               } else if (direction ==
                                                   CardSwiperDirection.left) {
-                                                if (controller.currentGuideStep
-                                                        .value ==
-                                                    GuideStep.swipeLeft) {
-                                                  controller.currentGuideStep
-                                                          .value =
-                                                      GuideStep.openDrawer;
-                                                }
                                                 controller.skipProduct(
                                                   outfitList[previousIndex]
                                                           .id ??
                                                       "",
                                                 );
                                               }
-                    */
-                                            if (direction ==
-                                                CardSwiperDirection.right) {
-                                              controller.likedProduct(
-                                                outfitList[previousIndex].id ??
-                                                    "",
-                                              );
-                                            } else if (direction ==
-                                                CardSwiperDirection.left) {
-                                              controller.skipProduct(
-                                                outfitList[previousIndex].id ??
-                                                    "",
-                                              );
-                                            }
 
-                                            controller.onCardSwiped();
-                                            controller.remainingProductsInQueue
-                                                .value--;
-
-                                            if (controller
-                                                        .remainingProductsInQueue
-                                                        .value <
-                                                    5 &&
-                                                !controller.isLoading.value &&
-                                                !controller
-                                                    .isPaginating.value) {
-                                              controller.getSuggestedProducts(
-                                                isLoadMore: true,
-                                              );
-                                            }
-
-                                            if (currentIndex != null) {
-                                              controller.currentCardIndex
-                                                  .value = currentIndex;
-                                            } else if (currentIndex == null &&
-                                                controller.currentCardIndex
-                                                        .value ==
-                                                    outfitList.length - 1) {
+                                              controller.onCardSwiped();
                                               controller
-                                                  .currentCardIndex.value++;
-                                            }
+                                                  .remainingProductsInQueue
+                                                  .value--;
 
-                                            return true;
-                                          },
-                                        ),
-                                      )),
+                                              if (controller
+                                                          .remainingProductsInQueue
+                                                          .value <
+                                                      5 &&
+                                                  !controller.isLoading.value &&
+                                                  !controller
+                                                      .isPaginating.value) {
+                                                controller.getSuggestedProducts(
+                                                  isLoadMore: true,
+                                                );
+                                              }
+
+                                              if (currentIndex != null) {
+                                                controller.currentCardIndex
+                                                    .value = currentIndex;
+                                              } else if (currentIndex == null &&
+                                                  controller.currentCardIndex
+                                                          .value ==
+                                                      outfitList.length - 1) {
+                                                controller
+                                                    .currentCardIndex.value++;
+                                              }
+
+                                              return true;
+                                            },
+                                          ),
+                                        )),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          bottomNavigationBar: AnimatedBuilder(
-            animation: _overlayAnimation,
-            builder: (context, child) {
-              final progress = (_pullDownHeight / 200).clamp(0.0, 1.0);
-              final currentProgress = _animationController.isAnimating
-                  ? _overlayAnimation.value
-                  : progress;
+                    ],
+                  ),
+                );
+              },
+            ),
+            bottomNavigationBar: AnimatedBuilder(
+              animation: _overlayAnimation,
+              builder: (context, child) {
+                final progress = (_pullDownHeight / 200).clamp(0.0, 1.0);
+                final currentProgress = _animationController.isAnimating
+                    ? _overlayAnimation.value
+                    : progress;
 
-              final slideOffset = currentProgress * 40;
+                final slideOffset = currentProgress * 40;
 
-              return Transform.translate(
-                offset: Offset(0, slideOffset * 0.5),
-                child: StartCreatingDragBottom(),
-              );
-            },
+                return Transform.translate(
+                  offset: Offset(0, slideOffset * 0.5),
+                  child: StartCreatingDragBottom(),
+                );
+              },
+            ),
           ),
         ),
 
@@ -705,21 +719,26 @@ class _HomeScreenState extends State<HomeScreen>
           child: Row(
             children: [
               Obx(
-                () => AppNetworkImage(
-                  width: 43,
-                  height: 43,
-                  shape: BoxShape.circle,
-                  imageUrl: controller.userImage.value,
-                  fit: BoxFit.cover,
-                  errorWidget: Container(
+                () => GestureDetector(
+                  onTap: () {
+                    controller.toggleDrawer();
+                  },
+                  child: AppNetworkImage(
                     width: 43,
                     height: 43,
-                    color: AppColors.grey2Color.withAlpha(150),
-                    padding: EdgeInsets.all(8),
-                    alignment: Alignment.center,
-                    child: SvgPicture.asset(
-                      AssetConstants.user,
-                      color: AppColors.whiteColor,
+                    shape: BoxShape.circle,
+                    imageUrl: controller.userImage.value,
+                    fit: BoxFit.cover,
+                    errorWidget: Container(
+                      width: 43,
+                      height: 43,
+                      color: AppColors.grey2Color.withAlpha(150),
+                      padding: EdgeInsets.all(8),
+                      alignment: Alignment.center,
+                      child: SvgPicture.asset(
+                        AssetConstants.user,
+                        color: AppColors.whiteColor,
+                      ),
                     ),
                   ),
                 ),

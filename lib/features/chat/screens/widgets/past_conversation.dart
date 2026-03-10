@@ -43,7 +43,7 @@ class _PastConversationState extends State<PastConversation> {
     var result = await NetworkClient.instance.callApi(
       "${ApiConstants.getSessionList}",
       MethodType.get,
-      baseUrlType: BaseUrl.chat,
+      baseUrlType: BaseUrl.ai,
     );
 
     if (result.isSuccess) {

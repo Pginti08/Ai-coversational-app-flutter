@@ -151,7 +151,7 @@ class ChatController extends GetxController {
     var result = await NetworkClient.instance.callApi(
       "${ApiConstants.getSessionList}",
       MethodType.get,
-      baseUrlType: BaseUrl.chat,
+      baseUrlType: BaseUrl.ai,
     );
 
     if (result.isSuccess) {
@@ -189,7 +189,7 @@ class ChatController extends GetxController {
       if (nextPageStop.isTrue) {
         var result = await NetworkClient.instance.callApi(
           "/sessions/${currentSessionId}/chats?page=${page.value}&limit=20&timestamp=${chatHistoryModel.data?.timestamp}",
-          baseUrlType: BaseUrl.chat,
+          baseUrlType: BaseUrl.ai,
           MethodType.get,
         );
 
@@ -490,7 +490,7 @@ class ChatController extends GetxController {
       var result = await NetworkClient.instance.callApi(
         "${ApiConstants.uploadImage}",
         MethodType.post,
-        baseUrlType: BaseUrl.chat,
+        baseUrlType: BaseUrl.ai,
         headers: {"Content-Type": "multipart/form-data"},
         params: dio.FormData.fromMap({
           'file': dio.MultipartFile.fromFileSync(

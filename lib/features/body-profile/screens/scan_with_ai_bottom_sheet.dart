@@ -53,7 +53,7 @@ class _ScanWithAiBottomSheetState extends State<ScanWithAiBottomSheet> {
       isLoading.value = true;
       var result = await NetworkClient.instance
           .callApi("${ApiConstants.bodyMeasurementsAnalyze}", MethodType.post,
-              baseUrlType: BaseUrl.chat,
+              baseUrlType: BaseUrl.ai,
               headers: {"Content-Type": "multipart/form-data"},
               params: dio.FormData.fromMap({
                 'front_image': dio.MultipartFile.fromFileSync(

@@ -38,4 +38,5 @@ abstract class Routes {
   static const String referFriend = '/refer-friend';
   static const String buyCredit = '/buy-credit';
   static const String tryOnPreview = '/try-on-preview';
+  static const String myTryOns = '/my-try-ons';
 }

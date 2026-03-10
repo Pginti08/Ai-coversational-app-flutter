@@ -68,7 +68,7 @@ class _AddToPostBottomSheetState extends State<AddToPostBottomSheet> {
 
       var result = await NetworkClient.instance.callApi(
           "${ApiConstants.analyzeProduct}", MethodType.post,
-          baseUrlType: BaseUrl.chat,
+          baseUrlType: BaseUrl.ai,
           params: {
             "image_path": widget.imageUrl,
           });

@@ -12,6 +12,7 @@ import 'package:vousvous/features/invite-friend/screens/invite_friend_screen.dar
 import 'package:vousvous/features/liked/liked-product/liked_product_screen.dart';
 import 'package:vousvous/features/liked/screens/liked_screen.dart';
 import 'package:vousvous/features/login/screens/login_screen.dart';
+import 'package:vousvous/features/my_try_ons/screens/my_try_ons_screen.dart';
 import 'package:vousvous/features/orders-detail/screens/order_detail_screen.dart';
 import 'package:vousvous/features/orders-detail/screens/tracking_detail_screen.dart';
 import 'package:vousvous/features/orders/screens/orders_screen.dart';
@@ -284,6 +285,13 @@ class AppPages {
       fullscreenDialog: true,
       name: Routes.tryOnPreview,
       page: () => TryOnPreviewScreen(),
+    ),
+    GetPage(
+      opaque: false,
+      transition: Transition.fadeIn,
+      fullscreenDialog: true,
+      name: Routes.myTryOns,
+      page: () => MyTryOnsScreen(),
     ),
   ];
 }

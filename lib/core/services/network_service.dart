@@ -9,7 +9,7 @@ import 'package:vousvous/core/services/local_storage_service.dart';
 import 'package:vousvous/core/utils/common_utils.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
-enum BaseUrl { base, chat, none }
+enum BaseUrl { base, ai, none }
 
 class MethodType {
   static const String post = 'POST';
@@ -136,7 +136,7 @@ class NetworkClient {
     switch (type) {
       case BaseUrl.base:
         return ApiConstants.baseURL;
-      case BaseUrl.chat:
+      case BaseUrl.ai:
         return ApiConstants.chatURL;
       case BaseUrl.none:
         return '';

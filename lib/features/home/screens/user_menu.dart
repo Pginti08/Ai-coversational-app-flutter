@@ -184,6 +184,14 @@ class _UserMenuState extends State<UserMenu> {
                     },
                   ),
                   menuTiles(
+                    name: "My Try-Ons",
+                    icon: AssetConstants.tryOn,
+                    height: 22,
+                    onTap: () {
+                      Get.toNamed(Routes.myTryOns);
+                    },
+                  ),
+                  menuTiles(
                     name: "Refer Friends",
                     icon: AssetConstants.gift,
                     height: 19,
@@ -191,13 +199,6 @@ class _UserMenuState extends State<UserMenu> {
                       Get.toNamed(Routes.referFriend);
                     },
                   ),
-                  // menuTiles(
-                  //   name: "Invite Friends",
-                  //   icon: AssetConstants.share,
-                  //   onTap: () {
-                  //     Get.toNamed(Routes.inviteFriend);
-                  //   },
-                  // ),
                   menuTiles(
                     name: "Delete Account",
                     icon: AssetConstants.userMinus,

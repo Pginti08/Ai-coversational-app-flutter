@@ -17,6 +17,7 @@ import 'package:vousvous/core/widgets/common_container.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/core/widgets/stacked_card_widget.dart';
 import 'package:vousvous/features/liked/controller/liked_controller.dart';
+import 'package:vousvous/features/try-on/utils/tryon_helper.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 class LikedScreen extends StatelessWidget {
@@ -112,6 +113,27 @@ class LikedScreen extends StatelessWidget {
                                       AssetConstants.heart,
                                       height: 30,
                                       color: Colors.pink,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 10,
+                                    left: 10,
+                                    child: AppButton(
+                                      onTap: () {
+                                        openTryOnFlow(
+                                          context: context,
+                                          productImageUrl: controller
+                                                  .likedProductsList[index]
+                                                  .image ??
+                                              "",
+                                        );
+                                      },
+                                      text: "Try On Me",
+                                      borderColor: AppColors.hintTextColor,
+                                      textColor:
+                                          AppColors.blackColor.withAlpha(200),
+                                      fontSize: 12,
+                                      height: 34,
                                     ),
                                   ),
                                   Positioned(

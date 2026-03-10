@@ -46,7 +46,7 @@ class TryOnPreviewController extends GetxController {
       final result = await NetworkClient.instance.callApi(
         ApiConstants.virtualTryOn,
         MethodType.post,
-        baseUrlType: BaseUrl.chat,
+        baseUrlType: BaseUrl.ai,
         params: formData,
         headers: {
           'Content-Type': 'multipart/form-data',

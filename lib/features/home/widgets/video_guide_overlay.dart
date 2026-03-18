@@ -292,24 +292,6 @@ class _VideoGuideOverlayState extends State<VideoGuideOverlay>
               ),
             ),
             const SizedBox(height: 6),
-            // // Time labels
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Text(
-            //       _formatDuration(position),
-            //       style: style400S10.copyWith(
-            //         color: AppColors.lightGreyTextColor,
-            //       ),
-            //     ),
-            //     Text(
-            //       _formatDuration(duration),
-            //       style: style400S10.copyWith(
-            //         color: AppColors.lightGreyTextColor,
-            //       ),
-            //     ),
-            //   ],
-            // ),
           ],
         );
       },
@@ -318,7 +300,34 @@ class _VideoGuideOverlayState extends State<VideoGuideOverlay>
 
   Widget _buildActionButtons() {
     if (!_isVideoCompleted) {
-      return const SizedBox(height: 56);
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          AppButton(
+            width: 150,
+            height: 50,
+            onTap: _completeGuide,
+            isOutlined: true,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.skip_next,
+                  color: AppColors.whiteTextColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  "Skip",
+                  style: style700S16.copyWith(
+                    color: AppColors.whiteTextColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
     }
 
     return SlideTransition(
@@ -332,7 +341,6 @@ class _VideoGuideOverlayState extends State<VideoGuideOverlay>
               // Replay button
               Expanded(
                 child: AppButton(
-                  text: "Replay",
                   isOutlined: true,
                   height: 50,
                   onTap: _replayVideo,
@@ -360,7 +368,6 @@ class _VideoGuideOverlayState extends State<VideoGuideOverlay>
               Expanded(
                 flex: 2,
                 child: AppButton(
-                  text: "Complete Guide",
                   height: 50,
                   onTap: _completeGuide,
                   child: Row(

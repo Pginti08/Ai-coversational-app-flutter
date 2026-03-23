@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +21,7 @@ import 'package:vousvous/core/widgets/app_network_image.dart';
 import 'package:vousvous/core/widgets/app_toast.dart';
 import 'package:vousvous/core/widgets/custom_scaffold.dart';
 import 'package:vousvous/features/product-detail/controller/product_detail_controller.dart';
+import 'package:vousvous/features/try-on/utils/tryon_helper.dart';
 import 'package:vousvous/routes/app_pages.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -240,10 +242,10 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                     ),
                   ),
 
-                  // --- "Try On Me" Button (hides during drag) ---
+                  // --- Try On Me (pill like Liked; scales with ScreenUtil 390×844 design) ---
                   Positioned(
-                    top: 62,
-                    right: 28,
+                    top: 55.h,
+                    left: 20.w,
                     child: ValueListenableBuilder<double>(
                       valueListenable: _sheetExtentNotifier,
                       builder: (context, extent, child) {
@@ -261,43 +263,67 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                           ),
                         );
                       },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          AppButton(
-                            onTap: () {
-                              Get.toNamed(Routes.chat, arguments: {
-                                "isInitialRemix": true,
-                                "userSelectedRemixOutfits": [
-                                  controller.productDetail.value.image ?? ""
-                                ]
-                              });
-                            },
-                            borderColor: AppColors.hintTextColor,
-                            height: 34,
-                            width: 34,
-                            child: SvgPicture.asset(
-                              AssetConstants.magicpen,
-                              color: AppColors.blackColor.withAlpha(150),
-                              width: 18,
-                            ),
+                      child: AppButton(
+                        onTap: () {
+                          openTryOnFlow(
+                            context: context,
+                            productImageUrl:
+                                controller.productDetail.value.image ?? "",
+                          );
+                        },
+                        text: "Try On Me",
+                        borderColor: AppColors.hintTextColor,
+                        textColor: AppColors.blackColor.withAlpha(200),
+                        // Tighter horizontal padding → narrower pill (AppButton applies
+                        // this padding on both wrapper layers; ~2× per side vs raw value).
+                        padding: EdgeInsets.symmetric(horizontal: 5.w),
+                        fontSize: 12.sp,
+                        height: 34.h,
+                      ),
+                    ),
+                  ),
+
+                  // --- Remix (top-right; hides during drag) ---
+                  Positioned(
+                    top: 55.h,
+                    right: 20.w,
+                    child: ValueListenableBuilder<double>(
+                      valueListenable: _sheetExtentNotifier,
+                      builder: (context, extent, child) {
+                        final normalizedExtent = (extent - _minSheetSize) /
+                            (_maxSheetSize - _minSheetSize);
+                        final opacity =
+                            (1.0 - normalizedExtent * 3).clamp(0.0, 1.0);
+
+                        return IgnorePointer(
+                          ignoring: opacity == 0.0,
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 150),
+                            opacity: opacity,
+                            child: child!,
                           ),
-                          // hSizedBox6,
-                          // AppButton(
-                          //   onTap: () {
-                          //     openTryOnFlow(
-                          //       context: context,
-                          //       productImageUrl:
-                          //           controller.productDetail.value.image ?? "",
-                          //     );
-                          //   },
-                          //   text: "Try On Me",
-                          //   borderColor: AppColors.hintTextColor,
-                          //   textColor: AppColors.blackColor.withAlpha(200),
-                          //   fontSize: 12,
-                          //   height: 34,
-                          // ),
-                        ],
+                        );
+                      },
+                      child: AppButton(
+                        onTap: () {
+                          Get.toNamed(Routes.chat, arguments: {
+                            "isInitialRemix": true,
+                            "userSelectedRemixOutfits": [
+                              controller.productDetail.value.image ?? ""
+                            ]
+                          });
+                        },
+                        borderColor: AppColors.hintTextColor,
+                        height: 34.h,
+                        width: 34.w,
+                        child: SvgPicture.asset(
+                          AssetConstants.magicpen,
+                          colorFilter: ColorFilter.mode(
+                            AppColors.blackColor.withAlpha(150),
+                            BlendMode.srcIn,
+                          ),
+                          width: 18.w,
+                        ),
                       ),
                     ),
                   ),
@@ -428,8 +454,12 @@ Download *VOUSVOUS* now and bring your fashion vision to life!
                                                           child:
                                                               SvgPicture.asset(
                                                             AssetConstants.user,
-                                                            color: AppColors
-                                                                .whiteColor,
+                                                            colorFilter:
+                                                                ColorFilter.mode(
+                                                              AppColors
+                                                                  .whiteColor,
+                                                              BlendMode.srcIn,
+                                                            ),
                                                           ),
                                                         ),
                                                       ),

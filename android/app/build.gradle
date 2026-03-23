@@ -86,7 +86,10 @@ android {
         }
         staging {
             dimension "default"
-            applicationIdSuffix ".stg"
+            // Reuse the existing dev Firebase Android app config.
+            // If you create a dedicated Firebase app for staging later, switch back to ".stg"
+            // and add matching google-services.json client.
+            applicationIdSuffix ".dev"
             manifestPlaceholders = [appName: "Vousvous Staging"]
         }
         development {
@@ -96,7 +99,10 @@ android {
         }
         demo {
             dimension "default"
-            applicationIdSuffix ".demo"
+            // Reuse the existing dev Firebase Android app config.
+            // If you create a dedicated Firebase app for demo later, switch back to ".demo"
+            // and add matching google-services.json client.
+            applicationIdSuffix ".dev"
             manifestPlaceholders = [appName: "Vousvous Demo"]
         }
     }
